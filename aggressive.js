@@ -1,24 +1,26 @@
 // ══════════════════════════════════════════════════════════════
 //  aggressive.js  —  Aggressive Tuning Prism affix pool
 //  UI Label: "Offensive"
-//  Source: In-game prism reference screenshot
+//  Source: In-game master reference screenshot (all classes)
 // ══════════════════════════════════════════════════════════════
 registerPrismBucket("aggressivePrism", [
-    "Core Stat",
-    "Weapon Damage",
-    "Thorns",
     "All Damage Multiplier",
-    "Any Element Damage Multiplier",
-    "Damage Over Time Multiplier",
-    "Critical Strike Damage Multiplier",
-    "Critical Strike Chance",
     "Attack Speed",
-    "Vulnerable Damage Multiplier",
-    // Element-specific multipliers (any can roll here)
+    "Critical Strike Chance",
+    "Critical Strike Damage Multiplier",
+    "Damage Over Time Multiplier",
+    "Dexterity",
     "Fire Damage Multiplier",
     "Cold Damage Multiplier",
+    "Holy Damage Multiplier",
+    "Intelligence",
     "Lightning Damage Multiplier",
+    "Physical Damage Multiplier",
     "Poison Damage Multiplier",
     "Shadow Damage Multiplier",
-    "Physical Damage Multiplier"
+    "Strength",
+    "Thorns",
+    "Vulnerable Damage Multiplier",
+    "Weapon Damage",
+    "Willpower"
 ]);

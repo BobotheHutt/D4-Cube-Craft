@@ -34,7 +34,8 @@ const PRISM_BADGE_CLASS = {
     pragmaticPrism:   "badge-pragmatic",
     resourcefulPrism: "badge-resourceful",
     adeptPrism:       "badge-adept",
-    chromaticPrism:   "badge-chromatic"
+    chromaticPrism:   "badge-chromatic",
+    mobilityPrism:    "badge-mobility"
 };
 
 const PRISM_DISPLAY_NAME = {
@@ -43,7 +44,8 @@ const PRISM_DISPLAY_NAME = {
     pragmaticPrism:   "Pragmatic",
     resourcefulPrism: "Resourceful",
     adeptPrism:       "Adept",
-    chromaticPrism:   "Chromatic"
+    chromaticPrism:   "Chromatic",
+    mobilityPrism:    "Mobility"
 };
 
 
@@ -67,7 +69,8 @@ const AFFIX_CATEGORY_MAP = [
     { label: "Utility",    key: "pragmaticPrism"   },
     { label: "Resource",   key: "resourcefulPrism" },
     { label: "Core Stats", key: "adeptPrism"       },
-    { label: "Elemental",  key: "chromaticPrism"  }
+    { label: "Elemental",  key: "chromaticPrism"  },
+    { label: "Mobility",   key: "mobilityPrism"   }
 ];
 
 // ── ASPECT CATEGORY MAP ───────────────────────────────────────

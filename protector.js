@@ -1,20 +1,21 @@
 // ══════════════════════════════════════════════════════════════
 //  protector.js  —  Protector's Tuning Prism affix pool
 //  UI Label: "Defensive"
-//  Source: In-game prism reference screenshot
+//  Source: In-game master reference screenshot (all classes)
 //  Note: Individual resistances also roll on Chromatic prism
 // ══════════════════════════════════════════════════════════════
 registerPrismBucket("protectorPrism", [
-    "Maximum Life",
     "Armor",
-    "All Elemental Resistance",
-    "Fire Resistance",
     "Cold Resistance",
-    "Lightning Resistance",
-    "Poison Resistance",
-    "Shadow Resistance",
-    "Physical Resistance",
+    "Damage Reduction",
     "Dodge Chance",
-    "Life on Kill",
-    "Life on Hit"
+    "Fire Resistance",
+    "Life On Hit",
+    "Life Regeneration",
+    "Lightning Resistance",
+    "Maximum Life",
+    "Physical Resistance",
+    "Poison Resistance",
+    "Resistance to All Elements",
+    "Shadow Resistance"
 ]);
