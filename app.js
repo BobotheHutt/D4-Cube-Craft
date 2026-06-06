@@ -1,28 +1,44 @@
 // ══════════════════════════════════════════════════════════════
 //  app.js  —  Core logic for the Horadric Prism Planner
 //  Depends on: aggressive.js, protector.js, pragmatic.js,
-//              resourceful.js, adept.js, items.js
+//              resourceful.js, adept.js,
+//              mythics.js, aspects-*.js, tempers-*.js
 // ══════════════════════════════════════════════════════════════
 
 // ── PRISM REGISTRY ────────────────────────────────────────────
-// Populated by each data module via registerPrismBucket()
 window.PrismRegistry = {};
 
 function registerPrismBucket(prismName, affixList) {
     window.PrismRegistry[prismName] = affixList;
 }
 
-// ── CATEGORY MAP ──────────────────────────────────────────────
-// UI-facing category names → internal prism bucket keys
-const CATEGORY_MAP = [
-    { label: "Offensive",   key: "aggressivePrism"  },
-    { label: "Defensive",   key: "protectorPrism"   },
-    { label: "Utility",     key: "pragmaticPrism"   },
-    { label: "Resource",    key: "resourcefulPrism" },
-    { label: "Core Stats",  key: "adeptPrism"       }
-];
+// ── ASPECT REGISTRY ───────────────────────────────────────────
+// Populated by aspects-*.js files via registerAspectCategory()
+window.AspectRegistry = {};
 
-// Badge CSS class per prism bucket key
+function registerAspectCategory(categoryKey, aspectList) {
+    window.AspectRegistry[categoryKey] = aspectList;
+}
+
+// ── MYTHIC REGISTRY ───────────────────────────────────────────
+// Populated by mythics.js via registerMythics()
+// Format: { slotId: [{ name, slots? }], ... }
+// Items with slots:[] array are multi-slot (rings, weapons)
+window.MythicRegistry = {};
+
+function registerMythics(mythicData) {
+    window.MythicRegistry = mythicData;
+}
+
+// ── TEMPER REGISTRY ───────────────────────────────────────────
+// Populated by tempers-*.js files via registerTemperCategory()
+window.TemperRegistry = {};
+
+function registerTemperCategory(categoryKey, temperList) {
+    window.TemperRegistry[categoryKey] = temperList;
+}
+
+// ── PRISM DISPLAY MAPS ────────────────────────────────────────
 const PRISM_BADGE_CLASS = {
     aggressivePrism:  "badge-aggressive",
     protectorPrism:   "badge-protector",
@@ -31,7 +47,6 @@ const PRISM_BADGE_CLASS = {
     adeptPrism:       "badge-adept"
 };
 
-// Friendly display name per prism bucket key
 const PRISM_DISPLAY_NAME = {
     aggressivePrism:  "Aggressive",
     protectorPrism:   "Protector",
@@ -40,13 +55,97 @@ const PRISM_DISPLAY_NAME = {
     adeptPrism:       "Adept"
 };
 
-// ── CLASS WEAPON CONFIGS ───────────────────────────────────────
-// leftSlots  → mount under left-weapon-mounts
-// rightSlots → mount under right-weapon-mounts
+// ── AFFIX CATEGORY MAP ────────────────────────────────────────
+// UI label → internal prism bucket key
+const AFFIX_CATEGORY_MAP = [
+    { label: "Offensive",  key: "aggressivePrism"  },
+    { label: "Defensive",  key: "protectorPrism"   },
+    { label: "Utility",    key: "pragmaticPrism"   },
+    { label: "Resource",   key: "resourcefulPrism" },
+    { label: "Core Stats", key: "adeptPrism"       }
+];
+
+// ── ASPECT CATEGORY MAP ───────────────────────────────────────
+// UI label → aspect registry key
+const ASPECT_CATEGORY_MAP = [
+    { label: "Offensive", key: "offensive" },
+    { label: "Defensive", key: "defensive" },
+    { label: "Resource",  key: "resource"  },
+    { label: "Utility",   key: "utility"   },
+    { label: "Mobility",  key: "mobility"  }
+];
+
+// ── TEMPER CATEGORY MAP ───────────────────────────────────────
+const TEMPER_CATEGORY_MAP = [
+    { label: "Offensive", key: "offensive" },
+    { label: "Defensive", key: "defensive" },
+    { label: "Resource",  key: "resource"  },
+    { label: "Utility",   key: "utility"   },
+    { label: "Mobility",  key: "mobility"  }
+];
+
+// ── SLOT CONFIG ───────────────────────────────────────────────
+// Single source of truth for what each slot can use.
+// Add/remove category keys here to change what appears in modals.
+const SLOT_CONFIG = {
+    helm: {
+        aspectCategories: ["offensive", "defensive", "utility"],
+        temperCategories: ["offensive", "defensive", "utility"],
+        mythicEligible:   true
+    },
+    chest: {
+        aspectCategories: ["defensive", "utility"],
+        temperCategories: ["defensive", "utility"],
+        mythicEligible:   true
+    },
+    gloves: {
+        aspectCategories: ["offensive", "utility"],
+        temperCategories: ["offensive", "utility"],
+        mythicEligible:   true
+    },
+    pants: {
+        aspectCategories: ["defensive", "utility", "mobility"],
+        temperCategories: ["defensive", "utility", "mobility"],
+        mythicEligible:   true
+    },
+    boots: {
+        aspectCategories: ["mobility", "utility"],
+        temperCategories: ["mobility", "utility"],
+        mythicEligible:   true
+    },
+    amulet: {
+        aspectCategories: ["offensive", "defensive", "resource", "utility", "mobility"],
+        temperCategories: ["offensive", "defensive", "resource", "utility", "mobility"],
+        mythicEligible:   true
+    },
+    "ring-left": {
+        aspectCategories: ["offensive", "resource"],
+        temperCategories: ["offensive", "resource"],
+        mythicEligible:   true
+    },
+    "ring-right": {
+        aspectCategories: ["offensive", "resource"],
+        temperCategories: ["offensive", "resource"],
+        mythicEligible:   true
+    },
+    // Weapon slots: flexible — all aspect/temper categories available
+    weapon: {
+        aspectCategories: ["offensive", "defensive", "resource", "utility", "mobility"],
+        temperCategories: ["offensive", "defensive", "resource", "utility", "mobility"],
+        mythicEligible:   false
+    }
+};
+
+// Helper: get config for any slot (weapons fall back to "weapon" key)
+function getSlotConfig(slotId) {
+    return SLOT_CONFIG[slotId] || SLOT_CONFIG["weapon"];
+}
+
+// ── CLASS WEAPON CONFIGS ──────────────────────────────────────
 const CLASS_WEAPONS = {
     spiritborn: {
-        leftSlots:  [{ label: "Weapon", sub: "Polearm or One-Handed" }],
-        rightSlots: [{ label: "Offhand", sub: "Shield (optional)" }]
+        leftSlots:  [{ label: "Weapon",  sub: "Polearm or One-Handed" }],
+        rightSlots: [{ label: "Offhand", sub: "Shield (optional)"     }]
     },
     barbarian: {
         leftSlots:  [
@@ -55,46 +154,36 @@ const CLASS_WEAPONS = {
         ],
         rightSlots: [
             { label: "Weapon 3", sub: "One-Handed Bludgeoning" },
-            { label: "Weapon 4", sub: "Two-Handed" }
+            { label: "Weapon 4", sub: "Two-Handed"             }
         ]
     },
     druid: {
-        leftSlots:  [{ label: "Weapon", sub: "Staff or One-Handed" }],
-        rightSlots: [{ label: "Offhand", sub: "Totem" }]
+        leftSlots:  [{ label: "Weapon",  sub: "Staff or One-Handed" }],
+        rightSlots: [{ label: "Offhand", sub: "Totem"               }]
     },
     necromancer: {
-        leftSlots:  [{ label: "Weapon", sub: "One-Handed or Two-Handed" }],
-        rightSlots: [{ label: "Offhand", sub: "Focus (if 1H)" }]
+        leftSlots:  [{ label: "Weapon",  sub: "One-Handed or Two-Handed" }],
+        rightSlots: [{ label: "Offhand", sub: "Focus (if 1H)"            }]
     },
     rogue: {
-        leftSlots:  [{ label: "Weapon 1", sub: "One-Handed" }],
+        leftSlots:  [{ label: "Weapon 1", sub: "One-Handed"        }],
         rightSlots: [{ label: "Weapon 2", sub: "One-Handed or Bow" }]
     },
     sorcerer: {
-        leftSlots:  [{ label: "Weapon", sub: "Wand or Staff" }],
-        rightSlots: [{ label: "Offhand", sub: "Focus (if Wand)" }]
+        leftSlots:  [{ label: "Weapon",  sub: "Wand or Staff"    }],
+        rightSlots: [{ label: "Offhand", sub: "Focus (if Wand)"  }]
     },
     paladin: {
-        leftSlots:  [{ label: "Weapon", sub: "Two-Handed" }],
-        rightSlots: [{ label: "Offhand", sub: "Offhand" }]
+        leftSlots:  [{ label: "Weapon",  sub: "Two-Handed" }],
+        rightSlots: [{ label: "Offhand", sub: "Offhand"    }]
     },
     warlock: {
-        leftSlots:  [{ label: "Weapon", sub: "Two-Handed" }],
-        rightSlots: [{ label: "Offhand", sub: "Offhand" }]
+        leftSlots:  [{ label: "Weapon",  sub: "Two-Handed" }],
+        rightSlots: [{ label: "Offhand", sub: "Offhand"    }]
     }
 };
 
-// ── APP STATE ─────────────────────────────────────────────────
-const AppState = {
-    activeClass:   "spiritborn",
-    focusedCard:   null,
-    // affixSelections: { [slotId]: { slot1, slot2, slot3, slot4 } }
-    affixSelections: {},
-    // itemNames: { [slotId]: string }
-    itemNames: {}
-};
-
-// ── STATIC SLOT IDS ───────────────────────────────────────────
+// ── STATIC SLOT LIST ──────────────────────────────────────────
 const STATIC_SLOTS = [
     { id: "helm",       label: "Helm"        },
     { id: "chest",      label: "Chest Armor" },
@@ -106,19 +195,27 @@ const STATIC_SLOTS = [
     { id: "ring-right", label: "Right Ring"  }
 ];
 
-// ── INITIALISE SLOT STATE ─────────────────────────────────────
+// ── APP STATE ─────────────────────────────────────────────────
+const AppState = {
+    activeClass:      "spiritborn",
+    focusedCard:      null,
+    affixSelections:  {},   // { [slotId]: { slot1, slot2, slot3, slot4 } }
+    itemSelections:   {}    // { [slotId]: { name, tier } | null }
+};
+
+// ── SLOT STATE INIT ───────────────────────────────────────────
 function initSlotState(slotId) {
     if (!AppState.affixSelections[slotId]) {
         AppState.affixSelections[slotId] = {
             slot1: null, slot2: null, slot3: null, slot4: null
         };
     }
-    if (!AppState.itemNames[slotId]) {
-        AppState.itemNames[slotId] = "Select Item";
+    if (!AppState.itemSelections[slotId]) {
+        AppState.itemSelections[slotId] = null;
     }
 }
 
-// ── RENDER AFFIX ROWS FOR A CARD ──────────────────────────────
+// ── RENDER AFFIX ROWS ─────────────────────────────────────────
 function renderAffixRows(slotId) {
     initSlotState(slotId);
     const container = document.getElementById(`affixes-${slotId}`);
@@ -126,8 +223,9 @@ function renderAffixRows(slotId) {
     container.innerHTML = "";
 
     for (let i = 1; i <= 5; i++) {
+        const isTemper = i === 5;
         const row = document.createElement("div");
-        row.className = "affix-row" + (i === 5 ? " placeholder" : "");
+        row.className = "affix-row" + (isTemper ? " temper-slot" : "");
 
         const num = document.createElement("span");
         num.className = "affix-num";
@@ -137,23 +235,20 @@ function renderAffixRows(slotId) {
         sel.className = "affix-select";
         sel.id = `affix-${slotId}-${i}`;
 
-        if (i === 5) {
-            // Slot 5 is a styled non-functional placeholder
+        if (isTemper) {
             sel.disabled = true;
             const opt = document.createElement("option");
-            opt.textContent = "— Future Expansion —";
+            opt.textContent = "Temper Slot";
             sel.appendChild(opt);
         } else {
-            // Functional slots 1–4
             const currentVal = AppState.affixSelections[slotId][`slot${i}`];
 
-            const placeholder = document.createElement("option");
-            placeholder.value = "";
-            placeholder.textContent = "Select Affix…";
-            sel.appendChild(placeholder);
+            const phOpt = document.createElement("option");
+            phOpt.value = "";
+            phOpt.textContent = "Select Affix…";
+            sel.appendChild(phOpt);
 
             if (currentVal) {
-                // Re-populate the saved value so it survives re-renders
                 const opt = document.createElement("option");
                 opt.value = currentVal;
                 opt.textContent = currentVal;
@@ -162,7 +257,6 @@ function renderAffixRows(slotId) {
                 sel.classList.add("has-value");
             }
 
-            // Clicking opens the affix category modal
             sel.addEventListener("mousedown", (e) => {
                 e.preventDefault();
                 openAffixModal(slotId, i);
@@ -177,30 +271,30 @@ function renderAffixRows(slotId) {
 
 // ── BUILD ALL STATIC CARDS ────────────────────────────────────
 function buildStaticCards() {
-    STATIC_SLOTS.forEach(({ id }) => renderAffixRows(id));
+    STATIC_SLOTS.forEach(({ id }) => {
+        initSlotState(id);
+        renderAffixRows(id);
+        updateItemNameDisplay(id);
+    });
 }
 
-// ── WEAPON SLOT MANAGEMENT ────────────────────────────────────
+// ── WEAPON SLOTS ──────────────────────────────────────────────
 function buildWeaponSlots(className) {
-    const config = CLASS_WEAPONS[className] || CLASS_WEAPONS.spiritborn;
+    const config    = CLASS_WEAPONS[className] || CLASS_WEAPONS.spiritborn;
     const leftMount  = document.getElementById("left-weapon-mounts");
     const rightMount = document.getElementById("right-weapon-mounts");
     leftMount.innerHTML  = "";
     rightMount.innerHTML = "";
 
-    // Remove old weapon slot state so fresh slots start clean
-    Object.keys(AppState.affixSelections).forEach(key => {
-        if (key.startsWith("weapon-")) delete AppState.affixSelections[key];
-    });
-    Object.keys(AppState.itemNames).forEach(key => {
-        if (key.startsWith("weapon-")) delete AppState.itemNames[key];
-    });
+    // Clear old weapon state
+    Object.keys(AppState.affixSelections).forEach(k => { if (k.startsWith("weapon-")) delete AppState.affixSelections[k]; });
+    Object.keys(AppState.itemSelections).forEach(k  => { if (k.startsWith("weapon-")) delete AppState.itemSelections[k];  });
 
-    let weaponIndex = 0;
+    let idx = 0;
 
     function mountWeaponCard(slot, mountEl) {
-        const slotId = `weapon-${weaponIndex}`;
-        weaponIndex++;
+        const slotId = `weapon-${idx}`;
+        idx++;
         initSlotState(slotId);
 
         const card = document.createElement("div");
@@ -210,15 +304,14 @@ function buildWeaponSlots(className) {
         card.onclick = () => focusCard(slotId);
 
         card.innerHTML = `
-            <div class="card-slot-label">${slot.label}</div>
+            <div class="card-slot-label">${slot.label}<span style="color:var(--text-hint);font-weight:400;margin-left:6px;font-size:10px;">${slot.sub}</span></div>
             <div class="card-item-name" id="name-${slotId}">
-                <span id="name-text-${slotId}">${AppState.itemNames[slotId]}</span>
+                <span id="name-text-${slotId}">Select Item</span>
                 <span class="name-chevron">▾</span>
             </div>
             <div class="affix-list" id="affixes-${slotId}"></div>
         `;
 
-        // Bind item modal to the name row after insertion
         mountEl.appendChild(card);
 
         document.getElementById(`name-${slotId}`).addEventListener("click", (e) => {
@@ -233,35 +326,54 @@ function buildWeaponSlots(className) {
     config.rightSlots.forEach(slot => mountWeaponCard(slot, rightMount));
 }
 
+// ── ITEM NAME DISPLAY ─────────────────────────────────────────
+function updateItemNameDisplay(slotId) {
+    const nameEl     = document.getElementById(`name-${slotId}`);
+    const nameTextEl = document.getElementById(`name-text-${slotId}`);
+    if (!nameEl || !nameTextEl) return;
+
+    const selection = AppState.itemSelections[slotId];
+
+    // Reset tier classes
+    nameEl.classList.remove("is-legendary", "is-mythic");
+
+    if (!selection) {
+        nameTextEl.textContent = "Select Item";
+        return;
+    }
+
+    nameTextEl.textContent = selection.name;
+
+    if (selection.tier === "legendary") {
+        nameEl.classList.add("is-legendary");
+    } else if (selection.tier === "mythic") {
+        nameEl.classList.add("is-mythic");
+    }
+}
+
 // ── CLASS CHANGE ──────────────────────────────────────────────
 function handleClassChange(className) {
     AppState.activeClass = className;
-
-    // If focused card was a weapon slot, clear focus
-    if (AppState.focusedCard && AppState.focusedCard.startsWith("weapon-")) {
+    if (AppState.focusedCard?.startsWith("weapon-")) {
         AppState.focusedCard = null;
         updateCraftPanel();
     }
-
     buildWeaponSlots(className);
 }
 
 // ── CARD FOCUS ────────────────────────────────────────────────
 function focusCard(slotId) {
-    // Deactivate previously focused card
     if (AppState.focusedCard) {
         const prev = document.getElementById(`card-${AppState.focusedCard}`);
         if (prev) prev.classList.remove("focused");
     }
-
     AppState.focusedCard = slotId;
     const card = document.getElementById(`card-${slotId}`);
     if (card) card.classList.add("focused");
-
     updateCraftPanel();
 }
 
-// ── CRAFT PANEL UPDATE ────────────────────────────────────────
+// ── CRAFT PANEL ───────────────────────────────────────────────
 function updateCraftPanel() {
     const labelEl   = document.getElementById("craft-slot-label");
     const resultsEl = document.getElementById("craft-results");
@@ -272,39 +384,36 @@ function updateCraftPanel() {
         return;
     }
 
-    const slotId    = AppState.focusedCard;
-    const itemName  = AppState.itemNames[slotId] || "Select Item";
-    const slotLabel = getSlotLabel(slotId);
+    const slotId     = AppState.focusedCard;
+    const slotLabel  = getSlotLabel(slotId);
+    const selection  = AppState.itemSelections[slotId];
+    const itemSuffix = selection ? ` — ${selection.name}` : "";
 
-    labelEl.textContent = `↳ ${slotLabel}${itemName !== "Select Item" ? " — " + itemName : ""}`;
+    labelEl.textContent = `↳ ${slotLabel}${itemSuffix}`;
 
-    const selections = AppState.affixSelections[slotId] || {};
-    const chosen = [selections.slot1, selections.slot2, selections.slot3, selections.slot4]
-        .filter(Boolean);
+    const picks = AppState.affixSelections[slotId] || {};
+    const chosen = [picks.slot1, picks.slot2, picks.slot3, picks.slot4].filter(Boolean);
 
     if (chosen.length === 0) {
-        resultsEl.innerHTML = `<div class="craft-empty">No affixes selected for this slot.<br>Click an affix row to choose one.</div>`;
+        resultsEl.innerHTML = `<div class="craft-empty">No affixes selected.<br>Click an affix row to choose one.</div>`;
         return;
     }
 
     resultsEl.innerHTML = "";
-
     chosen.forEach(affix => {
-        const matchedPrism = findPrismForAffix(affix);
-
-        const row = document.createElement("div");
-        row.className = "result-row";
+        const prismKey = findPrismForAffix(affix);
+        const row      = document.createElement("div");
+        row.className  = "result-row";
 
         const nameSpan = document.createElement("span");
-        nameSpan.className = "result-affix-name";
+        nameSpan.className   = "result-affix-name";
         nameSpan.textContent = affix;
 
         const badge = document.createElement("span");
         badge.className = "prism-badge";
-
-        if (matchedPrism) {
-            badge.classList.add(PRISM_BADGE_CLASS[matchedPrism] || "badge-none");
-            badge.textContent = PRISM_DISPLAY_NAME[matchedPrism] || matchedPrism;
+        if (prismKey) {
+            badge.classList.add(PRISM_BADGE_CLASS[prismKey] || "badge-none");
+            badge.textContent = PRISM_DISPLAY_NAME[prismKey] || prismKey;
         } else {
             badge.classList.add("badge-none");
             badge.textContent = "No Prism";
@@ -318,8 +427,8 @@ function updateCraftPanel() {
 
 // ── PRISM LOOKUP ──────────────────────────────────────────────
 function findPrismForAffix(affixName) {
-    for (const [prismKey, affixList] of Object.entries(window.PrismRegistry)) {
-        if (affixList.includes(affixName)) return prismKey;
+    for (const [key, list] of Object.entries(window.PrismRegistry)) {
+        if (list.includes(affixName)) return key;
     }
     return null;
 }
@@ -329,10 +438,10 @@ function getSlotLabel(slotId) {
     const found = STATIC_SLOTS.find(s => s.id === slotId);
     if (found) return found.label;
     if (slotId.startsWith("weapon-")) {
-        const idx = parseInt(slotId.replace("weapon-", ""), 10);
+        const idx    = parseInt(slotId.replace("weapon-", ""), 10);
         const config = CLASS_WEAPONS[AppState.activeClass];
-        const all = [...(config.leftSlots || []), ...(config.rightSlots || [])];
-        return all[idx] ? all[idx].label : "Weapon";
+        const all    = [...(config.leftSlots || []), ...(config.rightSlots || [])];
+        return all[idx]?.label || "Weapon";
     }
     return slotId;
 }
@@ -342,22 +451,21 @@ function getSlotLabel(slotId) {
 // ══════════════════════════════════════════════════════════════
 
 let affixModalState = {
-    slotId:     null,
-    slotIndex:  null,
-    activeCategory: CATEGORY_MAP[0].key
+    slotId:         null,
+    slotIndex:      null,
+    activeCategory: AFFIX_CATEGORY_MAP[0].key
 };
 
 function openAffixModal(slotId, slotIndex) {
-    affixModalState.slotId    = slotId;
-    affixModalState.slotIndex = slotIndex;
-    affixModalState.activeCategory = CATEGORY_MAP[0].key;
+    affixModalState.slotId         = slotId;
+    affixModalState.slotIndex      = slotIndex;
+    affixModalState.activeCategory = AFFIX_CATEGORY_MAP[0].key;
 
     document.getElementById("affix-modal-title").textContent =
         `Affix Slot ${slotIndex} — ${getSlotLabel(slotId)}`;
 
-    renderModalCategories();
-    renderModalAffixes();
-
+    renderAffixModalCategories();
+    renderAffixModalList();
     document.getElementById("affix-modal").classList.add("open");
 }
 
@@ -369,32 +477,31 @@ function handleModalOverlayClick(e) {
     if (e.target.id === "affix-modal") closeAffixModal();
 }
 
-function renderModalCategories() {
+function renderAffixModalCategories() {
     const container = document.getElementById("modal-category-list");
     container.innerHTML = "";
-
-    CATEGORY_MAP.forEach(({ label, key }) => {
+    AFFIX_CATEGORY_MAP.forEach(({ label, key }) => {
         const btn = document.createElement("button");
         btn.className = "modal-cat-btn" + (key === affixModalState.activeCategory ? " active" : "");
         btn.textContent = label;
         btn.onclick = () => {
             affixModalState.activeCategory = key;
-            renderModalCategories();
-            renderModalAffixes();
+            renderAffixModalCategories();
+            renderAffixModalList();
         };
         container.appendChild(btn);
     });
 }
 
-function renderModalAffixes() {
-    const container = document.getElementById("modal-affix-list");
+function renderAffixModalList() {
+    const container  = document.getElementById("modal-affix-list");
     container.innerHTML = "";
+    const currentVal = AppState.affixSelections[affixModalState.slotId]?.[`slot${affixModalState.slotIndex}`];
+    const affixList  = window.PrismRegistry[affixModalState.activeCategory] || [];
 
-    const affixList = window.PrismRegistry[affixModalState.activeCategory] || [];
-
-    // "Clear" option at top
+    // Clear option
     const clearBtn = document.createElement("button");
-    clearBtn.className = "modal-affix-btn";
+    clearBtn.className   = "modal-affix-btn";
     clearBtn.textContent = "— Clear Selection —";
     clearBtn.style.color = "var(--text-secondary)";
     clearBtn.onclick = () => selectAffix(null);
@@ -402,17 +509,9 @@ function renderModalAffixes() {
 
     affixList.forEach(affix => {
         const btn = document.createElement("button");
-        btn.className = "modal-affix-btn";
+        btn.className   = "modal-affix-btn" + (affix === currentVal ? " selected" : "");
         btn.textContent = affix;
-
-        // Highlight if already selected in this slot
-        const currentVal = AppState.affixSelections[affixModalState.slotId]?.[`slot${affixModalState.slotIndex}`];
-        if (affix === currentVal) {
-            btn.style.color = "#6ab0ff";
-            btn.style.background = "var(--bg-card-hover)";
-        }
-
-        btn.onclick = () => selectAffix(affix);
+        btn.onclick     = () => selectAffix(affix);
         container.appendChild(btn);
     });
 }
@@ -424,20 +523,20 @@ function selectAffix(affixValue) {
     initSlotState(slotId);
     AppState.affixSelections[slotId][`slot${slotIndex}`] = affixValue;
 
-    // Update the select element text to show chosen value
+    // Update the select element
     const sel = document.getElementById(`affix-${slotId}-${slotIndex}`);
     if (sel) {
         sel.innerHTML = "";
         if (affixValue) {
-            const opt = document.createElement("option");
-            opt.value = affixValue;
+            const opt      = document.createElement("option");
+            opt.value      = affixValue;
             opt.textContent = affixValue;
-            opt.selected = true;
+            opt.selected   = true;
             sel.appendChild(opt);
             sel.classList.add("has-value");
         } else {
-            const opt = document.createElement("option");
-            opt.value = "";
+            const opt       = document.createElement("option");
+            opt.value       = "";
             opt.textContent = "Select Affix…";
             sel.appendChild(opt);
             sel.classList.remove("has-value");
@@ -445,45 +544,29 @@ function selectAffix(affixValue) {
     }
 
     closeAffixModal();
-
-    // Refresh craft panel if this card is focused
     if (AppState.focusedCard === slotId) updateCraftPanel();
 }
 
 // ══════════════════════════════════════════════════════════════
-//  ITEM MODAL
+//  ITEM MODAL  (two-step: tier → category+list)
 // ══════════════════════════════════════════════════════════════
 
-let itemModalState = { slotId: null };
+let itemModalState = {
+    slotId:          null,
+    selectedTier:    null,   // "legendary" | "mythic"
+    activeCategory:  null
+};
 
 function openItemModal(slotId, event) {
     if (event) event.stopPropagation();
-    itemModalState.slotId = slotId;
+    itemModalState.slotId       = slotId;
+    itemModalState.selectedTier = null;
+    itemModalState.activeCategory = null;
 
     document.getElementById("item-modal-title").textContent =
         `Select Item — ${getSlotLabel(slotId)}`;
 
-    const listEl = document.getElementById("item-modal-list");
-    listEl.innerHTML = "";
-
-    // Use slot-specific items if available, else generic weapon list
-    const items = window.ItemRegistry?.[slotId]
-        || window.ItemRegistry?.["weapon-0"]
-        || [{ name: "Select Item", tier: null }];
-
-    items.forEach(item => {
-        const btn = document.createElement("button");
-        btn.className = "item-modal-btn";
-
-        if (item.tier === "legendary") btn.classList.add("tier-legendary");
-        else if (item.tier === "mythic") btn.classList.add("tier-mythic");
-        else btn.style.color = "var(--text-secondary)";
-
-        btn.textContent = item.name;
-        btn.onclick = () => selectItem(item.name);
-        listEl.appendChild(btn);
-    });
-
+    showItemTierStep();
     document.getElementById("item-modal").classList.add("open");
 }
 
@@ -495,35 +578,172 @@ function handleItemModalOverlayClick(e) {
     if (e.target.id === "item-modal") closeItemModal();
 }
 
-function selectItem(itemName) {
+// Step 1 — Tier picker
+function showItemTierStep() {
+    document.getElementById("item-step-tier").style.display   = "flex";
+    document.getElementById("item-step-browse").style.display = "none";
+
+    const tierEl = document.getElementById("item-step-tier");
+    tierEl.innerHTML = "";
+
+    const label = document.createElement("div");
+    label.className   = "tier-pick-label";
+    label.textContent = "Choose item tier";
+    tierEl.appendChild(label);
+
+    const legBtn = document.createElement("button");
+    legBtn.className = "tier-btn legendary";
+    legBtn.innerHTML = `Legendary <span class="tier-btn-sub">Aspects — slot-filtered by item type</span>`;
+    legBtn.onclick = () => showItemBrowseStep("legendary");
+    tierEl.appendChild(legBtn);
+
+    const mythBtn = document.createElement("button");
+    mythBtn.className = "tier-btn mythic";
+    mythBtn.innerHTML = `Mythic <span class="tier-btn-sub">Unique items — slot-locked</span>`;
+    mythBtn.onclick = () => showItemBrowseStep("mythic");
+    tierEl.appendChild(mythBtn);
+
+    // Clear option
+    const clearBtn = document.createElement("button");
+    clearBtn.className   = "tier-btn-clear";
+    clearBtn.textContent = "✕  Clear item selection";
+    clearBtn.onclick     = () => { selectItem(null); };
+    tierEl.appendChild(clearBtn);
+}
+
+// Step 2 — Category + item list
+function showItemBrowseStep(tier) {
+    itemModalState.selectedTier = tier;
+    document.getElementById("item-step-tier").style.display   = "none";
+    document.getElementById("item-step-browse").style.display = "flex";
+
+    const slotId = itemModalState.slotId;
+    const config = getSlotConfig(slotId);
+
+    if (tier === "mythic") {
+        // Mythics have no category split — show all slot-eligible mythics directly
+        renderItemBrowseCats([]);
+        renderMythicList(slotId);
+    } else {
+        // Legendary: category sidebar filtered by SLOT_CONFIG.aspectCategories
+        const allowedCats = ASPECT_CATEGORY_MAP.filter(c =>
+            config.aspectCategories.includes(c.key)
+        );
+        itemModalState.activeCategory = allowedCats[0]?.key || null;
+        renderItemBrowseCats(allowedCats);
+        renderAspectList(slotId, itemModalState.activeCategory);
+    }
+}
+
+// Category sidebar for legendary step
+function renderItemBrowseCats(cats) {
+    const catsEl = document.getElementById("item-modal-cats");
+    catsEl.innerHTML = "";
+
+    // Back button always at top
+    const backBtn = document.createElement("button");
+    backBtn.className   = "modal-cat-btn";
+    backBtn.style.borderBottom = "1px solid var(--border-dim)";
+    backBtn.innerHTML   = "‹ Back";
+    backBtn.onclick     = showItemTierStep;
+    catsEl.appendChild(backBtn);
+
+    cats.forEach(({ label, key }) => {
+        const btn = document.createElement("button");
+        btn.className   = "modal-cat-btn" + (key === itemModalState.activeCategory ? " active" : "");
+        btn.textContent = label;
+        btn.onclick = () => {
+            itemModalState.activeCategory = key;
+            renderItemBrowseCats(cats);
+            renderAspectList(itemModalState.slotId, key);
+        };
+        catsEl.appendChild(btn);
+    });
+}
+
+// Aspect list for selected category
+function renderAspectList(slotId, categoryKey) {
+    const listEl = document.getElementById("item-modal-list");
+    listEl.innerHTML = "";
+
+    const aspects = (window.AspectRegistry[categoryKey] || []).filter(aspect => {
+        // Filter aspects to those eligible for this slot
+        // Each aspect entry: { name, slots[] } or just a string
+        if (typeof aspect === "string") return true;
+        if (!aspect.slots || aspect.slots.length === 0) return true;
+        return aspect.slots.includes(slotId);
+    });
+
+    if (aspects.length === 0) {
+        const empty = document.createElement("div");
+        empty.style.cssText = "padding:20px 16px;color:var(--text-hint);font-style:italic;font-size:12px;";
+        empty.textContent   = "No aspects available for this slot.";
+        listEl.appendChild(empty);
+        return;
+    }
+
+    aspects.forEach(aspect => {
+        const name = typeof aspect === "string" ? aspect : aspect.name;
+        const btn  = document.createElement("button");
+        btn.className   = "item-modal-btn tier-legendary";
+        btn.textContent = name;
+        btn.onclick     = () => selectItem({ name, tier: "legendary" });
+        listEl.appendChild(btn);
+    });
+}
+
+// Mythic list — filtered to this slot
+function renderMythicList(slotId) {
+    const listEl = document.getElementById("item-modal-list");
+    listEl.innerHTML = "";
+
+    // Back button in cats panel
+    const catsEl = document.getElementById("item-modal-cats");
+    catsEl.innerHTML = "";
+    const backBtn = document.createElement("button");
+    backBtn.className   = "modal-cat-btn";
+    backBtn.innerHTML   = "‹ Back";
+    backBtn.onclick     = showItemTierStep;
+    catsEl.appendChild(backBtn);
+
+    // Gather mythics eligible for this slot
+    // MythicRegistry entries: { name, slot } or { name, slots[] }
+    const all     = window.MythicRegistry || {};
+    const matched = [];
+
+    Object.values(all).flat().forEach(item => {
+        if (!item || !item.name) return;
+        const itemSlots = item.slots || (item.slot ? [item.slot] : []);
+        if (itemSlots.length === 0 || itemSlots.includes(slotId)) {
+            matched.push(item.name);
+        }
+    });
+
+    if (matched.length === 0) {
+        const empty = document.createElement("div");
+        empty.style.cssText = "padding:20px 16px;color:var(--text-hint);font-style:italic;font-size:12px;";
+        empty.textContent   = "No mythic items available for this slot.";
+        listEl.appendChild(empty);
+        return;
+    }
+
+    matched.forEach(name => {
+        const btn = document.createElement("button");
+        btn.className   = "item-modal-btn tier-mythic";
+        btn.textContent = name;
+        btn.onclick     = () => selectItem({ name, tier: "mythic" });
+        listEl.appendChild(btn);
+    });
+}
+
+// Commit item selection
+function selectItem(itemObj) {
     const { slotId } = itemModalState;
     if (!slotId) return;
 
-    AppState.itemNames[slotId] = itemName;
-
-    // Update the name display on the card
-    const nameTextEl = document.getElementById(`name-text-${slotId}`);
-    if (nameTextEl) {
-        nameTextEl.textContent = itemName;
-        // Colour based on what was selected
-        const parentEl = nameTextEl.closest(".card-item-name");
-        if (parentEl) {
-            if (itemName === "Select Item") {
-                parentEl.style.color = "";
-            } else {
-                // Check tier from registry
-                const registry = window.ItemRegistry?.[slotId] || [];
-                const found = registry.find(i => i.name === itemName);
-                if (found?.tier === "mythic")    parentEl.style.color = "#e090ff";
-                else if (found?.tier === "legendary") parentEl.style.color = "";
-                else parentEl.style.color = "";
-            }
-        }
-    }
-
+    AppState.itemSelections[slotId] = itemObj;
+    updateItemNameDisplay(slotId);
     closeItemModal();
-
-    // Refresh craft panel label if this card is focused
     if (AppState.focusedCard === slotId) updateCraftPanel();
 }
 
@@ -533,15 +753,11 @@ function selectItem(itemName) {
 
 function switchTab(tabName) {
     document.querySelectorAll(".tab-page").forEach(p => p.classList.remove("active"));
-    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-
+    document.querySelectorAll(".tab-btn").forEach(b => {
+        b.classList.toggle("active", b.getAttribute("onclick")?.includes(tabName));
+    });
     const page = document.getElementById(`tab-${tabName}`);
     if (page) page.classList.add("active");
-
-    const btns = document.querySelectorAll(".tab-btn");
-    btns.forEach(b => {
-        if (b.getAttribute("onclick")?.includes(tabName)) b.classList.add("active");
-    });
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -551,8 +767,6 @@ function switchTab(tabName) {
 document.addEventListener("DOMContentLoaded", () => {
     buildStaticCards();
     buildWeaponSlots(AppState.activeClass);
-
-    // Set initial class selector to match state
     const classSelect = document.getElementById("class-select-dropdown");
     if (classSelect) classSelect.value = AppState.activeClass;
 });
