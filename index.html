@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D4 Horadric Cube Tuning Prism Planner</title>
+    <style>
+        :root {
+            --bg-dark: #0b0b0d;
+            --panel-bg: #141519;
+            --panel-border: #2c2e35;
+            --text-main: #d1d4dc;
+            --text-gold: #f3ca40;
+            --accent-red: #9e2a2b;
+            --slot-active: #f3ca40;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--panel-border);
+            padding-bottom: 15px;
+        }
+
+        header h1 {
+            color: var(--text-gold);
+            margin: 0 0 5px 0;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        header p {
+            margin: 0;
+            color: #8a8f9d;
+            font-size: 0.95rem;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* RPG Character Sheet Armor Mockup Grid */
+        .character-grid {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 6px;
+            padding: 25px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            align-content: start;
+        }
+
+        .gear-slot {
+            background: #1c1d24;
+            border: 1px solid #3a3d4a;
+            border-radius: 4px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            color: #a3a8b4;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+        }
+
+        .gear-slot:hover {
+            border-color: #5a5f73;
+            background: #23252e;
+            color: #fff;
+        }
+
+        .gear-slot.active {
+            border-color: var(--slot-active);
+            box-shadow: inset 0 0 10px rgba(243, 202, 64, 0.15);
+            color: var(--text-gold);
+        }
+
+        /* Control Panel Styles */
+        .control-panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 6px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel-heading {
+            border-bottom: 1px solid var(--panel-border);
+            padding-bottom: 10px;
+            margin: 0;
+        }
+
+        .panel-heading span {
+            color: var(--text-gold);
+        }
+
+        .dropdown-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .dropdown-wrapper label {
+            font-size: 0.85rem;
+            color: #8a8f9d;
+            font-weight: 600;
+        }
+
+        select {
+            background: #1c1d24;
+            color: var(--text-main);
+            border: 1px solid #3a3d4a;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            outline: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        select:focus {
+            border-color: var(--text-gold);
+        }
+
+        /* Tuning Prism Readout Output */
+        .results-panel {
+            margin-top: 10px;
+            background: #18191f;
+            border: 1px solid #252730;
+            border-radius: 4px;
+            padding: 20px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #23252e;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .affix-target {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* Tuning Prism Badges colors */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-aggressive { background: #5f1d1d; color: #ff9e9e; border: 1px solid #9e2a2b; }
+        .badge-protector { background: #1b3a4b; color: #9ed7ff; border: 1px solid #2a6f97; }
+        .badge-pragmatic { background: #37284b; color: #e2bfff; border: 1px solid #6441a5; }
+        .badge-resourceful { background: #1e3f20; color: #aeffb4; border: 1px solid #2b9e3e; }
+        .badge-adept { background: #523d1c; color: #ffe69e; border: 1px solid #9e782b; }
+        .badge-none { background: #2c2e35; color: #a3a8b4; border: 1px solid #454954; }
+
+        .empty-notice {
+            color: #626775;
+            font-style: italic;
+            text-align: center;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Horadric Cube Prism Planner</h1>
+        <p>Target item stats to isolate your precise Tuning Prism crafting loops</p>
+    </header>
+
+    <main class="main-layout">
+        <!-- Armor Grid Layout -->
+        <section class="character-grid" id="armor-grid">
+            <div class="gear-slot" id="slot-helm" onclick="selectGearPiece('helm')">Helm</div>
+            <div class="gear-slot" id="slot-amulet" onclick="selectGearPiece('amulet')">Amulet</div>
+            <div class="gear-slot" id="slot-chest" onclick="selectGearPiece('chest')">Chest Armor</div>
+            <div class="gear-slot" id="slot-gloves" onclick="selectGearPiece('gloves')">Gloves</div>
+            <div class="gear-slot" id="slot-pants" onclick="selectGearPiece('pants')">Pants</div>
+            <div class="gear-slot" id="slot-boots" onclick="selectGearPiece('boots')">Boots</div>
+            <div class="gear-slot" id="slot-weapon-main" onclick="selectGearPiece('main-hand')">Main Weapon</div>
+            <div class="gear-slot" id="slot-weapon-off" onclick="selectGearPiece('off-hand')">Off Hand / Ring 1</div>
+        </section>
+
+        <!-- Dropdown Selections & Results Side Panel -->
+        <section class="control-panel">
+            <h2 class="panel-heading">Modifying: <span id="active-gear-title">Select Gear</span></h2>
+            
+            <div id="affix-dropdowns-container">
+                <!-- Dropdown arrays are dynamically rendered here by app.js -->
+            </div>
+
+            <div class="results-panel">
+                <h3 style="margin-top:0; font-size:1rem; color:#8a8f9d; text-transform:uppercase;">Required Materials</h3>
+                <div id="prism-results-output">
+                    <p class="empty-notice">Select a piece of gear and assign target affixes to reveal required Tuning Prisms.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Core App Data Modules Scripts -->
+    <script src="aggressive.js"></script>
+    <script src="protector.js"></script>
+    <script src="pragmatic.js"></script>
+    <script src="resourceful.js"></script>
+    <script src="adept.js"></script>
+    <!-- Core Engine Scripts -->
+    <script src="app.js"></script>
+
+</body>
+</html>
