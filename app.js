@@ -33,7 +33,8 @@ const PRISM_BADGE_CLASS = {
     protectorPrism:   "badge-protector",
     pragmaticPrism:   "badge-pragmatic",
     resourcefulPrism: "badge-resourceful",
-    adeptPrism:       "badge-adept"
+    adeptPrism:       "badge-adept",
+    chromaticPrism:   "badge-chromatic"
 };
 
 const PRISM_DISPLAY_NAME = {
@@ -41,7 +42,8 @@ const PRISM_DISPLAY_NAME = {
     protectorPrism:   "Protector",
     pragmaticPrism:   "Pragmatic",
     resourcefulPrism: "Resourceful",
-    adeptPrism:       "Adept"
+    adeptPrism:       "Adept",
+    chromaticPrism:   "Chromatic"
 };
 
 
@@ -64,7 +66,8 @@ const AFFIX_CATEGORY_MAP = [
     { label: "Defensive",  key: "protectorPrism"   },
     { label: "Utility",    key: "pragmaticPrism"   },
     { label: "Resource",   key: "resourcefulPrism" },
-    { label: "Core Stats", key: "adeptPrism"       }
+    { label: "Core Stats", key: "adeptPrism"       },
+    { label: "Elemental",  key: "chromaticPrism"  }
 ];
 
 // ── ASPECT CATEGORY MAP ───────────────────────────────────────
@@ -442,12 +445,13 @@ function flattenPrismData(data) {
     if (Array.isArray(data)) return data;
     if (typeof data === "object") {
         const cls = AppState.activeClass;
-        const primaryStat = CLASS_PRIMARY_STAT[cls];
+        // stats can be an object keyed by class (adept) or use CLASS_PRIMARY_STAT map
+        const primaryStat = data.stats?.[cls] || CLASS_PRIMARY_STAT[cls];
         return [
             ...(primaryStat ? [primaryStat] : []),
-            ...(data.universal       || []),
-            ...(data.classskills?.[cls]    || []),
-            ...(data.classresource?.[cls]  || [])
+            ...(data.universal            || []),
+            ...(data.classskills?.[cls]   || []),
+            ...(data.classresource?.[cls] || [])
         ];
     }
     return [];

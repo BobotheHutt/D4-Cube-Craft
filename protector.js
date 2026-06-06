@@ -1,21 +1,20 @@
 // ══════════════════════════════════════════════════════════════
-//  protector.js  —  Defensive Tuning Prism affix pool
+//  protector.js  —  Protector's Tuning Prism affix pool
 //  UI Label: "Defensive"
-//  Source: In-game Tuning Prism screen (Barbarian, Season 7+)
+//  Source: In-game prism reference screenshot
+//  Note: Individual resistances also roll on Chromatic prism
 // ══════════════════════════════════════════════════════════════
 registerPrismBucket("protectorPrism", [
     "Maximum Life",
-    "Life Regeneration",
-    "Life On Hit",
-    "Life On Kill",
     "Armor",
-    "Resistance to All Elements",
+    "All Elemental Resistance",
     "Fire Resistance",
     "Cold Resistance",
     "Lightning Resistance",
     "Poison Resistance",
     "Shadow Resistance",
     "Physical Resistance",
-    "Damage Reduction",
-    "Dodge Chance"
+    "Dodge Chance",
+    "Life on Kill",
+    "Life on Hit"
 ]);

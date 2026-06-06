@@ -1,20 +1,24 @@
 // ══════════════════════════════════════════════════════════════
-//  aggressive.js  —  Offensive Tuning Prism affix pool
+//  aggressive.js  —  Aggressive Tuning Prism affix pool
 //  UI Label: "Offensive"
-//  Source: In-game Tuning Prism screen (Barbarian, Season 7+)
+//  Source: In-game prism reference screenshot
 // ══════════════════════════════════════════════════════════════
 registerPrismBucket("aggressivePrism", [
+    "Core Stat",
     "Weapon Damage",
-    "Strength",
     "Thorns",
     "All Damage Multiplier",
-    "Attack Speed",
-    "Critical Strike Chance",
-    "Critical Strike Damage Multiplier",
-    "Vulnerable Damage Multiplier",
+    "Any Element Damage Multiplier",
     "Damage Over Time Multiplier",
+    "Critical Strike Damage Multiplier",
+    "Critical Strike Chance",
+    "Attack Speed",
+    "Vulnerable Damage Multiplier",
+    // Element-specific multipliers (any can roll here)
     "Fire Damage Multiplier",
+    "Cold Damage Multiplier",
+    "Lightning Damage Multiplier",
+    "Poison Damage Multiplier",
+    "Shadow Damage Multiplier",
     "Physical Damage Multiplier"
-    // NOTE: Other damage type multipliers (Cold, Lightning, Poison, Shadow)
-    // likely appear here for other classes — add as confirmed per class screenshot
 ]);

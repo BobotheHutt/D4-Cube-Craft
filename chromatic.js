@@ -1,14 +1,15 @@
 // ══════════════════════════════════════════════════════════════
-//  resourceful.js  —  Resourceful Tuning Prism affix pool
-//  UI Label: "Resource"
+//  chromatic.js  —  Chromatic Tuning Prism affix pool
+//  UI Label: "Elemental"
 //  Source: In-game prism reference screenshot
-//  Universal — no class-specific entries confirmed
+//  Note: Individual resistances also roll on Protector's prism
+//  All Elemental Resistance does NOT roll here — Protector's only
 // ══════════════════════════════════════════════════════════════
-registerPrismBucket("resourcefulPrism", [
-    "Resource Regeneration",
-    "Resource on Kill",
-    "Resource on Lucky Hit",
-    "Resource Generation",
-    "Resource Cost Reduction",
-    "Maximum Resource"
+registerPrismBucket("chromaticPrism", [
+    "Fire Resistance",
+    "Cold Resistance",
+    "Lightning Resistance",
+    "Poison Resistance",
+    "Shadow Resistance",
+    "Physical Resistance"
 ]);
