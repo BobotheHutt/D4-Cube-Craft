@@ -530,11 +530,6 @@ function renderAffixRows(slotId) {
     }
 }
 
-
-    // Insert before the affix-list div
-    container.parentNode.insertBefore(summary, container);
-}
-
 function buildStaticCards() {
     STATIC_SLOTS.forEach(({ id }) => {
         initSlotState(id);
