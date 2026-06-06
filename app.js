@@ -583,12 +583,54 @@ function updateItemNameDisplay(slotId) {
     const selection = AppState.itemSelections[slotId];
     nameEl.classList.remove("is-legendary", "is-unique", "is-mythic");
 
-    if (!selection) { nameTextEl.textContent = "Select Item"; return; }
+    // Clear any existing tooltip listeners by cloning the element
+    const newNameEl = nameEl.cloneNode(true);
+    nameEl.parentNode.replaceChild(newNameEl, nameEl);
+    const freshNameEl     = document.getElementById(`name-${slotId}`);
+    const freshNameTextEl = document.getElementById(`name-text-${slotId}`);
 
-    nameTextEl.textContent = selection.name;
-    if (selection.tier === "legendary")  nameEl.classList.add("is-legendary");
-    else if (selection.tier === "unique")  nameEl.classList.add("is-unique");
-    else if (selection.tier === "mythic")  nameEl.classList.add("is-mythic");
+    // Re-bind item modal click
+    freshNameEl.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (AppState.gearLocked) { focusCard(slotId); return; }
+        openItemModal(slotId, e);
+    });
+
+    if (!selection) { freshNameTextEl.textContent = "Select Item"; return; }
+
+    freshNameTextEl.textContent = selection.name;
+    if (selection.tier === "legendary")  freshNameEl.classList.add("is-legendary");
+    else if (selection.tier === "unique")  freshNameEl.classList.add("is-unique");
+    else if (selection.tier === "mythic")  freshNameEl.classList.add("is-mythic");
+
+    // Attach hover tooltip if item has a power description
+    const power = getItemPower(selection.name, selection.tier);
+    if (power) {
+        const typeLabel = selection.tier === "mythic" ? "Mythic Unique"
+                        : selection.tier === "unique" ? "Unique"
+                        : "Legendary Aspect";
+        attachTooltip(freshNameEl, selection.name, typeLabel, power);
+    }
+}
+
+function getItemPower(name, tier) {
+    if (tier === "mythic") {
+        const all = window.MythicRegistry || {};
+        for (const list of Object.values(all)) {
+            const found = list.find(i => i?.name === name);
+            if (found?.power) return found.power;
+        }
+    } else if (tier === "unique") {
+        const items = window.UniqueRegistry[AppState.activeClass] || [];
+        const found = items.find(i => i?.name === name);
+        if (found?.power) return found.power;
+    } else if (tier === "legendary") {
+        for (const list of Object.values(window.AspectRegistry || {})) {
+            const found = list.find(i => typeof i === "object" && i?.name === name);
+            if (found?.power) return found.power;
+        }
+    }
+    return null;
 }
 
 // ── CARD FOCUS ────────────────────────────────────────────────
@@ -946,11 +988,15 @@ function renderAspectList(slotId, categoryKey) {
         return;
     }
     aspects.forEach(aspect => {
-        const name = typeof aspect === "string" ? aspect : aspect.name;
-        const btn  = document.createElement("button");
-        btn.className   = "item-modal-btn tier-legendary";
-        btn.textContent = name;
-        btn.onclick     = () => selectItem({ name, tier: "legendary" });
+        const name  = typeof aspect === "string" ? aspect : aspect.name;
+        const power = typeof aspect === "object" ? aspect.power || "" : "";
+        const btn   = document.createElement("button");
+        btn.className = "item-modal-btn tier-legendary";
+        btn.innerHTML = `
+            <span class="item-btn-name">${name}</span>
+            ${power ? `<span class="item-btn-power">${power}</span>` : "<span></span>"}
+        `;
+        btn.onclick = () => selectItem({ name, tier: "legendary" });
         listEl.appendChild(btn);
     });
 }
@@ -983,9 +1029,12 @@ function renderUniqueList(slotId) {
 
     matched.forEach(item => {
         const btn = document.createElement("button");
-        btn.className   = "item-modal-btn tier-unique";
-        btn.textContent = item.name;
-        btn.onclick     = () => selectItem({ name: item.name, tier: "unique" });
+        btn.className = "item-modal-btn tier-unique";
+        btn.innerHTML = `
+            <span class="item-btn-name">${item.name}</span>
+            ${item.power ? `<span class="item-btn-power">${item.power}</span>` : "<span></span>"}
+        `;
+        btn.onclick = () => selectItem({ name: item.name, tier: "unique" });
         listEl.appendChild(btn);
     });
 }
@@ -1016,11 +1065,21 @@ function renderMythicList(slotId) {
         listEl.appendChild(empty);
         return;
     }
+    // Build item map for power lookup
+    const mythicItemMap = {};
+    Object.values(window.MythicRegistry || {}).flat().forEach(item => {
+        if (item?.name) mythicItemMap[item.name] = item;
+    });
+
     matched.forEach(name => {
-        const btn = document.createElement("button");
-        btn.className   = "item-modal-btn tier-mythic";
-        btn.textContent = name;
-        btn.onclick     = () => selectItem({ name, tier: "mythic" });
+        const item  = mythicItemMap[name] || {};
+        const btn   = document.createElement("button");
+        btn.className = "item-modal-btn tier-mythic";
+        btn.innerHTML = `
+            <span class="item-btn-name">${name}</span>
+            ${item.power ? `<span class="item-btn-power">${item.power}</span>` : "<span></span>"}
+        `;
+        btn.onclick = () => selectItem({ name, tier: "mythic" });
         listEl.appendChild(btn);
     });
 }
@@ -1448,66 +1507,4 @@ function attachTooltip(el, name, type, power) {
     el.addEventListener("mouseleave", ()  => hideTooltip());
 }
 
-// ── Wire tooltips into mythic and unique list renderers ───────
-// Patch renderMythicList to attach tooltips
-const _origRenderMythicList = renderMythicList;
-renderMythicList = function(slotId) {
-    _origRenderMythicList(slotId);
-    // Re-attach tooltips to rendered buttons
-    const listEl = document.getElementById("item-modal-list");
-    const all    = window.MythicRegistry || {};
-    const itemMap = {};
-    Object.values(all).flat().forEach(item => {
-        if (item?.name) itemMap[item.name] = item;
-    });
-    listEl.querySelectorAll(".item-modal-btn").forEach(btn => {
-        const item = itemMap[btn.textContent];
-        if (item?.power) {
-            attachTooltip(btn, item.name, "Mythic Unique", item.power);
-        }
-    });
-};
 
-// Patch renderUniqueList to attach tooltips
-const _origRenderUniqueList = renderUniqueList;
-renderUniqueList = function(slotId) {
-    _origRenderUniqueList(slotId);
-    const listEl  = document.getElementById("item-modal-list");
-    const items   = window.UniqueRegistry[AppState.activeClass] || [];
-    const itemMap = {};
-    items.forEach(item => { if (item?.name) itemMap[item.name] = item; });
-    listEl.querySelectorAll(".item-modal-btn").forEach(btn => {
-        const item = itemMap[btn.textContent];
-        if (item?.power) {
-            attachTooltip(btn, item.name, "Unique", item.power);
-        }
-    });
-};
-
-// Also attach tooltips to database mythic cards
-const _origBuildMythicsSection = buildMythicsSection;
-buildMythicsSection = function() {
-    const section = _origBuildMythicsSection();
-    // Tooltips attach after expand since body is lazy-built
-    const origHeader = section.querySelector(".db-section-header");
-    const origClick  = origHeader.onclick;
-    origHeader.onclick = function() {
-        origClick?.call(this);
-        setTimeout(() => {
-            const all = window.MythicRegistry || {};
-            const itemMap = {};
-            Object.values(all).flat().forEach(item => {
-                if (item?.name) itemMap[item.name] = item;
-            });
-            section.querySelectorAll(".db-mythic-card").forEach(card => {
-                const nameEl = card.querySelector(".db-mythic-name");
-                if (!nameEl) return;
-                const item = itemMap[nameEl.textContent];
-                if (item?.power) {
-                    attachTooltip(card, item.name, "Mythic Unique", item.power);
-                }
-            });
-        }, 50);
-    };
-    return section;
-};
