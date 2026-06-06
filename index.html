@@ -106,8 +106,8 @@
         .app-header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 16px 24px;
+            gap: 8px;
+            padding: 12px 24px;
             background: var(--bg-deep);
             border-bottom: 1px solid var(--border-dim);
         }
@@ -927,29 +927,22 @@
 
     <!-- ── HEADER / CLASS SELECT ───────────────────────── -->
     <div class="app-header">
-        <!-- Character selector -->
-        <div class="char-selector-wrap">
-            <label style="font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-secondary);">Character:</label>
-            <select id="character-select" class="char-select" onchange="handleCharacterSelect(this.value)"></select>
-            <button class="char-action-btn" onclick="openAddCharacterModal()" title="Add character">＋</button>
-            <button class="char-action-btn" onclick="renameCharacter()" title="Rename character">✎</button>
-            <button class="char-action-btn danger" onclick="deleteCharacter()" title="Delete character">✕</button>
-        </div>
-
-        <!-- Class selector -->
-        <div class="class-selector-wrap">
-            <label for="class-select-dropdown">Class:</label>
-            <select id="class-select-dropdown" class="class-select" onchange="handleClassChange(this.value)">
-                <option value="spiritborn">Spiritborn</option>
-                <option value="barbarian">Barbarian</option>
-                <option value="druid">Druid</option>
-                <option value="necromancer">Necromancer</option>
-                <option value="rogue">Rogue</option>
-                <option value="sorcerer">Sorcerer</option>
-                <option value="paladin">Paladin</option>
-                <option value="warlock">Warlock</option>
-            </select>
-        </div>
+        <label style="font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-secondary);white-space:nowrap;">Character:</label>
+        <select id="character-select" class="char-select" onchange="handleCharacterSelect(this.value)"></select>
+        <button class="char-action-btn" onclick="openAddCharacterModal()" title="Add character">＋</button>
+        <button class="char-action-btn" onclick="renameCharacter()" title="Rename character">✎</button>
+        <button class="char-action-btn danger" onclick="deleteCharacter()" title="Delete character">✕</button>
+        <label for="class-select-dropdown" style="font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-secondary);white-space:nowrap;margin-left:8px;">Class:</label>
+        <select id="class-select-dropdown" class="class-select" onchange="handleClassChange(this.value)">
+            <option value="spiritborn">Spiritborn</option>
+            <option value="barbarian">Barbarian</option>
+            <option value="druid">Druid</option>
+            <option value="necromancer">Necromancer</option>
+            <option value="rogue">Rogue</option>
+            <option value="sorcerer">Sorcerer</option>
+            <option value="paladin">Paladin</option>
+            <option value="warlock">Warlock</option>
+        </select>
     </div>
 
     <!-- ══ TAB: GEAR PLANNER ════════════════════════════ -->

@@ -296,7 +296,7 @@ function renderCharacterSelector() {
     Storage.characters.forEach(char => {
         const opt = document.createElement("option");
         opt.value       = char.id;
-        opt.textContent = `${char.name} (${char.className.charAt(0).toUpperCase() + char.className.slice(1)})`;
+        opt.textContent = char.name;
         opt.selected    = char.id === Storage.activeCharacterId;
         select.appendChild(opt);
     });
