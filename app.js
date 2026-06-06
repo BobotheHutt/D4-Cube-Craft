@@ -81,7 +81,8 @@ const TEMPER_CATEGORY_MAP = [
     { label: "Defensive", key: "defensive" },
     { label: "Resource",  key: "resource"  },
     { label: "Utility",   key: "utility"   },
-    { label: "Mobility",  key: "mobility"  }
+    { label: "Mobility",  key: "mobility"  },
+    { label: "Weapons",   key: "weapons"   }
 ];
 
 // ── SLOT CONFIG ───────────────────────────────────────────────
@@ -131,7 +132,7 @@ const SLOT_CONFIG = {
     // Weapon slots: flexible — all aspect/temper categories available
     weapon: {
         aspectCategories: ["offensive", "defensive", "resource", "utility", "mobility"],
-        temperCategories: ["offensive", "defensive", "resource", "utility", "mobility"],
+        temperCategories: ["offensive", "defensive", "resource", "utility", "mobility", "weapons"],
         mythicEligible:   false
     }
 };
