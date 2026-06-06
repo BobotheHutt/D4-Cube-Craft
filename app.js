@@ -245,8 +245,9 @@ function loadCharacterIntoApp(char) {
 
     STATIC_SLOTS.forEach(({ id }) => {
         const slotData = char.slots?.[id] || {};
-        AppState.affixSelections[id] = { ...(slotData.affixes || { slot1: null, slot2: null, slot3: null, slot4: null }) };
-        AppState.itemSelections[id]  = slotData.item || null;
+        AppState.affixSelections[id]  = { ...(slotData.affixes || { slot1: null, slot2: null, slot3: null, slot4: null }) };
+        AppState.itemSelections[id]   = slotData.item   || null;
+        AppState.temperSelections[id] = slotData.temper || null;
     });
 
     // Rebuild weapon slots for the class
@@ -258,8 +259,9 @@ function loadCharacterIntoApp(char) {
     allWeaponSlots.forEach((_, idx) => {
         const slotId   = `weapon-${idx}`;
         const slotData = char.slots?.[slotId] || {};
-        AppState.affixSelections[slotId] = { ...(slotData.affixes || { slot1: null, slot2: null, slot3: null, slot4: null }) };
-        AppState.itemSelections[slotId]  = slotData.item || null;
+        AppState.affixSelections[slotId]  = { ...(slotData.affixes || { slot1: null, slot2: null, slot3: null, slot4: null }) };
+        AppState.itemSelections[slotId]   = slotData.item   || null;
+        AppState.temperSelections[slotId] = slotData.temper || null;
     });
 
     // Re-render all static cards
@@ -282,7 +284,8 @@ function saveCurrentCharacter() {
     STATIC_SLOTS.forEach(({ id }) => {
         if (!char.slots[id]) char.slots[id] = {};
         char.slots[id].affixes = { ...AppState.affixSelections[id] };
-        char.slots[id].item    = AppState.itemSelections[id] || null;
+        char.slots[id].item    = AppState.itemSelections[id]  || null;
+        char.slots[id].temper  = AppState.temperSelections[id] || null;
     });
 
     // Save weapon slots
@@ -290,7 +293,8 @@ function saveCurrentCharacter() {
         if (!k.startsWith("weapon-")) return;
         if (!char.slots[k]) char.slots[k] = {};
         char.slots[k].affixes = { ...AppState.affixSelections[k] };
-        char.slots[k].item    = AppState.itemSelections[k] || null;
+        char.slots[k].item    = AppState.itemSelections[k]  || null;
+        char.slots[k].temper  = AppState.temperSelections[k] || null;
     });
 
     saveStorage();
@@ -445,11 +449,12 @@ function applyClassChange(newClass, clearGear) {
 //  APP STATE
 // ══════════════════════════════════════════════════════════════
 const AppState = {
-    activeClass:     "spiritborn",
-    focusedCard:     null,
-    affixSelections: {},
-    itemSelections:  {},
-    gearLocked:      false
+    activeClass:      "spiritborn",
+    focusedCard:      null,
+    affixSelections:  {},
+    itemSelections:   {},
+    temperSelections: {},
+    gearLocked:       false
 };
 
 function initSlotState(slotId) {
@@ -458,6 +463,9 @@ function initSlotState(slotId) {
     }
     if (AppState.itemSelections[slotId] === undefined) {
         AppState.itemSelections[slotId] = null;
+    }
+    if (AppState.temperSelections[slotId] === undefined) {
+        AppState.temperSelections[slotId] = null;
     }
 }
 
@@ -818,6 +826,105 @@ function applyGearLockUI() {
         ...Object.keys(AppState.affixSelections).filter(k => k.startsWith("weapon-"))
     ];
     allSlots.forEach(id => renderAffixSummary(id));
+}
+
+// ══════════════════════════════════════════════════════════════
+//  TEMPER MODAL
+// ══════════════════════════════════════════════════════════════
+
+let temperModalState = {
+    slotId:         null,
+    activeCategory: null
+};
+
+function openTemperModal(slotId) {
+    temperModalState.slotId = slotId;
+    if (!temperModalState.activeCategory) {
+        const config      = getSlotConfig(slotId);
+        const allowedCats = TEMPER_CATEGORY_MAP.filter(c => config.temperCategories.includes(c.key));
+        temperModalState.activeCategory = allowedCats[0]?.key || null;
+    }
+
+    document.getElementById("temper-modal-title").textContent =
+        `Temper — ${getSlotLabel(slotId)}`;
+
+    renderTemperCategories();
+    renderTemperList();
+    document.getElementById("temper-modal").classList.add("open");
+}
+
+function closeTemperModal() {
+    document.getElementById("temper-modal").classList.remove("open");
+}
+
+function renderTemperCategories() {
+    const container  = document.getElementById("temper-category-list");
+    container.innerHTML = "";
+    const slotId     = temperModalState.slotId;
+    const config     = getSlotConfig(slotId);
+    const allowedCats = TEMPER_CATEGORY_MAP.filter(c => config.temperCategories.includes(c.key));
+
+    allowedCats.forEach(({ label, key }) => {
+        const btn = document.createElement("button");
+        btn.className   = "modal-cat-btn" + (key === temperModalState.activeCategory ? " active" : "");
+        btn.textContent = label;
+        btn.onclick = () => {
+            temperModalState.activeCategory = key;
+            renderTemperCategories();
+            renderTemperList();
+        };
+        container.appendChild(btn);
+    });
+}
+
+function renderTemperList() {
+    const container  = document.getElementById("temper-affix-list");
+    container.innerHTML = "";
+    const slotId     = temperModalState.slotId;
+    const currentVal = AppState.temperSelections[slotId];
+    const tempers    = window.TemperRegistry[temperModalState.activeCategory] || [];
+
+    // Filter to slot-eligible tempers
+    const filtered = tempers.filter(t => {
+        if (!t.slots || t.slots.length === 0) return true;
+        return t.slots.includes(slotId);
+    });
+
+    // Clear option
+    const clearBtn = document.createElement("button");
+    clearBtn.className   = "modal-affix-btn";
+    clearBtn.textContent = "— Clear Temper —";
+    clearBtn.style.color = "var(--text-secondary)";
+    clearBtn.onclick     = () => selectTemper(null);
+    container.appendChild(clearBtn);
+
+    if (filtered.length === 0) {
+        const empty = document.createElement("div");
+        empty.style.cssText = "padding:16px;color:var(--text-hint);font-style:italic;font-size:12px;";
+        empty.textContent   = "No tempers available for this slot.";
+        container.appendChild(empty);
+        return;
+    }
+
+    filtered.forEach(t => {
+        const name = typeof t === "string" ? t : t.name;
+        const btn  = document.createElement("button");
+        btn.className   = "modal-affix-btn" + (name === currentVal ? " selected" : "");
+        btn.textContent = name;
+        btn.onclick     = () => selectTemper(name);
+        container.appendChild(btn);
+    });
+}
+
+function selectTemper(value) {
+    const slotId = temperModalState.slotId;
+    if (!slotId) return;
+    AppState.temperSelections[slotId] = value;
+    renderAffixRows(slotId);
+    renderAffixSummary(slotId);
+    closeTemperModal();
+    autoSave();
+    if (AppState.focusedCard === slotId) updateCraftPanel();
 }
 
 // ══════════════════════════════════════════════════════════════
