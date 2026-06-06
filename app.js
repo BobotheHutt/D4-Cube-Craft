@@ -173,10 +173,11 @@ function emptyCharacterSlots() {
 
 function createCharacter(name, className) {
     return {
-        id:        generateId(),
-        name:      name || "New Character",
-        className: className || "spiritborn",
-        slots:     emptyCharacterSlots()
+        id:         generateId(),
+        name:       name || "New Character",
+        className:  className || "spiritborn",
+        gearLocked: false,
+        slots:      emptyCharacterSlots()
     };
 }
 
@@ -229,6 +230,10 @@ function loadCharacterIntoApp(char) {
 
     // Set class
     AppState.activeClass = char.className;
+
+    // Restore lock state
+    AppState.gearLocked = char.gearLocked || false;
+    applyGearLockUI();
     const classSelect = document.getElementById("class-select-dropdown");
     if (classSelect) classSelect.value = char.className;
 
@@ -268,7 +273,8 @@ function saveCurrentCharacter() {
     const char = getActiveCharacter();
     if (!char) return;
 
-    char.className = AppState.activeClass;
+    char.className  = AppState.activeClass;
+    char.gearLocked = AppState.gearLocked;
 
     // Save static slots
     STATIC_SLOTS.forEach(({ id }) => {
@@ -440,7 +446,8 @@ const AppState = {
     activeClass:     "spiritborn",
     focusedCard:     null,
     affixSelections: {},
-    itemSelections:  {}
+    itemSelections:  {},
+    gearLocked:      false
 };
 
 function initSlotState(slotId) {
@@ -502,6 +509,7 @@ function renderAffixRows(slotId) {
 
             sel.addEventListener("mousedown", (e) => {
                 e.preventDefault();
+                if (AppState.gearLocked) { focusCard(slotId); return; }
                 openAffixModal(slotId, i);
             });
         }
@@ -553,6 +561,7 @@ function buildWeaponSlots(className) {
         mountEl.appendChild(card);
         document.getElementById(`name-${slotId}`).addEventListener("click", (e) => {
             e.stopPropagation();
+            if (AppState.gearLocked) { focusCard(slotId); return; }
             openItemModal(slotId, e);
         });
         renderAffixRows(slotId);
@@ -694,6 +703,34 @@ function getSlotLabel(slotId) {
 function autoSave() { saveCurrentCharacter(); }
 
 // ══════════════════════════════════════════════════════════════
+//  GEAR LOCK
+// ══════════════════════════════════════════════════════════════
+
+function toggleGearLock() {
+    AppState.gearLocked = !AppState.gearLocked;
+    applyGearLockUI();
+    autoSave();
+}
+
+function applyGearLockUI() {
+    const inner  = document.getElementById("gear-panel-inner");
+    const btn    = document.getElementById("gear-lock-btn");
+    if (!inner || !btn) return;
+
+    if (AppState.gearLocked) {
+        inner.classList.add("gear-locked");
+        btn.textContent = "🔒";
+        btn.classList.add("locked");
+        btn.title = "Unlock gear to edit affixes and items";
+    } else {
+        inner.classList.remove("gear-locked");
+        btn.textContent = "🔓";
+        btn.classList.remove("locked");
+        btn.title = "Lock gear for quick slot selection";
+    }
+}
+
+// ══════════════════════════════════════════════════════════════
 //  AFFIX MODAL
 // ══════════════════════════════════════════════════════════════
 let affixModalState = {
@@ -797,6 +834,7 @@ let itemModalState = { slotId: null, selectedTier: null, activeCategory: null };
 
 function openItemModal(slotId, event) {
     if (event) event.stopPropagation();
+    if (AppState.gearLocked) { focusCard(slotId); return; }
     itemModalState.slotId        = slotId;
     itemModalState.selectedTier  = null;
     itemModalState.activeCategory = null;

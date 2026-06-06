@@ -909,6 +909,50 @@
 
         .char-modal-cancel:hover { color: var(--text-primary); }
 
+
+        /* ── LOCK TOGGLE ──────────────────────────────────────── */
+        .lock-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-mid);
+            color: var(--text-secondary);
+            font-size: 15px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: color 0.15s, border-color 0.15s, background 0.15s;
+            line-height: 1;
+        }
+
+        .lock-btn:hover { color: var(--text-primary); border-color: var(--border-bright); }
+
+        .lock-btn.locked {
+            background: #1a1a2e;
+            border-color: #5a5aff;
+            color: #8888ff;
+        }
+
+        /* When gear is locked, block all interaction on cards */
+        .gear-locked .item-card {
+            cursor: pointer;
+        }
+
+        .gear-locked .card-item-name,
+        .gear-locked .affix-select,
+        .gear-locked .affix-row.temper-slot .affix-select {
+            pointer-events: none;
+            cursor: pointer;
+        }
+
+        /* Locked focus highlight — blue instead of gold */
+        .gear-locked .item-card.focused {
+            border-color: #5a5aff;
+            box-shadow: inset 0 0 20px rgba(90, 90, 255, 0.1);
+        }
+
+        .gear-locked .item-card.focused::before {
+            background: #8888ff;
+        }
+
         /* ── SCROLLBAR ────────────────────────────────────── */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -951,7 +995,11 @@
 
             <!-- ── UNIFIED GEAR PANEL (both columns scroll together) -->
             <div class="gear-panel-wrap">
-                <div class="gear-panel-inner">
+                <div class="gear-panel-toolbar" style="display:flex;align-items:center;justify-content:space-between;padding:10px 20px 0 20px;">
+                    <span style="font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-hint);">Gear</span>
+                    <button class="lock-btn" id="gear-lock-btn" onclick="toggleGearLock()" title="Lock gear for quick slot selection">🔓</button>
+                </div>
+            <div class="gear-panel-inner" id="gear-panel-inner">
 
                     <!-- LEFT COLUMN: Armor + Left Weapons -->
                     <div class="gear-col" id="left-gear-col">
