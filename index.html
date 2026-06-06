@@ -48,7 +48,6 @@
             font-size: 0.9rem;
         }
 
-        /* Class Selector Styling */
         .class-selector-wrapper {
             display: flex;
             align-items: center;
@@ -77,7 +76,6 @@
             outline: none;
         }
 
-        /* Main Split Layout Grid */
         .main-layout {
             display: grid;
             grid-template-columns: 2.2fr 1fr;
@@ -86,7 +84,6 @@
             margin: 0 auto;
         }
 
-        /* Dual Column RPG Equipment Layout */
         .equipment-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -94,7 +91,6 @@
             align-content: start;
         }
 
-        /* Individual Gear Item Blocks matching image layout */
         .item-card {
             background: var(--panel-bg);
             border: 1px solid var(--panel-border);
@@ -130,7 +126,6 @@
             padding-bottom: 6px;
         }
 
-        /* Dropdown Affix Rows inside cards */
         .card-affix-list {
             display: flex;
             flex-direction: column;
@@ -167,10 +162,9 @@
         }
 
         .card-select.has-value {
-            color: #4da6ff; /* Colors active selected choices */
+            color: #4da6ff;
         }
 
-        /* Right Side Live Calculation Readout Panel */
         .sidebar-panel {
             background: var(--panel-bg);
             border: 1px solid var(--panel-border);
@@ -223,7 +217,6 @@
             font-weight: 500;
         }
 
-        /* Material Badges styled neatly */
         .badge {
             padding: 5px 10px;
             border-radius: 4px;
@@ -256,7 +249,6 @@
             <p>Select an item card to calculate exact Tuning Prism combinations</p>
         </div>
         
-        <!-- Class Selector Engine Input -->
         <div class="class-selector-wrapper">
             <label for="class-select-dropdown">Active Class:</label>
             <select id="class-select-dropdown" class="class-select" onchange="handleClassChange(this.value)">
@@ -271,41 +263,46 @@
     </header>
 
     <main class="main-layout">
-        <!-- Equipment Layout Matrix Grid -->
         <section class="equipment-grid" id="equipment-matrix">
             
-            <!-- Left Column Content Blocks -->
+            <!-- Left Grid Column: Head down to Boots -->
             <div class="left-equipment-column" style="display: flex; flex-direction: column; gap: 20px;">
-                <!-- Helm -->
                 <div class="item-card" id="card-helm" onclick="focusItemCard('helm')">
                     <div class="item-header">Helm</div>
-                    <div class="item-name-placeholder">Custom Helm Configuration</div>
+                    <div class="item-name-placeholder">Custom Helm Selection</div>
                     <div class="card-affix-list" id="fields-helm"></div>
                 </div>
 
-                <!-- Chest -->
                 <div class="item-card" id="card-chest" onclick="focusItemCard('chest')">
                     <div class="item-header">Chest Armor</div>
-                    <div class="item-name-placeholder">Custom Chest Configuration</div>
+                    <div class="item-name-placeholder">Custom Chest Selection</div>
                     <div class="card-affix-list" id="fields-chest"></div>
                 </div>
 
-                <!-- Arms (Gloves) -->
                 <div class="item-card" id="card-gloves" onclick="focusItemCard('gloves')">
                     <div class="item-header">Gloves</div>
-                    <div class="item-name-placeholder">Custom Gloves Configuration</div>
+                    <div class="item-name-placeholder">Custom Gloves Selection</div>
                     <div class="card-affix-list" id="fields-gloves"></div>
                 </div>
 
-                <!-- Legs (Pants) -->
                 <div class="item-card" id="card-pants" onclick="focusItemCard('pants')">
                     <div class="item-header">Pants</div>
-                    <div class="item-name-placeholder">Custom Pants Configuration</div>
+                    <div class="item-name-placeholder">Custom Pants Selection</div>
                     <div class="card-affix-list" id="fields-pants"></div>
                 </div>
 
-                <!-- Boots -->
                 <div class="item-card" id="card-boots" onclick="focusItemCard('boots')">
                     <div class="item-header">Boots</div>
-                    <div class="item-name-placeholder">Custom Boots Configuration</div>
+                    <div class="item-name-placeholder">Custom Boots Selection</div>
                     <div class="card-affix-list" id="fields-boots"></div>
+                </div>
+
+                <!-- Mount points for Class Weapons (Left) -->
+                <div id="left-weapon-mounts" style="display: flex; flex-direction: column; gap: 20px;"></div>
+            </div>
+
+            <!-- Right Grid Column: Jewelry Accessories -->
+            <div class="right-equipment-column" style="display: flex; flex-direction: column; gap: 20px;">
+                <div class="item-card" id="card-amulet" onclick="focusItemCard('amulet')">
+                    <div class="item-header">Amulet</div>
+                    <div class="item-name-placeholder">Custom Amulet Selection</div>
