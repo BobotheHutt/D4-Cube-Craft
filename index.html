@@ -3,253 +3,592 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D4 Cube Crafting Hub</title>
+    <title>D4 Horadric Cube — Prism Planner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #08080a;
-            --panel-bg: #101115;
-            --panel-border: #23252b;
-            --text-main: #c4c8d4;
-            --text-gold: #f3ca40;
-            --text-purple: #a370f7;
-            --slot-active: #f3ca40;
-            --badge-border: #3e424e;
+            --bg-void: #06060a;
+            --bg-deep: #09090e;
+            --bg-panel: #0d0d14;
+            --bg-card: #10101a;
+            --bg-card-hover: #13131f;
+            --bg-input: #0b0b12;
+            --border-dim: #1e1f2e;
+            --border-mid: #2a2b3d;
+            --border-bright: #3a3c55;
+            --text-primary: #c8cce0;
+            --text-secondary: #6b6f8a;
+            --text-hint: #3e4158;
+            --gold: #d4a843;
+            --gold-bright: #f0c860;
+            --gold-dim: #7a5f20;
+            --purple: #9b6ef5;
+            --purple-dim: #4a2d8a;
+            --slot-active-glow: rgba(212, 168, 67, 0.12);
+            --badge-aggressive-bg: #2a0e0e; --badge-aggressive-text: #ff8a8a; --badge-aggressive-border: #6b1a1a;
+            --badge-protector-bg: #0e1e2a; --badge-protector-text: #7ec8f5; --badge-protector-border: #1a4a66;
+            --badge-pragmatic-bg: #1a0e2a; --badge-pragmatic-text: #c89ef5; --badge-pragmatic-border: #3d1a6b;
+            --badge-resourceful-bg: #0e2014; --badge-resourceful-text: #88e8a0; --badge-resourceful-border: #1a5028;
+            --badge-adept-bg: #251a08; --badge-adept-text: #f5d080; --badge-adept-border: #5a3d10;
+            --badge-none-bg: #141418; --badge-none-text: #5a5e72; --badge-none-border: #252632;
         }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
+            background-color: var(--bg-void);
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            min-height: 100vh;
         }
 
-        header {
+        /* ── TABS ─────────────────────────────────────────── */
+        .tab-bar {
+            background: var(--bg-deep);
+            border-bottom: 1px solid var(--border-dim);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1400px;
-            margin: 0 auto 25px auto;
-            border-bottom: 2px solid var(--panel-border);
-            padding-bottom: 15px;
+            align-items: stretch;
+            padding: 0 24px;
+            gap: 4px;
         }
 
-        .header-title h1 {
-            color: var(--text-gold);
-            margin: 0 0 4px 0;
-            font-size: 1.8rem;
-            text-transform: uppercase;
+        .tab-brand {
+            font-family: 'Cinzel', serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--gold);
             letter-spacing: 2px;
-        }
-
-        .header-title p {
-            margin: 0;
-            color: #717784;
-            font-size: 0.9rem;
-        }
-
-        .class-selector-wrapper {
+            padding: 14px 24px 14px 0;
+            margin-right: 16px;
+            border-right: 1px solid var(--border-dim);
+            white-space: nowrap;
             display: flex;
             align-items: center;
-            gap: 12px;
-            background: #16181f;
-            padding: 10px 20px;
-            border: 1px solid var(--panel-border);
-            border-radius: 4px;
-        }
-
-        .class-selector-wrapper label {
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: #8a8f9d;
-            text-transform: uppercase;
-        }
-
-        .class-select {
-            background: #20222a;
-            color: var(--text-gold);
-            border: 1px solid #3a3d4a;
-            padding: 8px 15px;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-            outline: none;
-        }
-
-        .main-layout {
-            display: grid;
-            grid-template-columns: 2.2fr 1fr;
-            gap: 30px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .equipment-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            align-content: start;
-        }
-
-        .item-card {
-            background: var(--panel-bg);
-            border: 1px solid var(--panel-border);
-            border-radius: 6px;
-            padding: 16px;
-            position: relative;
-            transition: border-color 0.2s ease;
-        }
-
-        .item-card:hover {
-            border-color: #3e424e;
-        }
-
-        .item-card.active {
-            border-color: var(--slot-active);
-            box-shadow: inset 0 0 12px rgba(243, 202, 64, 0.08);
-        }
-
-        .item-header {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #717784;
-            margin-bottom: 2px;
-        }
-
-        .item-name-placeholder {
-            font-size: 1.05rem;
-            font-weight: bold;
-            color: var(--text-purple);
-            margin-bottom: 15px;
-            border-bottom: 1px solid #1c1e24;
-            padding-bottom: 6px;
-        }
-
-        .card-affix-list {
-            display: flex;
-            flex-direction: column;
             gap: 8px;
         }
 
-        .card-row {
-            display: grid;
-            grid-template-columns: 24px 1fr;
-            align-items: center;
+        .tab-brand::before {
+            content: '⬡';
+            font-size: 16px;
+            color: var(--gold-dim);
         }
 
-        .row-num {
-            font-size: 0.85rem;
-            color: #515664;
-            font-weight: bold;
-        }
-
-        .card-select {
-            background: #15161c;
-            color: var(--text-main);
-            border: 1px solid #23252b;
-            padding: 6px 10px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            outline: none;
-            width: 100%;
+        .tab-btn {
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--text-secondary);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 14px 18px 12px;
             cursor: pointer;
+            transition: color 0.15s, border-color 0.15s;
         }
 
-        .card-select:focus {
-            border-color: #4a4f5d;
-            color: #fff;
+        .tab-btn:hover { color: var(--text-primary); }
+
+        .tab-btn.active {
+            color: var(--gold);
+            border-bottom-color: var(--gold);
         }
 
-        .card-select.has-value {
-            color: #4da6ff;
+        /* ── HEADER ROW ───────────────────────────────────── */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            background: var(--bg-deep);
+            border-bottom: 1px solid var(--border-dim);
         }
 
-        .sidebar-panel {
-            background: var(--panel-bg);
-            border: 1px solid var(--panel-border);
-            border-radius: 6px;
-            padding: 25px;
-            position: sticky;
-            top: 20px;
-            height: calc(100vh - 140px);
+        .header-subtitle {
+            font-size: 12px;
+            color: var(--text-hint);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .class-selector-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .class-selector-wrap label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+
+        .class-select {
+            background: var(--bg-card);
+            color: var(--gold);
+            border: 1px solid var(--border-mid);
+            padding: 7px 14px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            outline: none;
+            letter-spacing: 0.5px;
+        }
+
+        .class-select:hover { border-color: var(--border-bright); }
+
+        /* ── TABS PAGES ───────────────────────────────────── */
+        .tab-page { display: none; }
+        .tab-page.active { display: block; }
+
+        /* ── MAIN 3-PANEL LAYOUT ──────────────────────────── */
+        .planner-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr 340px;
+            gap: 0;
+            height: calc(100vh - 101px);
+            overflow: hidden;
+        }
+
+        /* Gear panels share a background; craft panel is distinct */
+        .gear-panel {
+            background: var(--bg-deep);
+            border-right: 1px solid var(--border-dim);
+            overflow-y: auto;
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .gear-panel:first-child {
+            border-right: 1px solid var(--border-dim);
+        }
+
+        .gear-panel-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-hint);
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-dim);
+            margin-bottom: 4px;
+        }
+
+        .craft-panel {
+            background: var(--bg-panel);
+            border-left: 2px solid var(--border-mid);
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
         }
 
-        .sidebar-panel h2 {
-            margin: 0 0 5px 0;
-            font-size: 1.1rem;
+        .craft-panel-header {
+            background: var(--bg-deep);
+            border-bottom: 1px solid var(--border-mid);
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .craft-panel-header h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 2px;
             text-transform: uppercase;
-            color: var(--text-gold);
+            margin-bottom: 4px;
+        }
+
+        .craft-active-slot {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--purple);
             letter-spacing: 1px;
         }
 
-        .active-target-title {
-            font-size: 0.9rem;
-            color: var(--text-purple);
-            font-weight: bold;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--panel-border);
-            padding-bottom: 10px;
+        .craft-results-area {
+            padding: 16px 20px;
+            flex: 1;
         }
 
-        .results-scroll-area {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding-right: 5px;
+        /* ── ITEM CARDS ───────────────────────────────────── */
+        .item-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dim);
+            border-radius: 6px;
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: border-color 0.15s, background 0.15s;
+            position: relative;
         }
 
-        .result-item-row {
+        .item-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-mid);
+        }
+
+        .item-card.focused {
+            border-color: var(--gold-dim);
+            background: var(--bg-card-hover);
+            box-shadow: inset 0 0 20px var(--slot-active-glow);
+        }
+
+        .item-card.focused::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 3px;
+            background: var(--gold);
+            border-radius: 6px 0 0 6px;
+        }
+
+        .card-slot-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-hint);
+            margin-bottom: 4px;
+        }
+
+        .card-item-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--purple);
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-dim);
+            cursor: pointer;
+            transition: color 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .card-item-name:hover { color: #b890ff; }
+
+        .card-item-name .name-chevron {
+            font-size: 10px;
+            color: var(--text-hint);
+            margin-left: auto;
+        }
+
+        /* ── AFFIX ROWS ───────────────────────────────────── */
+        .affix-list { display: flex; flex-direction: column; gap: 6px; }
+
+        .affix-row {
+            display: grid;
+            grid-template-columns: 18px 1fr;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .affix-num {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-hint);
+            text-align: center;
+        }
+
+        .affix-select {
+            background: var(--bg-input);
+            color: var(--text-primary);
+            border: 1px solid var(--border-dim);
+            border-radius: 3px;
+            padding: 5px 8px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            width: 100%;
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .affix-select:hover { border-color: var(--border-mid); }
+        .affix-select:focus { border-color: var(--border-bright); color: #fff; }
+        .affix-select.has-value { color: #6ab0ff; }
+
+        .affix-row.placeholder .affix-select {
+            color: var(--text-hint);
+            border-style: dashed;
+            cursor: default;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* ── WEAPON SLOT CARDS ───────────────────────────── */
+        .weapon-card {
+            background: var(--bg-card);
+            border: 1px dashed var(--border-mid);
+            border-radius: 6px;
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: border-color 0.15s;
+        }
+
+        .weapon-card:hover { border-color: var(--border-bright); }
+
+        .weapon-card.focused {
+            border-color: var(--gold-dim);
+            border-style: solid;
+            box-shadow: inset 0 0 20px var(--slot-active-glow);
+        }
+
+        /* ── CRAFT PANEL RESULTS ──────────────────────────── */
+        .craft-empty {
+            color: var(--text-hint);
+            font-style: italic;
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .result-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 10px 0;
-            border-bottom: 1px solid #1c1e24;
+            border-bottom: 1px solid var(--border-dim);
+            gap: 8px;
         }
 
-        .result-item-row:last-child {
-            border-bottom: none;
-        }
+        .result-row:last-child { border-bottom: none; }
 
-        .affix-label {
-            font-size: 0.9rem;
+        .result-affix-name {
+            font-size: 13px;
             font-weight: 500;
+            color: var(--text-primary);
+            flex: 1;
         }
 
-        .badge {
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: bold;
+        .prism-badge {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
             text-transform: uppercase;
-            border: 1px solid var(--badge-border);
+            padding: 4px 9px;
+            border-radius: 3px;
+            border: 1px solid;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
-        .badge-aggressive { background: #3a1414; color: #ff9e9e; border-color: #7a2424; }
-        .badge-protector { background: #112633; color: #9ed7ff; border-color: #1f4b66; }
-        .badge-pragmatic { background: #221830; color: #e2bfff; border-color: #4a2d70; }
-        .badge-resourceful { background: #132b15; color: #aeffb4; border-color: #205424; }
-        .badge-adept { background: #332612; color: #ffe69e; border-color: #664d1f; }
-        .badge-none { background: #1c1d22; color: #717784; border-color: #2d3038; }
 
-        .empty-sidebar-notice {
-            color: #515664;
-            font-style: italic;
-            text-align: center;
-            margin-top: 40px;
-            font-size: 0.9rem;
+        .badge-aggressive  { background: var(--badge-aggressive-bg);  color: var(--badge-aggressive-text);  border-color: var(--badge-aggressive-border); }
+        .badge-protector   { background: var(--badge-protector-bg);   color: var(--badge-protector-text);   border-color: var(--badge-protector-border); }
+        .badge-pragmatic   { background: var(--badge-pragmatic-bg);   color: var(--badge-pragmatic-text);   border-color: var(--badge-pragmatic-border); }
+        .badge-resourceful { background: var(--badge-resourceful-bg); color: var(--badge-resourceful-text); border-color: var(--badge-resourceful-border); }
+        .badge-adept       { background: var(--badge-adept-bg);       color: var(--badge-adept-text);       border-color: var(--badge-adept-border); }
+        .badge-none        { background: var(--badge-none-bg);        color: var(--badge-none-text);        border-color: var(--badge-none-border); }
+
+        /* ── AFFIX CATEGORY MODAL ─────────────────────────── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
         }
+
+        .modal-overlay.open { display: flex; }
+
+        .modal-box {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-mid);
+            border-radius: 8px;
+            width: 520px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: var(--bg-deep);
+            border-bottom: 1px solid var(--border-mid);
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 13px;
+            color: var(--gold);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 18px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 2px 6px;
+        }
+
+        .modal-close:hover { color: var(--text-primary); }
+
+        .modal-body { display: flex; overflow: hidden; flex: 1; }
+
+        .modal-categories {
+            width: 160px;
+            flex-shrink: 0;
+            border-right: 1px solid var(--border-dim);
+            padding: 10px 0;
+            overflow-y: auto;
+        }
+
+        .modal-cat-btn {
+            display: block;
+            width: 100%;
+            background: none;
+            border: none;
+            border-left: 3px solid transparent;
+            color: var(--text-secondary);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-align: left;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: all 0.12s;
+        }
+
+        .modal-cat-btn:hover { color: var(--text-primary); background: var(--bg-card); }
+
+        .modal-cat-btn.active {
+            color: var(--gold);
+            border-left-color: var(--gold);
+            background: var(--bg-card);
+        }
+
+        .modal-affixes {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        .modal-affix-btn {
+            display: block;
+            width: 100%;
+            background: none;
+            border: none;
+            border-bottom: 1px solid var(--border-dim);
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            text-align: left;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        .modal-affix-btn:last-child { border-bottom: none; }
+        .modal-affix-btn:hover { background: var(--bg-card-hover); color: #fff; }
+
+        /* ── ITEM MODAL ───────────────────────────────────── */
+        .item-modal-box {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-mid);
+            border-radius: 8px;
+            width: 400px;
+            max-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .item-modal-list {
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        .item-modal-btn {
+            display: block;
+            width: 100%;
+            background: none;
+            border: none;
+            border-bottom: 1px solid var(--border-dim);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: left;
+            padding: 11px 16px;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        .item-modal-btn:last-child { border-bottom: none; }
+        .item-modal-btn:hover { background: var(--bg-card-hover); }
+        .item-modal-btn.tier-legendary { color: var(--gold); }
+        .item-modal-btn.tier-mythic    { color: #e090ff; }
+
+        /* ── DATABASE PLACEHOLDER ─────────────────────────── */
+        .db-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: calc(100vh - 101px);
+            gap: 12px;
+            color: var(--text-hint);
+        }
+
+        .db-placeholder h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 22px;
+            color: var(--border-bright);
+            letter-spacing: 3px;
+        }
+
+        .db-placeholder p {
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        /* ── SCROLLBAR ────────────────────────────────────── */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 2px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--border-bright); }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="header-title">
-            <h1>Horadric Cube Prism Planner</h1>
-            <p>Select an item card to calculate exact Tuning Prism combinations</p>
-        </div>
-        
-        <div class="class-selector-wrapper">
+    <!-- ── TAB BAR ─────────────────────────────────────── -->
+    <nav class="tab-bar">
+        <div class="tab-brand">Horadric Prism Planner</div>
+        <button class="tab-btn active" onclick="switchTab('planner')">Gear Planner</button>
+        <button class="tab-btn" onclick="switchTab('database')">Database</button>
+    </nav>
+
+    <!-- ── HEADER / CLASS SELECT ───────────────────────── -->
+    <div class="app-header">
+        <span class="header-subtitle">Select a gear slot → assign affixes → see required prisms</span>
+        <div class="class-selector-wrap">
             <label for="class-select-dropdown">Active Class:</label>
             <select id="class-select-dropdown" class="class-select" onchange="handleClassChange(this.value)">
                 <option value="spiritborn">Spiritborn</option>
@@ -258,51 +597,171 @@
                 <option value="necromancer">Necromancer</option>
                 <option value="rogue">Rogue</option>
                 <option value="sorcerer">Sorcerer</option>
+                <option value="paladin">Paladin</option>
+                <option value="warlock">Warlock</option>
             </select>
         </div>
-    </header>
+    </div>
 
-    <main class="main-layout">
-        <section class="equipment-grid" id="equipment-matrix">
-            
-            <!-- Left Grid Column: Head down to Boots -->
-            <div class="left-equipment-column" style="display: flex; flex-direction: column; gap: 20px;">
-                <div class="item-card" id="card-helm" onclick="focusItemCard('helm')">
-                    <div class="item-header">Helm</div>
-                    <div class="item-name-placeholder">Custom Helm Selection</div>
-                    <div class="card-affix-list" id="fields-helm"></div>
+    <!-- ══ TAB: GEAR PLANNER ════════════════════════════ -->
+    <div id="tab-planner" class="tab-page active">
+        <div class="planner-layout">
+
+            <!-- LEFT GEAR PANEL -->
+            <div class="gear-panel" id="left-gear-panel">
+                <div class="gear-panel-label">Armor</div>
+
+                <!-- Helm -->
+                <div class="item-card" id="card-helm" onclick="focusCard('helm')">
+                    <div class="card-slot-label">Helm</div>
+                    <div class="card-item-name" id="name-helm" onclick="openItemModal('helm', event)">
+                        <span id="name-text-helm">Select Item</span>
+                        <span class="name-chevron">▾</span>
+                    </div>
+                    <div class="affix-list" id="affixes-helm"></div>
                 </div>
 
-                <div class="item-card" id="card-chest" onclick="focusItemCard('chest')">
-                    <div class="item-header">Chest Armor</div>
-                    <div class="item-name-placeholder">Custom Chest Selection</div>
-                    <div class="card-affix-list" id="fields-chest"></div>
+                <!-- Chest -->
+                <div class="item-card" id="card-chest" onclick="focusCard('chest')">
+                    <div class="card-slot-label">Chest Armor</div>
+                    <div class="card-item-name" id="name-chest" onclick="openItemModal('chest', event)">
+                        <span id="name-text-chest">Select Item</span>
+                        <span class="name-chevron">▾</span>
+                    </div>
+                    <div class="affix-list" id="affixes-chest"></div>
                 </div>
 
-                <div class="item-card" id="card-gloves" onclick="focusItemCard('gloves')">
-                    <div class="item-header">Gloves</div>
-                    <div class="item-name-placeholder">Custom Gloves Selection</div>
-                    <div class="card-affix-list" id="fields-gloves"></div>
+                <!-- Gloves -->
+                <div class="item-card" id="card-gloves" onclick="focusCard('gloves')">
+                    <div class="card-slot-label">Gloves</div>
+                    <div class="card-item-name" id="name-gloves" onclick="openItemModal('gloves', event)">
+                        <span id="name-text-gloves">Select Item</span>
+                        <span class="name-chevron">▾</span>
+                    </div>
+                    <div class="affix-list" id="affixes-gloves"></div>
                 </div>
 
-                <div class="item-card" id="card-pants" onclick="focusItemCard('pants')">
-                    <div class="item-header">Pants</div>
-                    <div class="item-name-placeholder">Custom Pants Selection</div>
-                    <div class="card-affix-list" id="fields-pants"></div>
+                <!-- Pants -->
+                <div class="item-card" id="card-pants" onclick="focusCard('pants')">
+                    <div class="card-slot-label">Pants</div>
+                    <div class="card-item-name" id="name-pants" onclick="openItemModal('pants', event)">
+                        <span id="name-text-pants">Select Item</span>
+                        <span class="name-chevron">▾</span>
+                    </div>
+                    <div class="affix-list" id="affixes-pants"></div>
                 </div>
 
-                <div class="item-card" id="card-boots" onclick="focusItemCard('boots')">
-                    <div class="item-header">Boots</div>
-                    <div class="item-name-placeholder">Custom Boots Selection</div>
-                    <div class="card-affix-list" id="fields-boots"></div>
+                <!-- Boots -->
+                <div class="item-card" id="card-boots" onclick="focusCard('boots')">
+                    <div class="card-slot-label">Boots</div>
+                    <div class="card-item-name" id="name-boots" onclick="openItemModal('boots', event)">
+                        <span id="name-text-boots">Select Item</span>
+                        <span class="name-chevron">▾</span>
+                    </div>
+                    <div class="affix-list" id="affixes-boots"></div>
                 </div>
 
-                <!-- Mount points for Class Weapons (Left) -->
-                <div id="left-weapon-mounts" style="display: flex; flex-direction: column; gap: 20px;"></div>
+                <!-- Left Weapon Mount (dynamic) -->
+                <div class="gear-panel-label" style="margin-top: 8px;">Weapons — Left</div>
+                <div id="left-weapon-mounts"></div>
             </div>
 
-            <!-- Right Grid Column: Jewelry Accessories -->
-            <div class="right-equipment-column" style="display: flex; flex-direction: column; gap: 20px;">
-                <div class="item-card" id="card-amulet" onclick="focusItemCard('amulet')">
-                    <div class="item-header">Amulet</div>
-                    <div class="item-name-placeholder">Custom Amulet Selection</div>
+            <!-- RIGHT GEAR PANEL -->
+            <div class="gear-panel" id="right-gear-panel">
+                <div class="gear-panel-label">Jewelry</div>
+
+                <!-- Amulet -->
+                <div class="item-card" id="card-amulet" onclick="focusCard('amulet')">
+                    <div class="card-slot-label">Amulet</div>
+                    <div class="card-item-name" id="name-amulet" onclick="openItemModal('amulet', event)">
+                        <span id="name-text-amulet">Select Item</span>
+                        <span class="name-chevron">▾</span>
+                    </div>
+                    <div class="affix-list" id="affixes-amulet"></div>
+                </div>
+
+                <!-- Left Ring -->
+                <div class="item-card" id="card-ring-left" onclick="focusCard('ring-left')">
+                    <div class="card-slot-label">Left Ring</div>
+                    <div class="card-item-name" id="name-ring-left" onclick="openItemModal('ring-left', event)">
+                        <span id="name-text-ring-left">Select Item</span>
+                        <span class="name-chevron">▾</span>
+                    </div>
+                    <div class="affix-list" id="affixes-ring-left"></div>
+                </div>
+
+                <!-- Right Ring -->
+                <div class="item-card" id="card-ring-right" onclick="focusCard('ring-right')">
+                    <div class="card-slot-label">Right Ring</div>
+                    <div class="card-item-name" id="name-ring-right" onclick="openItemModal('ring-right', event)">
+                        <span id="name-text-ring-right">Select Item</span>
+                        <span class="name-chevron">▾</span>
+                    </div>
+                    <div class="affix-list" id="affixes-ring-right"></div>
+                </div>
+
+                <!-- Right Weapon Mount (dynamic) -->
+                <div class="gear-panel-label" style="margin-top: 8px;">Weapons — Right</div>
+                <div id="right-weapon-mounts"></div>
+            </div>
+
+            <!-- CRAFT PANEL -->
+            <div class="craft-panel">
+                <div class="craft-panel-header">
+                    <h2>Tuning Prism Planner</h2>
+                    <div class="craft-active-slot" id="craft-slot-label">No slot selected</div>
+                </div>
+                <div class="craft-results-area" id="craft-results">
+                    <div class="craft-empty">
+                        Click any gear card to select it,<br>then assign affixes to reveal<br>the required Tuning Prisms.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ══ TAB: DATABASE ════════════════════════════════ -->
+    <div id="tab-database" class="tab-page">
+        <div class="db-placeholder">
+            <h2>Database</h2>
+            <p>Coming soon — item and affix reference tables.</p>
+        </div>
+    </div>
+
+    <!-- ── AFFIX SELECTION MODAL ───────────────────────── -->
+    <div class="modal-overlay" id="affix-modal" onclick="handleModalOverlayClick(event)">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 id="affix-modal-title">Select Affix</h3>
+                <button class="modal-close" onclick="closeAffixModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-categories" id="modal-category-list"></div>
+                <div class="modal-affixes" id="modal-affix-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── ITEM SELECTION MODAL ────────────────────────── -->
+    <div class="modal-overlay" id="item-modal" onclick="handleItemModalOverlayClick(event)">
+        <div class="item-modal-box" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 id="item-modal-title">Select Item</h3>
+                <button class="modal-close" onclick="closeItemModal()">✕</button>
+            </div>
+            <div class="item-modal-list" id="item-modal-list"></div>
+        </div>
+    </div>
+
+    <!-- ── DATA MODULES ────────────────────────────────── -->
+    <script src="aggressive.js"></script>
+    <script src="protector.js"></script>
+    <script src="pragmatic.js"></script>
+    <script src="resourceful.js"></script>
+    <script src="adept.js"></script>
+    <script src="items.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>
