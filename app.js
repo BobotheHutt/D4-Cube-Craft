@@ -437,20 +437,26 @@ function updateCraftPanel() {
 
 // ── PRISM LOOKUP ──────────────────────────────────────────────
 // Returns ALL matching prism keys — some affixes appear in multiple buckets
+// Handles both flat arrays and class-aware object structures
+function flattenPrismData(data) {
+    if (Array.isArray(data)) return data;
+    if (typeof data === "object") {
+        const cls = AppState.activeClass;
+        const primaryStat = CLASS_PRIMARY_STAT[cls];
+        return [
+            ...(primaryStat ? [primaryStat] : []),
+            ...(data.universal       || []),
+            ...(data.classskills?.[cls]    || []),
+            ...(data.classresource?.[cls]  || [])
+        ];
+    }
+    return [];
+}
+
 function findPrismsForAffix(affixName) {
     const matches = [];
     for (const [key, data] of Object.entries(window.PrismRegistry)) {
-        if (Array.isArray(data)) {
-            if (data.includes(affixName)) matches.push(key);
-        } else if (typeof data === "object") {
-            const primaryStat = CLASS_PRIMARY_STAT[AppState.activeClass];
-            const allAdept = [
-                ...(primaryStat ? [primaryStat] : []),
-                ...(data.universal || []),
-                ...(data.classskills?.[AppState.activeClass] || [])
-            ];
-            if (allAdept.includes(affixName)) matches.push(key);
-        }
+        if (flattenPrismData(data).includes(affixName)) matches.push(key);
     }
     return matches;
 }
@@ -519,19 +525,8 @@ function renderAffixModalList() {
     const container  = document.getElementById("modal-affix-list");
     container.innerHTML = "";
     const currentVal = AppState.affixSelections[affixModalState.slotId]?.[`slot${affixModalState.slotIndex}`];
-    const rawData    = window.PrismRegistry[affixModalState.activeCategory];
-    let affixList    = [];
-    if (Array.isArray(rawData)) {
-        affixList = rawData;
-    } else if (rawData && typeof rawData === "object") {
-        // adeptPrism — build class-aware list
-        const primaryStat = CLASS_PRIMARY_STAT[AppState.activeClass];
-        affixList = [
-            ...(primaryStat ? [primaryStat] : []),
-            ...(rawData.universal || []),
-            ...(rawData.classskills?.[AppState.activeClass] || [])
-        ];
-    }
+    const rawData = window.PrismRegistry[affixModalState.activeCategory];
+    const affixList = flattenPrismData(rawData || []);
 
     // Clear option
     const clearBtn = document.createElement("button");
