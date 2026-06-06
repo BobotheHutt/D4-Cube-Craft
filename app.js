@@ -998,6 +998,11 @@ function switchTab(tabName) {
     });
     const page = document.getElementById(`tab-${tabName}`);
     if (page) page.classList.add("active");
+
+    if (tabName === "database") {
+        const sel = document.getElementById("db-class-select");
+        renderDatabase(sel ? sel.value : "all");
+    }
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -1296,12 +1301,4 @@ function buildMythicsSection() {
     });
 }
 
-// Init database when tab is switched to
-const _origSwitchTab = switchTab;
-function switchTab(tabName) {
-    _origSwitchTab(tabName);
-    if (tabName === "database") {
-        const sel = document.getElementById("db-class-select");
-        renderDatabase(sel ? sel.value : "all");
-    }
-}
+
