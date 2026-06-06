@@ -6,33 +6,22 @@
 // ══════════════════════════════════════════════════════════════
 
 // ── PRISM REGISTRY ────────────────────────────────────────────
-window.PrismRegistry = {};
+window.PrismRegistry   = window.PrismRegistry   || {};
+window.AspectRegistry  = window.AspectRegistry  || {};
+window.MythicRegistry  = window.MythicRegistry  || {};
+window.TemperRegistry  = window.TemperRegistry  || {};
 
 function registerPrismBucket(prismName, affixList) {
     window.PrismRegistry[prismName] = affixList;
 }
 
-// ── ASPECT REGISTRY ───────────────────────────────────────────
-// Populated by aspects-*.js files via registerAspectCategory()
-window.AspectRegistry = {};
-
 function registerAspectCategory(categoryKey, aspectList) {
     window.AspectRegistry[categoryKey] = aspectList;
 }
 
-// ── MYTHIC REGISTRY ───────────────────────────────────────────
-// Populated by mythics.js via registerMythics()
-// Format: { slotId: [{ name, slots? }], ... }
-// Items with slots:[] array are multi-slot (rings, weapons)
-window.MythicRegistry = {};
-
 function registerMythics(mythicData) {
     window.MythicRegistry = mythicData;
 }
-
-// ── TEMPER REGISTRY ───────────────────────────────────────────
-// Populated by tempers-*.js files via registerTemperCategory()
-window.TemperRegistry = {};
 
 function registerTemperCategory(categoryKey, temperList) {
     window.TemperRegistry[categoryKey] = temperList;
