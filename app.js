@@ -1394,3 +1394,120 @@ function buildMythicsSection() {
 }
 
 
+
+// ══════════════════════════════════════════════════════════════
+//  ITEM TOOLTIP  (delayed hover — 1 second delay)
+// ══════════════════════════════════════════════════════════════
+
+let tooltipTimer   = null;
+const TOOLTIP_DELAY = 1000; // ms
+
+function showTooltip(e, name, type, power) {
+    clearTimeout(tooltipTimer);
+    tooltipTimer = setTimeout(() => {
+        const tip = document.getElementById("item-tooltip");
+        if (!tip) return;
+        document.getElementById("tooltip-name").textContent  = name;
+        document.getElementById("tooltip-type").textContent  = type;
+        document.getElementById("tooltip-power").textContent = power || "";
+        document.getElementById("tooltip-power").style.display = power ? "block" : "none";
+
+        positionTooltip(e);
+        tip.classList.add("visible");
+    }, TOOLTIP_DELAY);
+}
+
+function moveTooltip(e) {
+    positionTooltip(e);
+}
+
+function hideTooltip() {
+    clearTimeout(tooltipTimer);
+    const tip = document.getElementById("item-tooltip");
+    if (tip) tip.classList.remove("visible");
+}
+
+function positionTooltip(e) {
+    const tip = document.getElementById("item-tooltip");
+    if (!tip) return;
+    const pad  = 14;
+    const tw   = tip.offsetWidth  || 280;
+    const th   = tip.offsetHeight || 100;
+    let x = e.clientX + pad;
+    let y = e.clientY + pad;
+    if (x + tw > window.innerWidth)  x = e.clientX - tw - pad;
+    if (y + th > window.innerHeight) y = e.clientY - th - pad;
+    tip.style.left = `${x}px`;
+    tip.style.top  = `${y}px`;
+}
+
+// Attach tooltip to an element
+function attachTooltip(el, name, type, power) {
+    el.addEventListener("mouseenter", (e) => showTooltip(e, name, type, power));
+    el.addEventListener("mousemove",  (e) => moveTooltip(e));
+    el.addEventListener("mouseleave", ()  => hideTooltip());
+}
+
+// ── Wire tooltips into mythic and unique list renderers ───────
+// Patch renderMythicList to attach tooltips
+const _origRenderMythicList = renderMythicList;
+renderMythicList = function(slotId) {
+    _origRenderMythicList(slotId);
+    // Re-attach tooltips to rendered buttons
+    const listEl = document.getElementById("item-modal-list");
+    const all    = window.MythicRegistry || {};
+    const itemMap = {};
+    Object.values(all).flat().forEach(item => {
+        if (item?.name) itemMap[item.name] = item;
+    });
+    listEl.querySelectorAll(".item-modal-btn").forEach(btn => {
+        const item = itemMap[btn.textContent];
+        if (item?.power) {
+            attachTooltip(btn, item.name, "Mythic Unique", item.power);
+        }
+    });
+};
+
+// Patch renderUniqueList to attach tooltips
+const _origRenderUniqueList = renderUniqueList;
+renderUniqueList = function(slotId) {
+    _origRenderUniqueList(slotId);
+    const listEl  = document.getElementById("item-modal-list");
+    const items   = window.UniqueRegistry[AppState.activeClass] || [];
+    const itemMap = {};
+    items.forEach(item => { if (item?.name) itemMap[item.name] = item; });
+    listEl.querySelectorAll(".item-modal-btn").forEach(btn => {
+        const item = itemMap[btn.textContent];
+        if (item?.power) {
+            attachTooltip(btn, item.name, "Unique", item.power);
+        }
+    });
+};
+
+// Also attach tooltips to database mythic cards
+const _origBuildMythicsSection = buildMythicsSection;
+buildMythicsSection = function() {
+    const section = _origBuildMythicsSection();
+    // Tooltips attach after expand since body is lazy-built
+    const origHeader = section.querySelector(".db-section-header");
+    const origClick  = origHeader.onclick;
+    origHeader.onclick = function() {
+        origClick?.call(this);
+        setTimeout(() => {
+            const all = window.MythicRegistry || {};
+            const itemMap = {};
+            Object.values(all).flat().forEach(item => {
+                if (item?.name) itemMap[item.name] = item;
+            });
+            section.querySelectorAll(".db-mythic-card").forEach(card => {
+                const nameEl = card.querySelector(".db-mythic-name");
+                if (!nameEl) return;
+                const item = itemMap[nameEl.textContent];
+                if (item?.power) {
+                    attachTooltip(card, item.name, "Mythic Unique", item.power);
+                }
+            });
+        }, 50);
+    };
+    return section;
+};

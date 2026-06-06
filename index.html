@@ -1158,6 +1158,50 @@
             background: #8888ff;
         }
 
+
+        /* ── ITEM TOOLTIP ─────────────────────────────────────── */
+        #item-tooltip {
+            position: fixed;
+            z-index: 200;
+            background: #0d0d18;
+            border: 1px solid #5a3d80;
+            border-radius: 6px;
+            padding: 12px 16px;
+            max-width: 280px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.6);
+        }
+
+        #item-tooltip.visible { opacity: 1; }
+
+        .tooltip-name {
+            font-family: 'Cinzel', serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: #e090ff;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .tooltip-type {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-hint);
+            margin-bottom: 8px;
+        }
+
+        .tooltip-power {
+            font-size: 12px;
+            color: #c8a0ff;
+            line-height: 1.6;
+            border-top: 1px solid #2a1a3d;
+            padding-top: 8px;
+        }
+
         /* ── SCROLLBAR ────────────────────────────────────── */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -1443,6 +1487,13 @@
                 <button class="char-modal-submit" onclick="confirmAddCharacter()">Create</button>
             </div>
         </div>
+    </div>
+
+    <!-- ── ITEM TOOLTIP ───────────────────────────────────── -->
+    <div id="item-tooltip">
+        <div class="tooltip-name" id="tooltip-name"></div>
+        <div class="tooltip-type" id="tooltip-type"></div>
+        <div class="tooltip-power" id="tooltip-power"></div>
     </div>
 
     <!-- ── PRISM DATA MODULES ──────────────────────────── -->
