@@ -1140,19 +1140,12 @@ function buildPrismsSection(filterClass) {
 // ── ASPECTS SECTION ───────────────────────────────────────────
 function buildAspectsSection(filterClass) {
     const isFiltered = filterClass !== "all";
-    const meta = isFiltered ? `Filtered for ${filterClass}` : "Select a class to filter";
+    const meta = isFiltered
+        ? `Filtered for ${filterClass.charAt(0).toUpperCase() + filterClass.slice(1)}`
+        : "All Classes";
 
     return buildSection("Legendary Aspects", meta, () => {
         const wrap = document.createElement("div");
-
-        if (!isFiltered) {
-            const msg = document.createElement("div");
-            msg.className   = "db-placeholder-msg";
-            msg.textContent = "Aspects are class-specific. Select a class from the dropdown above to see eligible aspects.";
-            wrap.appendChild(msg);
-            return wrap;
-        }
-
         const grid = document.createElement("div");
         grid.className = "db-cat-grid";
 
@@ -1166,16 +1159,18 @@ function buildAspectsSection(filterClass) {
             block.appendChild(catLabel);
 
             const aspects = window.AspectRegistry[key] || [];
-            const filtered = aspects.filter(a => {
-                if (typeof a === "string") return true;
-                if (!a.classes || a.classes.length === 0) return true;
-                return a.classes.includes(filterClass);
-            });
+            const filtered = isFiltered
+                ? aspects.filter(a => {
+                    if (typeof a === "string") return true;
+                    if (!a.classes || a.classes.length === 0) return true;
+                    return a.classes.includes(filterClass);
+                })
+                : aspects; // All classes — show everything
 
             if (filtered.length === 0) {
                 const empty = document.createElement("div");
                 empty.className   = "db-placeholder-msg";
-                empty.textContent = "None tagged for this class yet.";
+                empty.textContent = "None available.";
                 block.appendChild(empty);
             } else {
                 filtered.forEach(a => {
@@ -1198,19 +1193,12 @@ function buildAspectsSection(filterClass) {
 // ── TEMPERS SECTION ───────────────────────────────────────────
 function buildTempersSection(filterClass) {
     const isFiltered = filterClass !== "all";
-    const meta = isFiltered ? `Filtered for ${filterClass}` : "Select a class to filter";
+    const meta = isFiltered
+        ? `Filtered for ${filterClass.charAt(0).toUpperCase() + filterClass.slice(1)}`
+        : "All Classes";
 
     return buildSection("Temper Manuals", meta, () => {
         const wrap = document.createElement("div");
-
-        if (!isFiltered) {
-            const msg = document.createElement("div");
-            msg.className   = "db-placeholder-msg";
-            msg.textContent = "Tempers are class-specific. Select a class from the dropdown above to see eligible tempers.";
-            wrap.appendChild(msg);
-            return wrap;
-        }
-
         const grid = document.createElement("div");
         grid.className = "db-cat-grid";
 
@@ -1224,16 +1212,18 @@ function buildTempersSection(filterClass) {
             block.appendChild(catLabel);
 
             const tempers  = window.TemperRegistry[key] || [];
-            const filtered = tempers.filter(t => {
-                if (typeof t === "string") return true;
-                if (!t.classes || t.classes.length === 0) return true;
-                return t.classes.includes(filterClass);
-            });
+            const filtered = isFiltered
+                ? tempers.filter(t => {
+                    if (typeof t === "string") return true;
+                    if (!t.classes || t.classes.length === 0) return true;
+                    return t.classes.includes(filterClass);
+                })
+                : tempers; // All classes — show everything
 
             if (filtered.length === 0) {
                 const empty = document.createElement("div");
                 empty.className   = "db-placeholder-msg";
-                empty.textContent = "None tagged for this class yet.";
+                empty.textContent = "None available.";
                 block.appendChild(empty);
             } else {
                 filtered.forEach(t => {
