@@ -44,6 +44,19 @@ const PRISM_DISPLAY_NAME = {
     adeptPrism:       "Adept"
 };
 
+
+// ── CLASS PRIMARY STAT MAP ────────────────────────────────────
+const CLASS_PRIMARY_STAT = {
+    barbarian:   "Strength",
+    druid:       "Willpower",
+    necromancer: "Intelligence",
+    rogue:       "Dexterity",
+    sorcerer:    "Intelligence",
+    spiritborn:  "Dexterity",
+    paladin:     "Strength",
+    warlock:     "Intelligence"
+};
+
 // ── AFFIX CATEGORY MAP ────────────────────────────────────────
 // UI label → internal prism bucket key
 const AFFIX_CATEGORY_MAP = [
@@ -391,36 +404,55 @@ function updateCraftPanel() {
 
     resultsEl.innerHTML = "";
     chosen.forEach(affix => {
-        const prismKey = findPrismForAffix(affix);
-        const row      = document.createElement("div");
-        row.className  = "result-row";
+        const prismKeys = findPrismsForAffix(affix);
+        const row       = document.createElement("div");
+        row.className   = "result-row";
 
         const nameSpan = document.createElement("span");
         nameSpan.className   = "result-affix-name";
         nameSpan.textContent = affix;
 
-        const badge = document.createElement("span");
-        badge.className = "prism-badge";
-        if (prismKey) {
-            badge.classList.add(PRISM_BADGE_CLASS[prismKey] || "badge-none");
-            badge.textContent = PRISM_DISPLAY_NAME[prismKey] || prismKey;
-        } else {
-            badge.classList.add("badge-none");
+        const badgeWrap = document.createElement("span");
+        badgeWrap.style.cssText = "display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;";
+
+        if (prismKeys.length === 0) {
+            const badge = document.createElement("span");
+            badge.className = "prism-badge badge-none";
             badge.textContent = "No Prism";
+            badgeWrap.appendChild(badge);
+        } else {
+            prismKeys.forEach(key => {
+                const badge = document.createElement("span");
+                badge.className = "prism-badge " + (PRISM_BADGE_CLASS[key] || "badge-none");
+                badge.textContent = PRISM_DISPLAY_NAME[key] || key;
+                badgeWrap.appendChild(badge);
+            });
         }
 
         row.appendChild(nameSpan);
-        row.appendChild(badge);
+        row.appendChild(badgeWrap);
         resultsEl.appendChild(row);
     });
 }
 
 // ── PRISM LOOKUP ──────────────────────────────────────────────
-function findPrismForAffix(affixName) {
-    for (const [key, list] of Object.entries(window.PrismRegistry)) {
-        if (list.includes(affixName)) return key;
+// Returns ALL matching prism keys — some affixes appear in multiple buckets
+function findPrismsForAffix(affixName) {
+    const matches = [];
+    for (const [key, data] of Object.entries(window.PrismRegistry)) {
+        if (Array.isArray(data)) {
+            if (data.includes(affixName)) matches.push(key);
+        } else if (typeof data === "object") {
+            const primaryStat = CLASS_PRIMARY_STAT[AppState.activeClass];
+            const allAdept = [
+                ...(primaryStat ? [primaryStat] : []),
+                ...(data.universal || []),
+                ...(data.classskills?.[AppState.activeClass] || [])
+            ];
+            if (allAdept.includes(affixName)) matches.push(key);
+        }
     }
-    return null;
+    return matches;
 }
 
 // ── SLOT LABEL HELPER ─────────────────────────────────────────
@@ -487,7 +519,19 @@ function renderAffixModalList() {
     const container  = document.getElementById("modal-affix-list");
     container.innerHTML = "";
     const currentVal = AppState.affixSelections[affixModalState.slotId]?.[`slot${affixModalState.slotIndex}`];
-    const affixList  = window.PrismRegistry[affixModalState.activeCategory] || [];
+    const rawData    = window.PrismRegistry[affixModalState.activeCategory];
+    let affixList    = [];
+    if (Array.isArray(rawData)) {
+        affixList = rawData;
+    } else if (rawData && typeof rawData === "object") {
+        // adeptPrism — build class-aware list
+        const primaryStat = CLASS_PRIMARY_STAT[AppState.activeClass];
+        affixList = [
+            ...(primaryStat ? [primaryStat] : []),
+            ...(rawData.universal || []),
+            ...(rawData.classskills?.[AppState.activeClass] || [])
+        ];
+    }
 
     // Clear option
     const clearBtn = document.createElement("button");
