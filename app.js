@@ -485,9 +485,13 @@ let affixModalState = {
 };
 
 function openAffixModal(slotId, slotIndex) {
-    affixModalState.slotId         = slotId;
-    affixModalState.slotIndex      = slotIndex;
-    affixModalState.activeCategory = AFFIX_CATEGORY_MAP[0].key;
+    affixModalState.slotId    = slotId;
+    affixModalState.slotIndex = slotIndex;
+    // Preserve last selected category so modal feels consistent across slots
+    // Only default to first category if nothing has been selected yet
+    if (!affixModalState.activeCategory) {
+        affixModalState.activeCategory = AFFIX_CATEGORY_MAP[0].key;
+    }
 
     document.getElementById("affix-modal-title").textContent =
         `Affix Slot ${slotIndex} — ${getSlotLabel(slotId)}`;
