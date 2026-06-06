@@ -175,11 +175,33 @@
             padding: 20px 20px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            grid-template-rows: auto 1fr;
+            gap: 0 16px;
             align-content: start;
         }
 
-        .gear-col { display: flex; flex-direction: column; gap: 12px; }
+        /* Each col is itself a grid: card zone on top, weapon zone below */
+        .gear-col {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            gap: 12px;
+            align-content: start;
+        }
+
+        .gear-col-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Weapon zone — both columns' weapon sections start at the same row */
+        .gear-col-weapons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            /* border-top aligns visually with opposite column's weapon label */
+            padding-top: 4px;
+        }
 
         .gear-col-label {
             font-size: 10px;
@@ -723,90 +745,98 @@
 
                     <!-- LEFT COLUMN: Armor + Left Weapons -->
                     <div class="gear-col" id="left-gear-col">
-                        <div class="gear-col-label">Armor</div>
+                        <div class="gear-col-cards">
+                            <div class="gear-col-label">Armor</div>
 
-                        <div class="item-card" id="card-helm" onclick="focusCard('helm')">
-                            <div class="card-slot-label">Helm</div>
-                            <div class="card-item-name" id="name-helm" onclick="openItemModal('helm', event)">
-                                <span id="name-text-helm">Select Item</span>
-                                <span class="name-chevron">▾</span>
+                            <div class="item-card" id="card-helm" onclick="focusCard('helm')">
+                                <div class="card-slot-label">Helm</div>
+                                <div class="card-item-name" id="name-helm" onclick="openItemModal('helm', event)">
+                                    <span id="name-text-helm">Select Item</span>
+                                    <span class="name-chevron">▾</span>
+                                </div>
+                                <div class="affix-list" id="affixes-helm"></div>
                             </div>
-                            <div class="affix-list" id="affixes-helm"></div>
+
+                            <div class="item-card" id="card-chest" onclick="focusCard('chest')">
+                                <div class="card-slot-label">Chest Armor</div>
+                                <div class="card-item-name" id="name-chest" onclick="openItemModal('chest', event)">
+                                    <span id="name-text-chest">Select Item</span>
+                                    <span class="name-chevron">▾</span>
+                                </div>
+                                <div class="affix-list" id="affixes-chest"></div>
+                            </div>
+
+                            <div class="item-card" id="card-gloves" onclick="focusCard('gloves')">
+                                <div class="card-slot-label">Gloves</div>
+                                <div class="card-item-name" id="name-gloves" onclick="openItemModal('gloves', event)">
+                                    <span id="name-text-gloves">Select Item</span>
+                                    <span class="name-chevron">▾</span>
+                                </div>
+                                <div class="affix-list" id="affixes-gloves"></div>
+                            </div>
+
+                            <div class="item-card" id="card-pants" onclick="focusCard('pants')">
+                                <div class="card-slot-label">Pants</div>
+                                <div class="card-item-name" id="name-pants" onclick="openItemModal('pants', event)">
+                                    <span id="name-text-pants">Select Item</span>
+                                    <span class="name-chevron">▾</span>
+                                </div>
+                                <div class="affix-list" id="affixes-pants"></div>
+                            </div>
+
+                            <div class="item-card" id="card-boots" onclick="focusCard('boots')">
+                                <div class="card-slot-label">Boots</div>
+                                <div class="card-item-name" id="name-boots" onclick="openItemModal('boots', event)">
+                                    <span id="name-text-boots">Select Item</span>
+                                    <span class="name-chevron">▾</span>
+                                </div>
+                                <div class="affix-list" id="affixes-boots"></div>
+                            </div>
                         </div>
 
-                        <div class="item-card" id="card-chest" onclick="focusCard('chest')">
-                            <div class="card-slot-label">Chest Armor</div>
-                            <div class="card-item-name" id="name-chest" onclick="openItemModal('chest', event)">
-                                <span id="name-text-chest">Select Item</span>
-                                <span class="name-chevron">▾</span>
-                            </div>
-                            <div class="affix-list" id="affixes-chest"></div>
+                        <div class="gear-col-weapons">
+                            <div class="gear-col-label">Weapons — Left</div>
+                            <div id="left-weapon-mounts"></div>
                         </div>
-
-                        <div class="item-card" id="card-gloves" onclick="focusCard('gloves')">
-                            <div class="card-slot-label">Gloves</div>
-                            <div class="card-item-name" id="name-gloves" onclick="openItemModal('gloves', event)">
-                                <span id="name-text-gloves">Select Item</span>
-                                <span class="name-chevron">▾</span>
-                            </div>
-                            <div class="affix-list" id="affixes-gloves"></div>
-                        </div>
-
-                        <div class="item-card" id="card-pants" onclick="focusCard('pants')">
-                            <div class="card-slot-label">Pants</div>
-                            <div class="card-item-name" id="name-pants" onclick="openItemModal('pants', event)">
-                                <span id="name-text-pants">Select Item</span>
-                                <span class="name-chevron">▾</span>
-                            </div>
-                            <div class="affix-list" id="affixes-pants"></div>
-                        </div>
-
-                        <div class="item-card" id="card-boots" onclick="focusCard('boots')">
-                            <div class="card-slot-label">Boots</div>
-                            <div class="card-item-name" id="name-boots" onclick="openItemModal('boots', event)">
-                                <span id="name-text-boots">Select Item</span>
-                                <span class="name-chevron">▾</span>
-                            </div>
-                            <div class="affix-list" id="affixes-boots"></div>
-                        </div>
-
-                        <div class="gear-col-label" style="margin-top: 4px;">Weapons — Left</div>
-                        <div id="left-weapon-mounts"></div>
                     </div>
 
                     <!-- RIGHT COLUMN: Jewelry + Right Weapons -->
                     <div class="gear-col" id="right-gear-col">
-                        <div class="gear-col-label">Jewelry</div>
+                        <div class="gear-col-cards">
+                            <div class="gear-col-label">Jewelry</div>
 
-                        <div class="item-card" id="card-amulet" onclick="focusCard('amulet')">
-                            <div class="card-slot-label">Amulet</div>
-                            <div class="card-item-name" id="name-amulet" onclick="openItemModal('amulet', event)">
-                                <span id="name-text-amulet">Select Item</span>
-                                <span class="name-chevron">▾</span>
+                            <div class="item-card" id="card-amulet" onclick="focusCard('amulet')">
+                                <div class="card-slot-label">Amulet</div>
+                                <div class="card-item-name" id="name-amulet" onclick="openItemModal('amulet', event)">
+                                    <span id="name-text-amulet">Select Item</span>
+                                    <span class="name-chevron">▾</span>
+                                </div>
+                                <div class="affix-list" id="affixes-amulet"></div>
                             </div>
-                            <div class="affix-list" id="affixes-amulet"></div>
+
+                            <div class="item-card" id="card-ring-left" onclick="focusCard('ring-left')">
+                                <div class="card-slot-label">Left Ring</div>
+                                <div class="card-item-name" id="name-ring-left" onclick="openItemModal('ring-left', event)">
+                                    <span id="name-text-ring-left">Select Item</span>
+                                    <span class="name-chevron">▾</span>
+                                </div>
+                                <div class="affix-list" id="affixes-ring-left"></div>
+                            </div>
+
+                            <div class="item-card" id="card-ring-right" onclick="focusCard('ring-right')">
+                                <div class="card-slot-label">Right Ring</div>
+                                <div class="card-item-name" id="name-ring-right" onclick="openItemModal('ring-right', event)">
+                                    <span id="name-text-ring-right">Select Item</span>
+                                    <span class="name-chevron">▾</span>
+                                </div>
+                                <div class="affix-list" id="affixes-ring-right"></div>
+                            </div>
                         </div>
 
-                        <div class="item-card" id="card-ring-left" onclick="focusCard('ring-left')">
-                            <div class="card-slot-label">Left Ring</div>
-                            <div class="card-item-name" id="name-ring-left" onclick="openItemModal('ring-left', event)">
-                                <span id="name-text-ring-left">Select Item</span>
-                                <span class="name-chevron">▾</span>
-                            </div>
-                            <div class="affix-list" id="affixes-ring-left"></div>
+                        <div class="gear-col-weapons">
+                            <div class="gear-col-label">Weapons — Right</div>
+                            <div id="right-weapon-mounts"></div>
                         </div>
-
-                        <div class="item-card" id="card-ring-right" onclick="focusCard('ring-right')">
-                            <div class="card-slot-label">Right Ring</div>
-                            <div class="card-item-name" id="name-ring-right" onclick="openItemModal('ring-right', event)">
-                                <span id="name-text-ring-right">Select Item</span>
-                                <span class="name-chevron">▾</span>
-                            </div>
-                            <div class="affix-list" id="affixes-ring-right"></div>
-                        </div>
-
-                        <div class="gear-col-label" style="margin-top: 4px;">Weapons — Right</div>
-                        <div id="right-weapon-mounts"></div>
                     </div>
 
                 </div>
