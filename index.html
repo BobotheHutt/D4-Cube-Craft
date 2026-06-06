@@ -1155,14 +1155,12 @@
             color: #8888ff;
         }
 
-        /* When gear is locked, block all interaction on cards */
+        /* When gear is locked, whole card is one click target */
         .gear-locked .item-card {
             cursor: pointer;
         }
 
-        .gear-locked .card-item-name,
-        .gear-locked .affix-select,
-        .gear-locked .affix-row.temper-slot .affix-select {
+        .gear-locked .card-item-name {
             pointer-events: none;
             cursor: pointer;
         }

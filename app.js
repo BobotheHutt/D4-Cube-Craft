@@ -498,10 +498,17 @@ function renderAffixRows(slotId) {
         sel.id        = `affix-${slotId}-${i}`;
 
         if (isTemper) {
-            sel.disabled = true;
-            const opt    = document.createElement("option");
-            opt.textContent = "Temper Slot";
+            const temperVal = AppState.temperSelections?.[slotId] || null;
+            const opt       = document.createElement("option");
+            opt.textContent = temperVal || "Temper Slot";
             sel.appendChild(opt);
+            if (temperVal) sel.classList.add("has-value");
+
+            sel.addEventListener("mousedown", (e) => {
+                e.preventDefault();
+                if (AppState.gearLocked) { focusCard(slotId); return; }
+                openTemperModal(slotId);
+            });
         } else {
             const phOpt = document.createElement("option");
             phOpt.value       = "";
@@ -524,8 +531,27 @@ function renderAffixRows(slotId) {
             });
         }
 
+        // Plain-text label shown only in locked mode (CSS toggles visibility)
+        const lockedLabel = document.createElement("span");
+        lockedLabel.className = "affix-locked-label";
+
+        if (isTemper) {
+            const temperVal = AppState.temperSelections?.[slotId] || null;
+            lockedLabel.textContent = temperVal || "No temper set";
+            if (!temperVal) lockedLabel.classList.add("empty");
+        } else {
+            if (currentVal) {
+                lockedLabel.textContent = currentVal;
+                if (mismatch) lockedLabel.classList.add("mismatch");
+            } else {
+                lockedLabel.textContent = "—";
+                lockedLabel.classList.add("empty");
+            }
+        }
+
         row.appendChild(num);
         row.appendChild(sel);
+        row.appendChild(lockedLabel);
         container.appendChild(row);
     }
 }
