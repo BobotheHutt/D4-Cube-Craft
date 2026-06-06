@@ -316,6 +316,8 @@
         /* Tier color overrides applied via JS */
         .card-item-name.is-legendary { color: var(--gold); }
         .card-item-name.is-legendary:hover { color: var(--gold-bright); }
+        .card-item-name.is-unique { color: #7ec8f5; }
+        .card-item-name.is-unique:hover { color: #aaddff; }
         .card-item-name.is-mythic { color: var(--mythic-color); }
         .card-item-name.is-mythic:hover { color: #f0b0ff; }
 
@@ -598,6 +600,13 @@
 
         .tier-btn.legendary:hover { border-color: var(--gold); }
 
+        .tier-btn.unique {
+            color: #7ec8f5;
+            border-color: #1a4a66;
+        }
+
+        .tier-btn.unique:hover { border-color: #7ec8f5; }
+
         .tier-btn.mythic {
             color: var(--mythic-color);
             border-color: var(--purple-dim);
@@ -685,6 +694,7 @@
         .item-modal-btn:last-child { border-bottom: none; }
         .item-modal-btn:hover { background: var(--bg-card-hover); color: #fff; }
         .item-modal-btn.tier-legendary { color: var(--gold); }
+        .item-modal-btn.tier-unique    { color: #7ec8f5; }
         .item-modal-btn.tier-mythic    { color: var(--mythic-color); }
 
         /* ── DATABASE PLACEHOLDER ─────────────────────────── */
@@ -1093,6 +1103,13 @@
             margin-bottom: 4px;
         }
 
+        .db-unique-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #7ec8f5;
+            margin-bottom: 4px;
+        }
+
         .db-mythic-slot {
             font-size: 11px;
             color: var(--text-hint);
@@ -1439,6 +1456,14 @@
 
     <!-- ── ITEM DATA MODULES ───────────────────────────── -->
     <script src="mythics.js"></script>
+    <script src="uniques-barbarian.js"></script>
+    <script src="uniques-druid.js"></script>
+    <script src="uniques-necromancer.js"></script>
+    <script src="uniques-rogue.js"></script>
+    <script src="uniques-sorcerer.js"></script>
+    <script src="uniques-spiritborn.js"></script>
+    <script src="uniques-paladin.js"></script>
+    <script src="uniques-warlock.js"></script>
     <script src="aspects-offensive.js"></script>
     <script src="aspects-defensive.js"></script>
     <script src="aspects-resource.js"></script>

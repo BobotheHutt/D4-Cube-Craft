@@ -10,11 +10,13 @@ window.PrismRegistry   = window.PrismRegistry   || {};
 window.AspectRegistry  = window.AspectRegistry  || {};
 window.MythicRegistry  = window.MythicRegistry  || {};
 window.TemperRegistry  = window.TemperRegistry  || {};
+window.UniqueRegistry  = window.UniqueRegistry  || {};
 
 function registerPrismBucket(prismName, affixList) { window.PrismRegistry[prismName] = affixList; }
 function registerAspectCategory(k, v)              { window.AspectRegistry[k] = v; }
 function registerMythics(d)                        { window.MythicRegistry = d; }
 function registerTemperCategory(k, v)              { window.TemperRegistry[k] = v; }
+function registerUniques(className, itemList)       { window.UniqueRegistry[className] = itemList; }
 
 // ── PRISM DISPLAY MAPS ────────────────────────────────────────
 const PRISM_BADGE_CLASS = {
@@ -579,13 +581,14 @@ function updateItemNameDisplay(slotId) {
     if (!nameEl || !nameTextEl) return;
 
     const selection = AppState.itemSelections[slotId];
-    nameEl.classList.remove("is-legendary", "is-mythic");
+    nameEl.classList.remove("is-legendary", "is-unique", "is-mythic");
 
     if (!selection) { nameTextEl.textContent = "Select Item"; return; }
 
     nameTextEl.textContent = selection.name;
-    if (selection.tier === "legendary") nameEl.classList.add("is-legendary");
-    else if (selection.tier === "mythic") nameEl.classList.add("is-mythic");
+    if (selection.tier === "legendary")  nameEl.classList.add("is-legendary");
+    else if (selection.tier === "unique")  nameEl.classList.add("is-unique");
+    else if (selection.tier === "mythic")  nameEl.classList.add("is-mythic");
 }
 
 // ── CARD FOCUS ────────────────────────────────────────────────
@@ -864,9 +867,15 @@ function showItemTierStep() {
     legBtn.onclick   = () => showItemBrowseStep("legendary");
     tierEl.appendChild(legBtn);
 
+    const uniqueBtn = document.createElement("button");
+    uniqueBtn.className = "tier-btn unique";
+    uniqueBtn.innerHTML = `Unique <span class="tier-btn-sub">Class-specific named items</span>`;
+    uniqueBtn.onclick   = () => showItemBrowseStep("unique");
+    tierEl.appendChild(uniqueBtn);
+
     const mythBtn = document.createElement("button");
     mythBtn.className = "tier-btn mythic";
-    mythBtn.innerHTML = `Mythic <span class="tier-btn-sub">Unique items — slot-locked</span>`;
+    mythBtn.innerHTML = `Mythic <span class="tier-btn-sub">Slot-locked ultra-rare items</span>`;
     mythBtn.onclick   = () => showItemBrowseStep("mythic");
     tierEl.appendChild(mythBtn);
 
@@ -885,7 +894,10 @@ function showItemBrowseStep(tier) {
     const slotId = itemModalState.slotId;
     const config = getSlotConfig(slotId);
 
-    if (tier === "mythic") {
+    if (tier === "unique") {
+        renderItemBrowseCats([]);
+        renderUniqueList(slotId);
+    } else if (tier === "mythic") {
         renderItemBrowseCats([]);
         renderMythicList(slotId);
     } else {
@@ -939,6 +951,41 @@ function renderAspectList(slotId, categoryKey) {
         btn.className   = "item-modal-btn tier-legendary";
         btn.textContent = name;
         btn.onclick     = () => selectItem({ name, tier: "legendary" });
+        listEl.appendChild(btn);
+    });
+}
+
+function renderUniqueList(slotId) {
+    const listEl = document.getElementById("item-modal-list");
+    listEl.innerHTML = "";
+    const catsEl = document.getElementById("item-modal-cats");
+    catsEl.innerHTML = "";
+    const backBtn = document.createElement("button");
+    backBtn.className = "modal-cat-btn";
+    backBtn.innerHTML = "‹ Back";
+    backBtn.onclick   = showItemTierStep;
+    catsEl.appendChild(backBtn);
+
+    const classItems = window.UniqueRegistry[AppState.activeClass] || [];
+    const matched = classItems.filter(item => {
+        if (!item?.name) return false;
+        const itemSlots = item.slots || (item.slot ? [item.slot] : []);
+        return itemSlots.length === 0 || itemSlots.includes(slotId);
+    });
+
+    if (matched.length === 0) {
+        const empty = document.createElement("div");
+        empty.style.cssText = "padding:20px 16px;color:var(--text-hint);font-style:italic;font-size:12px;";
+        empty.textContent   = "No unique items available for this slot and class.";
+        listEl.appendChild(empty);
+        return;
+    }
+
+    matched.forEach(item => {
+        const btn = document.createElement("button");
+        btn.className   = "item-modal-btn tier-unique";
+        btn.textContent = item.name;
+        btn.onclick     = () => selectItem({ name: item.name, tier: "unique" });
         listEl.appendChild(btn);
     });
 }
@@ -1036,6 +1083,7 @@ function renderDatabase(filterClass) {
     container.appendChild(buildPrismsSection(filterClass));
     container.appendChild(buildAspectsSection(filterClass));
     container.appendChild(buildTempersSection(filterClass));
+    container.appendChild(buildUniquesSection(filterClass));
     container.appendChild(buildMythicsSection());
 }
 
@@ -1242,6 +1290,60 @@ function buildTempersSection(filterClass) {
         });
 
         wrap.appendChild(grid);
+        return wrap;
+    });
+}
+
+// ── UNIQUES SECTION ──────────────────────────────────────────
+function buildUniquesSection(filterClass) {
+    const isFiltered = filterClass !== "all";
+    const meta = isFiltered
+        ? `${filterClass.charAt(0).toUpperCase() + filterClass.slice(1)} only`
+        : "All Classes";
+
+    return buildSection("Unique Items", meta, () => {
+        const wrap = document.createElement("div");
+
+        const classes = isFiltered
+            ? [filterClass]
+            : Object.keys(window.UniqueRegistry);
+
+        classes.forEach(cls => {
+            const items = window.UniqueRegistry[cls] || [];
+            if (items.length === 0) return;
+
+            if (!isFiltered) {
+                const classLabel = document.createElement("div");
+                classLabel.style.cssText = "font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-hint);padding:10px 0 6px;border-bottom:1px solid var(--border-dim);margin-bottom:10px;";
+                classLabel.textContent = cls;
+                wrap.appendChild(classLabel);
+            }
+
+            const grid = document.createElement("div");
+            grid.className = "db-mythic-grid";
+            grid.style.marginBottom = "16px";
+
+            items.forEach(item => {
+                const slotLabel = item.slot
+                    ? item.slot.charAt(0).toUpperCase() + item.slot.slice(1)
+                    : (item.slots || []).map(s =>
+                        s.startsWith("weapon") ? "Weapons" :
+                        s.startsWith("ring")   ? "Rings"   :
+                        s.charAt(0).toUpperCase() + s.slice(1)
+                    ).filter((v, i, a) => a.indexOf(v) === i).join(", ");
+
+                const card = document.createElement("div");
+                card.className = "db-mythic-card";
+                card.innerHTML = `
+                    <div class="db-unique-name">${item.name}</div>
+                    <div class="db-mythic-slot">${slotLabel}</div>
+                `;
+                grid.appendChild(card);
+            });
+
+            wrap.appendChild(grid);
+        });
+
         return wrap;
     });
 }
