@@ -1008,3 +1008,300 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCharacterSelector();
     loadCharacterIntoApp(getActiveCharacter());
 });
+
+// ══════════════════════════════════════════════════════════════
+//  DATABASE PAGE
+// ══════════════════════════════════════════════════════════════
+
+const PRISM_SECTION_COLOR = {
+    aggressivePrism:  "badge-aggressive",
+    protectorPrism:   "badge-protector",
+    pragmaticPrism:   "badge-pragmatic",
+    resourcefulPrism: "badge-resourceful",
+    adeptPrism:       "badge-adept",
+    chromaticPrism:   "badge-chromatic",
+    mobilityPrism:    "badge-mobility"
+};
+
+function renderDatabase(filterClass) {
+    const container = document.getElementById("db-content");
+    if (!container) return;
+    container.innerHTML = "";
+
+    container.appendChild(buildPrismsSection(filterClass));
+    container.appendChild(buildAspectsSection(filterClass));
+    container.appendChild(buildTempersSection(filterClass));
+    container.appendChild(buildMythicsSection());
+}
+
+// ── SECTION BUILDER HELPER ────────────────────────────────────
+function buildSection(title, metaText, buildBodyFn) {
+    const section = document.createElement("div");
+    section.className = "db-section";
+
+    const header = document.createElement("div");
+    header.className = "db-section-header";
+    header.innerHTML = `
+        <span class="db-section-title">${title}</span>
+        <span style="display:flex;align-items:center;gap:12px;">
+            <span class="db-section-meta">${metaText}</span>
+            <span class="db-section-chevron">▼</span>
+        </span>
+    `;
+    header.onclick = () => {
+        section.classList.toggle("open");
+        if (section.classList.contains("open") && !section._built) {
+            section._built = true;
+            body.appendChild(buildBodyFn());
+        }
+    };
+
+    const body = document.createElement("div");
+    body.className = "db-section-body";
+
+    section.appendChild(header);
+    section.appendChild(body);
+    return section;
+}
+
+// ── PRISMS SECTION ────────────────────────────────────────────
+function buildPrismsSection(filterClass) {
+    return buildSection("Tuning Prisms", "7 prisms — click to expand", () => {
+        const grid = document.createElement("div");
+        grid.className = "db-cat-grid";
+
+        Object.entries(window.PrismRegistry).forEach(([key, data]) => {
+            const block = document.createElement("div");
+            block.className = "db-cat-block";
+
+            const label = document.createElement("div");
+            label.className = "db-cat-label";
+            const badgeClass = PRISM_SECTION_COLOR[key] || "";
+            label.innerHTML = `
+                <span class="db-cat-badge prism-badge ${badgeClass}">${PRISM_DISPLAY_NAME[key] || key}</span>
+            `;
+            block.appendChild(label);
+
+            // Get class-aware flat list
+            const cls      = filterClass === "all" ? null : filterClass;
+            let affixList  = [];
+
+            if (Array.isArray(data)) {
+                affixList = data;
+            } else if (typeof data === "object") {
+                if (cls) {
+                    const primaryStat = data.stats?.[cls] || null;
+                    affixList = [
+                        ...(primaryStat ? [primaryStat] : []),
+                        ...(data.universal            || []),
+                        ...(data.classskills?.[cls]   || []),
+                        ...(data.classresource?.[cls] || [])
+                    ];
+                } else {
+                    // All classes — show universal + all class entries deduplicated
+                    const allStats     = data.stats     ? Object.values(data.stats)     : [];
+                    const allSkills    = data.classskills   ? Object.values(data.classskills).flat()   : [];
+                    const allResources = data.classresource ? Object.values(data.classresource).flat() : [];
+                    affixList = [
+                        ...[...new Set(allStats)],
+                        ...(data.universal || []),
+                        ...[...new Set(allSkills)],
+                        ...[...new Set(allResources)]
+                    ];
+                }
+            }
+
+            if (affixList.length === 0) {
+                const empty = document.createElement("div");
+                empty.className   = "db-placeholder-msg";
+                empty.textContent = "No entries for this class.";
+                block.appendChild(empty);
+            } else {
+                affixList.forEach(affix => {
+                    const entry = document.createElement("div");
+                    entry.className   = "db-entry";
+                    entry.textContent = affix;
+                    block.appendChild(entry);
+                });
+            }
+
+            grid.appendChild(block);
+        });
+
+        return grid;
+    });
+}
+
+// ── ASPECTS SECTION ───────────────────────────────────────────
+function buildAspectsSection(filterClass) {
+    const isFiltered = filterClass !== "all";
+    const meta = isFiltered ? `Filtered for ${filterClass}` : "Select a class to filter";
+
+    return buildSection("Legendary Aspects", meta, () => {
+        const wrap = document.createElement("div");
+
+        if (!isFiltered) {
+            const msg = document.createElement("div");
+            msg.className   = "db-placeholder-msg";
+            msg.textContent = "Aspects are class-specific. Select a class from the dropdown above to see eligible aspects.";
+            wrap.appendChild(msg);
+            return wrap;
+        }
+
+        const grid = document.createElement("div");
+        grid.className = "db-cat-grid";
+
+        ASPECT_CATEGORY_MAP.forEach(({ label, key }) => {
+            const block = document.createElement("div");
+            block.className = "db-cat-block";
+
+            const catLabel = document.createElement("div");
+            catLabel.className   = "db-cat-label";
+            catLabel.textContent = label;
+            block.appendChild(catLabel);
+
+            const aspects = window.AspectRegistry[key] || [];
+            const filtered = aspects.filter(a => {
+                if (typeof a === "string") return true;
+                if (!a.classes || a.classes.length === 0) return true;
+                return a.classes.includes(filterClass);
+            });
+
+            if (filtered.length === 0) {
+                const empty = document.createElement("div");
+                empty.className   = "db-placeholder-msg";
+                empty.textContent = "None tagged for this class yet.";
+                block.appendChild(empty);
+            } else {
+                filtered.forEach(a => {
+                    const name  = typeof a === "string" ? a : a.name;
+                    const entry = document.createElement("div");
+                    entry.className   = "db-entry";
+                    entry.textContent = name;
+                    block.appendChild(entry);
+                });
+            }
+
+            grid.appendChild(block);
+        });
+
+        wrap.appendChild(grid);
+        return wrap;
+    });
+}
+
+// ── TEMPERS SECTION ───────────────────────────────────────────
+function buildTempersSection(filterClass) {
+    const isFiltered = filterClass !== "all";
+    const meta = isFiltered ? `Filtered for ${filterClass}` : "Select a class to filter";
+
+    return buildSection("Temper Manuals", meta, () => {
+        const wrap = document.createElement("div");
+
+        if (!isFiltered) {
+            const msg = document.createElement("div");
+            msg.className   = "db-placeholder-msg";
+            msg.textContent = "Tempers are class-specific. Select a class from the dropdown above to see eligible tempers.";
+            wrap.appendChild(msg);
+            return wrap;
+        }
+
+        const grid = document.createElement("div");
+        grid.className = "db-cat-grid";
+
+        TEMPER_CATEGORY_MAP.forEach(({ label, key }) => {
+            const block = document.createElement("div");
+            block.className = "db-cat-block";
+
+            const catLabel = document.createElement("div");
+            catLabel.className   = "db-cat-label";
+            catLabel.textContent = label;
+            block.appendChild(catLabel);
+
+            const tempers  = window.TemperRegistry[key] || [];
+            const filtered = tempers.filter(t => {
+                if (typeof t === "string") return true;
+                if (!t.classes || t.classes.length === 0) return true;
+                return t.classes.includes(filterClass);
+            });
+
+            if (filtered.length === 0) {
+                const empty = document.createElement("div");
+                empty.className   = "db-placeholder-msg";
+                empty.textContent = "None tagged for this class yet.";
+                block.appendChild(empty);
+            } else {
+                filtered.forEach(t => {
+                    const name  = typeof t === "string" ? t : t.name;
+                    const slots = typeof t === "object" && t.slots?.length
+                        ? t.slots.map(s => s.replace("weapon-", "Weapon ")).join(", ")
+                        : "";
+                    const entry = document.createElement("div");
+                    entry.className = "db-entry";
+                    entry.innerHTML = name + (slots ? `<span class="db-entry-slot">${slots}</span>` : "");
+                    block.appendChild(entry);
+                });
+            }
+
+            grid.appendChild(block);
+        });
+
+        wrap.appendChild(grid);
+        return wrap;
+    });
+}
+
+// ── MYTHICS SECTION ───────────────────────────────────────────
+function buildMythicsSection() {
+    return buildSection("Mythic Uniques", "All classes — slot-locked", () => {
+        const grid = document.createElement("div");
+        grid.className = "db-mythic-grid";
+
+        const all = window.MythicRegistry || {};
+        const items = [];
+
+        Object.entries(all).forEach(([category, list]) => {
+            (list || []).forEach(item => {
+                if (!item?.name) return;
+                const slotLabel = item.slot
+                    ? item.slot.charAt(0).toUpperCase() + item.slot.slice(1)
+                    : (item.slots || []).map(s =>
+                        s.startsWith("weapon") ? "Weapons" :
+                        s.startsWith("ring")   ? "Rings"   :
+                        s.charAt(0).toUpperCase() + s.slice(1)
+                    ).filter((v, i, a) => a.indexOf(v) === i).join(", ");
+
+                items.push({ name: item.name, slot: slotLabel, category });
+            });
+        });
+
+        if (items.length === 0) {
+            const empty = document.createElement("div");
+            empty.className   = "db-placeholder-msg";
+            empty.textContent = "No mythic items in registry.";
+            grid.appendChild(empty);
+        } else {
+            items.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "db-mythic-card";
+                card.innerHTML = `
+                    <div class="db-mythic-name">${item.name}</div>
+                    <div class="db-mythic-slot">${item.slot}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        return grid;
+    });
+}
+
+// Init database when tab is switched to
+const _origSwitchTab = switchTab;
+function switchTab(tabName) {
+    _origSwitchTab(tabName);
+    if (tabName === "database") {
+        const sel = document.getElementById("db-class-select");
+        renderDatabase(sel ? sel.value : "all");
+    }
+}
