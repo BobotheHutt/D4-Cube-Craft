@@ -1223,51 +1223,38 @@
 
 
         /* ── LOCKED COMPACT MODE ──────────────────────────────── */
-        /* In locked mode, hide the select element, show plain text label */
-        .gear-locked .affix-select {
-            display: none;
-        }
 
-        .gear-locked .affix-locked-label {
-            display: block !important;
-        }
+        /* Unlocked: show select, hide locked label */
+        .affix-select         { display: block; }
+        .affix-locked-label   { display: none; }
+
+        /* Locked: hide select, show locked label */
+        .gear-locked .affix-select       { display: none; }
+        .gear-locked .affix-locked-label { display: block; }
 
         .affix-locked-label {
-            display: none;
             font-size: 12px;
             color: #6ab0ff;
-            padding: 4px 0;
+            padding: 3px 8px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            flex: 1;
         }
 
-        .affix-locked-label.empty {
-            color: var(--text-hint);
+        .affix-locked-label.empty   { color: var(--text-hint); font-style: italic; }
+        .affix-locked-label.mismatch { color: #ff7777; }
+
+        /* Temper slot locked label */
+        .affix-row.temper-slot .affix-locked-label {
+            color: var(--gold-dim);
             font-style: italic;
         }
 
-        .affix-locked-label.mismatch {
-            color: #ff7777;
-        }
-
         /* Tighter card padding in locked mode */
-        .gear-locked .item-card {
-            padding: 8px 12px;
-        }
-
-        .gear-locked .card-slot-label {
-            margin-bottom: 2px;
-        }
-
-        .gear-locked .card-item-name {
-            margin-bottom: 4px;
-            padding-bottom: 4px;
-        }
-
-        .gear-locked .affix-row {
-            gap: 4px;
-        }
+        .gear-locked .item-card       { padding: 8px 12px; }
+        .gear-locked .card-slot-label { margin-bottom: 2px; }
+        .gear-locked .card-item-name  { margin-bottom: 4px; padding-bottom: 4px; }
 
         /* ── SCROLLBAR ────────────────────────────────────── */
         ::-webkit-scrollbar { width: 4px; }

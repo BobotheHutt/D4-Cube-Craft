@@ -531,37 +531,6 @@ function renderAffixRows(slotId) {
 }
 
 
-// ── AFFIX SUMMARY (shown in locked mode) ─────────────────────
-function renderAffixSummary(slotId) {
-    // Remove existing summary if any
-    const existing = document.getElementById(`summary-${slotId}`);
-    if (existing) existing.remove();
-
-    const container = document.getElementById(`affixes-${slotId}`);
-    if (!container) return;
-
-    const summary = document.createElement("div");
-    summary.className = "affix-summary";
-    summary.id        = `summary-${slotId}`;
-
-    const picks = AppState.affixSelections[slotId] || {};
-    const chosen = [picks.slot1, picks.slot2, picks.slot3, picks.slot4].filter(Boolean);
-
-    if (chosen.length === 0) {
-        const empty = document.createElement("span");
-        empty.className   = "affix-summary-empty";
-        empty.textContent = "No affixes set";
-        summary.appendChild(empty);
-    } else {
-        chosen.forEach(affix => {
-            const mismatch = isAffixMismatch(affix, AppState.activeClass);
-            const dot      = document.createElement("span");
-            dot.className  = "affix-summary-dot" + (mismatch ? " has-mismatch" : " has-value");
-            dot.textContent = `● ${affix}`;
-            summary.appendChild(dot);
-        });
-    }
-
     // Insert before the affix-list div
     container.parentNode.insertBefore(summary, container);
 }
@@ -570,7 +539,6 @@ function buildStaticCards() {
     STATIC_SLOTS.forEach(({ id }) => {
         initSlotState(id);
         renderAffixRows(id);
-        renderAffixSummary(id);
         updateItemNameDisplay(id);
     });
 }
@@ -612,7 +580,6 @@ function buildWeaponSlots(className) {
             openItemModal(slotId, e);
         });
         renderAffixRows(slotId);
-        renderAffixSummary(slotId);
         updateItemNameDisplay(slotId);
     }
 
@@ -820,12 +787,6 @@ function applyGearLockUI() {
         btn.title = "Lock gear for quick slot selection";
     }
 
-    // Re-render summaries so they reflect current selections
-    const allSlots = [
-        ...STATIC_SLOTS.map(s => s.id),
-        ...Object.keys(AppState.affixSelections).filter(k => k.startsWith("weapon-"))
-    ];
-    allSlots.forEach(id => renderAffixSummary(id));
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -921,7 +882,6 @@ function selectTemper(value) {
     if (!slotId) return;
     AppState.temperSelections[slotId] = value;
     renderAffixRows(slotId);
-    renderAffixSummary(slotId);
     closeTemperModal();
     autoSave();
     if (AppState.focusedCard === slotId) updateCraftPanel();
@@ -1019,7 +979,6 @@ function selectAffix(affixValue) {
 
     // Re-render rows and summary
     renderAffixRows(slotId);
-    renderAffixSummary(slotId);
     closeAffixModal();
     autoSave();
     if (AppState.focusedCard === slotId) updateCraftPanel();
