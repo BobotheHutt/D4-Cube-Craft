@@ -448,8 +448,8 @@ function flattenPrismData(data) {
     if (Array.isArray(data)) return data;
     if (typeof data === "object") {
         const cls = AppState.activeClass;
-        // stats can be an object keyed by class (adept) or use CLASS_PRIMARY_STAT map
-        const primaryStat = data.stats?.[cls] || CLASS_PRIMARY_STAT[cls];
+        // Only pull primary stat if this bucket explicitly defines a stats map (adeptPrism)
+        const primaryStat = data.stats?.[cls] || null;
         return [
             ...(primaryStat ? [primaryStat] : []),
             ...(data.universal            || []),
