@@ -16,5 +16,17 @@ registerTemperCategory("defensive", {
         "Maximum Resolve Stacks",
         "Shadow Resistance",
         "Resistance to All Elements",
-    ]
+    ],
+    classEntries: {
+        paladin: [
+            "Block Chance",
+            "Armor in Arbiter Form",
+        ],
+        necromancer: [
+            "Damage Reduction for Your Summons",
+            "Chance for Minion Attacks to Fortify You for 3% Maximum Life",
+            "Minions Inherit a % of Your Thorns",
+            "Block Chance",
+        ]
+    }
 });

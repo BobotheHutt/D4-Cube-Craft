@@ -12,5 +12,16 @@ registerTemperCategory("utility", {
         "Thorns",
         "Fortify Generation",
         "Barrier Generation",
-    ]
+    ],
+    classEntries: {
+        warlock: [
+            "Sigil Duration",
+        ],
+        paladin: [
+            "Defiance Aura Potency",
+            "Fanaticism Aura Potency",
+            "Holy Light Aura Potency",
+            "Arbiter Duration",
+        ]
+    }
 });

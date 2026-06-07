@@ -884,7 +884,9 @@ function renderTemperList() {
     const slotId     = temperModalState.slotId;
     const currentVal = AppState.temperSelections[slotId];
     const regEntry   = window.TemperRegistry[temperModalState.activeCategory];
-    const tempers    = Array.isArray(regEntry) ? regEntry : (regEntry?.entries || []);
+    const shared     = Array.isArray(regEntry) ? regEntry : (regEntry?.entries || []);
+    const classExtra = regEntry?.classEntries?.[AppState.activeClass] || [];
+    const tempers    = [...shared, ...classExtra];
 
     // Filter to slot-eligible tempers
     const filtered = tempers.filter(t => {
@@ -1706,7 +1708,7 @@ function buildTempersSection(filterClass) {
                         temperSlotFilter = cb.checked ? new Set([id]) : new Set();
                         const oldTable = wrap.querySelector(".db-table");
                         if (oldTable) wrap.removeChild(oldTable);
-                        wrap.appendChild(buildTemperTable(null));
+                        wrap.appendChild(buildTemperTable(null, filterClass));
                     };
 
                     checkLabel.appendChild(cb);
@@ -1717,14 +1719,15 @@ function buildTempersSection(filterClass) {
                 wrap.appendChild(slotRow);
             }
 
-            wrap.appendChild(buildTemperTable(activeCat));
+            wrap.appendChild(buildTemperTable(activeCat, filterClass));
             return wrap;
         }
     );
 }
 
-function buildTemperTable(activeCat) {
+function buildTemperTable(activeCat, filterClass) {
     const showAll = !activeCat;
+    const cls = filterClass && filterClass !== "all" ? filterClass : null;
 
     const catsToUse = activeCat
         ? TEMPER_CATEGORY_MAP.filter(c => c.key === activeCat)
@@ -1734,7 +1737,9 @@ function buildTemperTable(activeCat) {
     catsToUse.forEach(({ label, key }) => {
         const data    = window.TemperRegistry[key];
         if (!data) return;
-        const entries = Array.isArray(data) ? data : (data.entries || []);
+        const shared  = Array.isArray(data) ? data : (data.entries || []);
+        const classEx = cls ? (data.classEntries?.[cls] || []) : [];
+        const entries = [...shared, ...classEx];
         const slots   = Array.isArray(data) ? [] : (data.slots || []);
 
         // Build readable slot label for this category
