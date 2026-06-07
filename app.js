@@ -1799,6 +1799,8 @@ function buildTemperTable(activeCat, filterClass) {
 
 
 // ── UNIQUES ───────────────────────────────────────────────────
+let uniqueSlotFilter = "";
+
 function buildUniquesSection(filterClass) {
     const isFiltered = filterClass !== "all";
     const meta = isFiltered
@@ -1814,53 +1816,116 @@ function buildUniquesSection(filterClass) {
 
     return buildSection("Unique Items", meta, classToggles, (activeCat) => {
         const wrap = document.createElement("div");
-        // activeCat here is a class key (e.g. "barbarian") or null for all
-        const classesToShow = activeCat
-            ? [activeCat]
-            : (isFiltered ? [filterClass] : classToggleKeys);
 
-        classesToShow.forEach(cls => {
-            const items = window.UniqueRegistry[cls] || [];
-            if (items.length === 0) return;
+        // ── Slot filter toggles ──
+        const slotDefs = [
+            { id: "helm",    label: "Helm"    },
+            { id: "chest",   label: "Chest"   },
+            { id: "gloves",  label: "Gloves"  },
+            { id: "pants",   label: "Pants"   },
+            { id: "boots",   label: "Boots"   },
+            { id: "amulet",  label: "Amulet"  },
+            { id: "ring",    label: "Rings"   },
+            { id: "weapon",  label: "Weapons" },
+            { id: "offhand", label: "Offhand" }
+        ];
 
-            // Show class label when showing multiple classes
-            if (!activeCat && !isFiltered) {
-                const classLabel = document.createElement("div");
-                classLabel.style.cssText = "font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-hint);padding:10px 0 6px;border-bottom:1px solid var(--border-dim);margin-bottom:10px;";
-                classLabel.textContent = cls;
-                wrap.appendChild(classLabel);
-            }
+        const slotRow = document.createElement("div");
+        slotRow.style.cssText = "display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;padding:10px 12px;background:var(--bg-deep);border-radius:4px;border:1px solid var(--border-dim);align-items:center;";
 
-            const grid = document.createElement("div");
-            grid.className = "db-table";
-            grid.style.marginBottom = "16px";
+        const lbl = document.createElement("span");
+        lbl.style.cssText = "font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-hint);margin-right:4px;";
+        lbl.textContent = "Filter by slot:";
+        slotRow.appendChild(lbl);
 
-            const hdr = document.createElement("div");
-            hdr.className = "db-table-header";
-            hdr.innerHTML = "<span>Item</span><span>Slot</span><span>Unique Power</span>";
-            grid.appendChild(hdr);
+        function rebuildUniquesList() {
+            wrap.querySelectorAll(".db-table, .db-unique-class-label").forEach(el => el.remove());
+            renderUniqueItems(wrap, activeCat, isFiltered, filterClass, classToggleKeys);
+        }
 
-            items.sort((a, b) => a.name.localeCompare(b.name)).forEach(item => {
-                const slotLabel = item.slot
-                    ? item.slot.charAt(0).toUpperCase() + item.slot.slice(1)
-                    : (item.slots || []).map(s =>
-                        s.startsWith("weapon") ? "Weapons" :
-                        s.startsWith("ring")   ? "Rings"   :
-                        s.charAt(0).toUpperCase() + s.slice(1)
-                    ).filter((v, i, a) => a.indexOf(v) === i).join(", ");
-
-                const row = document.createElement("div");
-                row.className = "db-table-row";
-                row.innerHTML = `
-                    <div class="db-row-name is-unique">${item.name}</div>
-                    <div class="db-row-tag">${slotLabel}</div>
-                    <div class="db-row-desc">${item.power || "—"}</div>
-                `;
-                grid.appendChild(row);
-            });
-            wrap.appendChild(grid);
+        slotDefs.forEach(({ id, label }) => {
+            const btn = document.createElement("button");
+            btn.className = "db-slot-toggle" + (uniqueSlotFilter === id ? " active" : "");
+            btn.textContent = label;
+            btn.onclick = () => {
+                const wasActive = btn.classList.contains("active");
+                slotRow.querySelectorAll(".db-slot-toggle").forEach(b => b.classList.remove("active"));
+                if (!wasActive) {
+                    btn.classList.add("active");
+                    uniqueSlotFilter = id;
+                } else {
+                    uniqueSlotFilter = "";
+                }
+                rebuildUniquesList();
+            };
+            slotRow.appendChild(btn);
         });
+
+        wrap.appendChild(slotRow);
+
+        // ── Item tables ──
+        renderUniqueItems(wrap, activeCat, isFiltered, filterClass, classToggleKeys);
         return wrap;
+    });
+}
+
+function itemMatchesSlotFilter(item, slotId) {
+    if (!slotId) return true;
+    const allSlots = item.slots || (item.slot ? [item.slot] : []);
+    return allSlots.some(s => {
+        if (slotId === "ring")   return s.startsWith("ring");
+        if (slotId === "weapon") return s === "weapon" || s.startsWith("weapon-");
+        return s === slotId;
+    });
+}
+
+function renderUniqueItems(wrap, activeCat, isFiltered, filterClass, classToggleKeys) {
+    const classesToShow = activeCat
+        ? [activeCat]
+        : (isFiltered ? [filterClass] : classToggleKeys);
+
+    classesToShow.forEach(cls => {
+        let items = window.UniqueRegistry[cls] || [];
+        if (uniqueSlotFilter) items = items.filter(i => itemMatchesSlotFilter(i, uniqueSlotFilter));
+        if (items.length === 0) return;
+
+        // Show class label when showing multiple classes
+        if (!activeCat && !isFiltered) {
+            const classLabel = document.createElement("div");
+            classLabel.className = "db-unique-class-label";
+            classLabel.style.cssText = "font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-hint);padding:10px 0 6px;border-bottom:1px solid var(--border-dim);margin-bottom:10px;";
+            classLabel.textContent = cls;
+            wrap.appendChild(classLabel);
+        }
+
+        const grid = document.createElement("div");
+        grid.className = "db-table";
+        grid.style.marginBottom = "16px";
+
+        const hdr = document.createElement("div");
+        hdr.className = "db-table-header";
+        hdr.innerHTML = "<span>Item</span><span>Slot</span><span>Unique Power</span>";
+        grid.appendChild(hdr);
+
+        items.sort((a, b) => a.name.localeCompare(b.name)).forEach(item => {
+            const slotLabel = item.slot
+                ? item.slot.charAt(0).toUpperCase() + item.slot.slice(1)
+                : (item.slots || []).map(s =>
+                    s.startsWith("weapon") ? "Weapons" :
+                    s.startsWith("ring")   ? "Rings"   :
+                    s.charAt(0).toUpperCase() + s.slice(1)
+                ).filter((v, i, a) => a.indexOf(v) === i).join(", ");
+
+            const row = document.createElement("div");
+            row.className = "db-table-row";
+            row.innerHTML = `
+                <div class="db-row-name is-unique">${item.name}</div>
+                <div class="db-row-tag">${slotLabel}</div>
+                <div class="db-row-desc">${item.power || "—"}</div>
+            `;
+            grid.appendChild(row);
+        });
+        wrap.appendChild(grid);
     });
 }
 
