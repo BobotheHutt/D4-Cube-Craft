@@ -1480,6 +1480,34 @@ function buildAspectsSection(filterClass) {
 }
 
 // ── TEMPERS ───────────────────────────────────────────────────
+
+// All slot IDs that tempers can appear on, with readable labels
+const TEMPER_SLOT_DEFS = [
+    { id: "helm",       label: "Helm"       },
+    { id: "chest",      label: "Chest"      },
+    { id: "gloves",     label: "Gloves"     },
+    { id: "pants",      label: "Pants"      },
+    { id: "boots",      label: "Boots"      },
+    { id: "amulet",     label: "Amulet"     },
+    { id: "ring-left",  label: "Rings"      },
+    { id: "ring-right", label: "Rings"      },
+    { id: "weapon",     label: "Weapons"    }
+];
+
+// Readable slot label for a temper entry
+function temperSlotLabel(t) {
+    if (!t.slots || t.slots.length === 0) return "All";
+    const labels = [...new Set(t.slots.map(s => {
+        if (s.startsWith("weapon")) return "Weapons";
+        if (s.startsWith("ring"))   return "Rings";
+        return s.charAt(0).toUpperCase() + s.slice(1);
+    }))];
+    return labels.sort().join(", ");
+}
+
+// Active slot filter state for the tempers section
+let temperSlotFilter = new Set(); // empty = show all
+
 function buildTempersSection(filterClass) {
     const isFiltered = filterClass !== "all";
     const meta = isFiltered
@@ -1490,78 +1518,134 @@ function buildTempersSection(filterClass) {
         TEMPER_CATEGORY_MAP.map(c => ({ label: c.label, key: c.key })),
         (activeCat) => {
             const wrap = document.createElement("div");
-            const grid = document.createElement("div");
-            grid.className = "db-cat-grid";
 
-            const catsToShow = activeCat
-                ? TEMPER_CATEGORY_MAP.filter(c => c.key === activeCat)
-                : TEMPER_CATEGORY_MAP;
+            // ── Slot checkboxes (only when viewing All categories) ──
+            if (!activeCat) {
+                const slotFilterRow = document.createElement("div");
+                slotFilterRow.style.cssText = "display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;padding:10px 12px;background:var(--bg-deep);border-radius:4px;border:1px solid var(--border-dim);";
 
-            catsToShow.forEach(({ label, key }) => {
-                const block = document.createElement("div");
-                block.className = "db-cat-block";
+                const filterLabel = document.createElement("span");
+                filterLabel.style.cssText = "font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-hint);align-self:center;margin-right:4px;";
+                filterLabel.textContent = "Filter by slot:";
+                slotFilterRow.appendChild(filterLabel);
 
-                const catLabel = document.createElement("div");
-                catLabel.className   = "db-cat-label";
-                catLabel.textContent = label;
-                block.appendChild(catLabel);
+                // Deduplicate by label (Rings appears twice)
+                const seen = new Set();
+                TEMPER_SLOT_DEFS.forEach(({ id, label }) => {
+                    if (seen.has(label)) return;
+                    seen.add(label);
 
-                const tempers  = window.TemperRegistry[key] || [];
-                const filtered = isFiltered
-                    ? tempers.filter(t => !t.classes || t.classes.length === 0 || t.classes.includes(filterClass))
-                    : tempers;
+                    const checkLabel = document.createElement("label");
+                    checkLabel.style.cssText = "display:flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--text-secondary);cursor:pointer;";
 
-                if (filtered.length === 0) {
-                    const empty = document.createElement("div");
-                    empty.className = "db-placeholder-msg";
-                    empty.textContent = "None available.";
-                    block.appendChild(empty);
-                } else {
-                    // When a single category is shown, derive valid slot list from entries
-                    if (activeCat) {
-                        const slotSet = new Set();
-                        filtered.forEach(t => {
-                            if (typeof t === "object" && t.slots?.length) {
-                                t.slots.forEach(s => slotSet.add(
-                                    s.startsWith("weapon") ? "Weapons" :
-                                    s.charAt(0).toUpperCase() + s.slice(1)
-                                ));
-                            }
-                        });
-                        // entries with slots:[] roll on all slots eligible for this category
-                        const hasUniversal = filtered.some(t => typeof t === "object" && (!t.slots || t.slots.length === 0));
-                        
-                        if (slotSet.size > 0 || hasUniversal) {
-                            const slotHeader = document.createElement("div");
-                            slotHeader.className = "db-entry-slot";
-                            slotHeader.style.cssText = "display:block;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border-dim);font-size:11px;";
-                            const universal = hasUniversal ? "All eligible slots" : "";
-                            const specific  = slotSet.size > 0 ? [...slotSet].sort().join(", ") : "";
-                            slotHeader.textContent = "Valid slots: " + [universal, specific].filter(Boolean).join(" + ");
-                            block.appendChild(slotHeader);
-                        }
-                    }
+                    const cb = document.createElement("input");
+                    cb.type    = "checkbox";
+                    cb.value   = id;
+                    cb.checked = temperSlotFilter.size === 0 || temperSlotFilter.has(id);
+                    cb.style.accentColor = "var(--gold)";
 
-                    filtered.forEach(t => {
-                        const name  = typeof t === "string" ? t : t.name;
-                        const entry = document.createElement("div");
-                        entry.className = "db-entry";
-                        entry.textContent = name;
-                        block.appendChild(entry);
-                    });
-                    // Sort entries alphabetically
-                    const entryNodes = [...block.querySelectorAll(".db-entry")];
-                    entryNodes.sort((a, b) => a.textContent.localeCompare(b.textContent))
-                             .forEach(n => block.appendChild(n));
-                }
-                grid.appendChild(block);
-            });
+                    cb.onchange = () => {
+                        // Rebuild filter set from all checkboxes in this row
+                        const allCbs = slotFilterRow.querySelectorAll("input[type=checkbox]");
+                        const checked = [...allCbs].filter(c => c.checked).map(c => c.value);
+                        // If all checked or none checked, treat as "show all"
+                        temperSlotFilter = checked.length === allCbs.length || checked.length === 0
+                            ? new Set()
+                            : new Set(checked);
+                        // Rebuild the table
+                        const tableEl = wrap.querySelector(".db-table");
+                        if (tableEl) wrap.removeChild(tableEl);
+                        wrap.appendChild(buildTemperTable(null, filterClass));
+                    };
 
-            wrap.appendChild(grid);
+                    checkLabel.appendChild(cb);
+                    checkLabel.appendChild(document.createTextNode(label));
+                    slotFilterRow.appendChild(checkLabel);
+                });
+
+                wrap.appendChild(slotFilterRow);
+            }
+
+            wrap.appendChild(buildTemperTable(activeCat, filterClass));
             return wrap;
         }
     );
 }
+
+function buildTemperTable(activeCat, filterClass) {
+    const isFiltered = filterClass !== "all";
+    const showAll = !activeCat;
+
+    // Gather all tempers across relevant categories
+    const catsToUse = activeCat
+        ? TEMPER_CATEGORY_MAP.filter(c => c.key === activeCat)
+        : TEMPER_CATEGORY_MAP;
+
+    let rows = [];
+    catsToUse.forEach(({ label, key }) => {
+        const tempers  = window.TemperRegistry[key] || [];
+        const filtered = isFiltered
+            ? tempers.filter(t => !t.classes || t.classes.length === 0 || t.classes.includes(filterClass))
+            : tempers;
+
+        filtered.forEach(t => {
+            const name      = typeof t === "string" ? t : t.name;
+            const slotLabel = typeof t === "object" ? temperSlotLabel(t) : "All";
+
+            // Apply slot filter when viewing All categories
+            if (showAll && temperSlotFilter.size > 0) {
+                // Check if this temper matches any selected slot
+                const tSlots = typeof t === "object" && t.slots?.length ? t.slots : [];
+                if (tSlots.length === 0) {
+                    // "All" temper — show if any slot in the category config is selected
+                    // (just show it — it applies broadly)
+                } else {
+                    // Only show if at least one of its slots is in the filter
+                    // Normalize weapon-0,1,2,3 to "weapon" for matching
+                    const normalizedSlots = tSlots.map(s => s.startsWith("weapon") ? "weapon" : s.startsWith("ring") ? "ring-left" : s);
+                    const hasMatch = normalizedSlots.some(s => temperSlotFilter.has(s));
+                    if (!hasMatch) return;
+                }
+            }
+
+            rows.push({ name, cat: label, slotLabel });
+        });
+    });
+
+    rows.sort((a, b) => a.name.localeCompare(b.name));
+
+    const table = document.createElement("div");
+    table.className = "db-table";
+
+    // Header — include Category column only when showing All
+    const hdr = document.createElement("div");
+    hdr.className = showAll ? "db-table-header" : "db-table-header db-table-header--no-cat";
+    hdr.innerHTML = showAll
+        ? "<span>Temper</span><span>Category</span><span>Valid Slots</span>"
+        : "<span>Temper</span><span>Valid Slots</span>";
+    table.appendChild(hdr);
+
+    if (rows.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "db-placeholder-msg";
+        empty.style.padding = "16px 12px";
+        empty.textContent = "None available for selected filters.";
+        table.appendChild(empty);
+    } else {
+        rows.forEach(r => {
+            const row = document.createElement("div");
+            row.className = showAll ? "db-table-row" : "db-table-row db-table-row--no-cat";
+            row.innerHTML = showAll
+                ? `<div class="db-row-name">${r.name}</div><div class="db-row-tag">${r.cat}</div><div class="db-row-tag">${r.slotLabel}</div>`
+                : `<div class="db-row-name">${r.name}</div><div class="db-row-tag">${r.slotLabel}</div>`;
+            table.appendChild(row);
+        });
+    }
+
+    return table;
+}
+
+
 
 // ── UNIQUES ───────────────────────────────────────────────────
 function buildUniquesSection(filterClass) {

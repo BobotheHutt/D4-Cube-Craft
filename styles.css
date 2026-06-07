@@ -1350,11 +1350,13 @@ body {
 }
 
 /* Simpler table for prisms/tempers - no desc column */
-.db-table-row.slim {
+.db-table-row.slim,
+.db-table-row.db-table-row--no-cat {
     grid-template-columns: 280px 1fr;
 }
 
-.db-table-header.slim {
+.db-table-header.slim,
+.db-table-header.db-table-header--no-cat {
     grid-template-columns: 280px 1fr;
 }
 
