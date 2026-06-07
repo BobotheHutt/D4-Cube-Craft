@@ -143,6 +143,12 @@ body {
 /* ── TAB PAGES ────────────────────────────────────── */
 .tab-page { display: none; }
 .tab-page.active { display: block; }
+#tab-database.active {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 101px);
+    overflow: hidden;
+}
 
 /* ── MAIN 3-PANEL LAYOUT ──────────────────────────── */
 .planner-layout {
@@ -934,16 +940,19 @@ body {
 .db-layout {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 101px);
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
 }
 
 .db-content {
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
     padding: 24px 28px;
     display: flex;
     flex-direction: column;
     gap: 16px;
-    height: calc(100vh - 200px);
 }
 
 .db-toolbar {
