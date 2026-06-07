@@ -1669,7 +1669,7 @@ function buildTempersSection(filterClass) {
         (activeCat) => {
             const wrap = document.createElement("div");
 
-            // Slot checkboxes only when All categories shown
+            // Slot filter toggles only when All categories shown
             if (!activeCat) {
                 const slotDefs = [
                     { id: "helm",    label: "Helm"    },
@@ -1684,7 +1684,7 @@ function buildTempersSection(filterClass) {
                 ];
 
                 const slotRow = document.createElement("div");
-                slotRow.style.cssText = "display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;padding:10px 12px;background:var(--bg-deep);border-radius:4px;border:1px solid var(--border-dim);align-items:center;";
+                slotRow.style.cssText = "display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;padding:10px 12px;background:var(--bg-deep);border-radius:4px;border:1px solid var(--border-dim);align-items:center;";
 
                 const lbl = document.createElement("span");
                 lbl.style.cssText = "font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-hint);margin-right:4px;";
@@ -1692,28 +1692,25 @@ function buildTempersSection(filterClass) {
                 slotRow.appendChild(lbl);
 
                 slotDefs.forEach(({ id, label }) => {
-                    const checkLabel = document.createElement("label");
-                    checkLabel.style.cssText = "display:flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--text-secondary);cursor:pointer;user-select:none;";
-
-                    const cb = document.createElement("input");
-                    cb.type    = "checkbox";
-                    cb.value   = id;
-                    cb.checked = false; // all unchecked = show all
-                    cb.style.accentColor = "var(--gold)";
-                    cb.onchange = () => {
-                        // Single select — uncheck all others first
-                        const allCbs = slotRow.querySelectorAll("input[type=checkbox]");
-                        allCbs.forEach(c => { if (c !== cb) c.checked = false; });
-                        // If this one is now checked, filter to it; else show all
-                        temperSlotFilter = cb.checked ? new Set([id]) : new Set();
+                    const btn = document.createElement("button");
+                    btn.className = "db-slot-toggle";
+                    btn.textContent = label;
+                    btn.dataset.slotId = id;
+                    btn.onclick = () => {
+                        const wasActive = btn.classList.contains("active");
+                        slotRow.querySelectorAll(".db-slot-toggle").forEach(b => b.classList.remove("active"));
+                        if (!wasActive) {
+                            btn.classList.add("active");
+                            temperSlotFilter = new Set([id]);
+                        } else {
+                            temperSlotFilter = new Set();
+                        }
                         const oldTable = wrap.querySelector(".db-table");
                         if (oldTable) wrap.removeChild(oldTable);
                         wrap.appendChild(buildTemperTable(null, filterClass));
                     };
 
-                    checkLabel.appendChild(cb);
-                    checkLabel.appendChild(document.createTextNode(label));
-                    slotRow.appendChild(checkLabel);
+                    slotRow.appendChild(btn);
                 });
 
                 wrap.appendChild(slotRow);
