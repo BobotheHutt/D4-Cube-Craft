@@ -1632,11 +1632,18 @@ function buildUniquesSection(filterClass) {
 // ── MYTHICS ───────────────────────────────────────────────────
 function buildMythicsSection() {
     return buildSection("Mythic Uniques", "All classes — slot-locked", null, () => {
-        const grid = document.createElement("div");
-        grid.className = "db-mythic-grid";
+        const items = Object.values(window.MythicRegistry || {}).flat().filter(i => i?.name);
+        items.sort((a, b) => a.name.localeCompare(b.name));
 
-        Object.values(window.MythicRegistry || {}).flat().forEach(item => {
-            if (!item?.name) return;
+        const table = document.createElement("div");
+        table.className = "db-table";
+
+        const hdr = document.createElement("div");
+        hdr.className = "db-table-header";
+        hdr.innerHTML = "<span>Item</span><span>Slot</span><span>Unique Power</span>";
+        table.appendChild(hdr);
+
+        items.forEach(item => {
             const slotLabel = item.slot
                 ? item.slot.charAt(0).toUpperCase() + item.slot.slice(1)
                 : (item.slots || []).map(s =>
@@ -1645,11 +1652,15 @@ function buildMythicsSection() {
                     s.charAt(0).toUpperCase() + s.slice(1)
                 ).filter((v, i, a) => a.indexOf(v) === i).join(", ");
 
-            const card = document.createElement("div");
-            card.className = "db-mythic-card";
-            card.innerHTML = `<div class="db-mythic-name">${item.name}</div><div class="db-mythic-slot">${slotLabel}</div>`;
-            grid.appendChild(card);
+            const row = document.createElement("div");
+            row.className = "db-table-row";
+            row.innerHTML = `
+                <div class="db-row-name is-mythic">${item.name}</div>
+                <div class="db-row-tag">${slotLabel}</div>
+                <div class="db-row-desc">${item.power || ""}</div>
+            `;
+            table.appendChild(row);
         });
-        return grid;
+        return table;
     });
 }
