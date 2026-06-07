@@ -1228,6 +1228,47 @@ function selectItem(itemObj) {
 }
 
 // ══════════════════════════════════════════════════════════════
+//  ITEM TOOLTIP
+// ══════════════════════════════════════════════════════════════
+
+let _tooltipTimer = null;
+const TOOLTIP_DELAY = 1000;
+
+function attachTooltip(el, name, type, power) {
+    el.addEventListener("mouseenter", (e) => {
+        clearTimeout(_tooltipTimer);
+        _tooltipTimer = setTimeout(() => {
+            const tip = document.getElementById("item-tooltip");
+            if (!tip) return;
+            document.getElementById("tooltip-name").textContent  = name;
+            document.getElementById("tooltip-type").textContent  = type;
+            const powerEl = document.getElementById("tooltip-power");
+            powerEl.textContent    = power || "";
+            powerEl.style.display  = power ? "block" : "none";
+            _positionTooltip(e);
+            tip.classList.add("visible");
+        }, TOOLTIP_DELAY);
+    });
+    el.addEventListener("mousemove", _positionTooltip);
+    el.addEventListener("mouseleave", () => {
+        clearTimeout(_tooltipTimer);
+        const tip = document.getElementById("item-tooltip");
+        if (tip) tip.classList.remove("visible");
+    });
+}
+
+function _positionTooltip(e) {
+    const tip = document.getElementById("item-tooltip");
+    if (!tip) return;
+    const pad = 14, tw = tip.offsetWidth || 280, th = tip.offsetHeight || 100;
+    let x = e.clientX + pad, y = e.clientY + pad;
+    if (x + tw > window.innerWidth)  x = e.clientX - tw - pad;
+    if (y + th > window.innerHeight) y = e.clientY - th - pad;
+    tip.style.left = `${x}px`;
+    tip.style.top  = `${y}px`;
+}
+
+// ══════════════════════════════════════════════════════════════
 //  TAB SWITCHING
 // ══════════════════════════════════════════════════════════════
 function switchTab(tabName) {
