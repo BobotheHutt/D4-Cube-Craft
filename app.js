@@ -26,7 +26,7 @@ const PRISM_BADGE_CLASS = {
     resourcefulPrism: "badge-resourceful",
     adeptPrism:       "badge-adept",
     chromaticPrism:   "badge-chromatic",
-    mobilityPrism:    "badge-mobility"
+    mobilityPrism:    "badge-pragmatic"
 };
 
 const PRISM_DISPLAY_NAME = {
@@ -36,6 +36,16 @@ const PRISM_DISPLAY_NAME = {
     resourcefulPrism: "Resourceful",
     adeptPrism:       "Adept",
     chromaticPrism:   "Chromatic",
+    mobilityPrism:    "Pragmatic"
+};
+
+const PRISM_CATEGORY_LABEL = {
+    aggressivePrism:  "Offensive",
+    protectorPrism:   "Defensive",
+    pragmaticPrism:   "Utility",
+    resourcefulPrism: "Resource",
+    adeptPrism:       "Core Stats",
+    chromaticPrism:   "Elemental",
     mobilityPrism:    "Mobility"
 };
 
@@ -727,10 +737,15 @@ function updateCraftPanel() {
             badge.textContent = "No Prism";
             badgeWrap.appendChild(badge);
         } else {
+            // Deduplicate by display name (e.g. mobilityPrism and pragmaticPrism both show "Pragmatic")
+            const seen = new Set();
             prismKeys.forEach(key => {
+                const displayName = PRISM_DISPLAY_NAME[key] || key;
+                if (seen.has(displayName)) return;
+                seen.add(displayName);
                 const badge       = document.createElement("span");
                 badge.className   = "prism-badge " + (PRISM_BADGE_CLASS[key] || "badge-none");
-                badge.textContent = PRISM_DISPLAY_NAME[key] || key;
+                badge.textContent = displayName;
                 badgeWrap.appendChild(badge);
             });
         }
@@ -1306,18 +1321,36 @@ const PRISM_SECTION_COLOR = {
     resourcefulPrism: "badge-resourceful",
     adeptPrism:       "badge-adept",
     chromaticPrism:   "badge-chromatic",
-    mobilityPrism:    "badge-mobility"
+    mobilityPrism:    "badge-pragmatic"
 };
 
 function renderDatabase(filterClass) {
     const container = document.getElementById("db-content");
     if (!container) return;
+
+    // Remember which sections are open before rebuilding
+    const openSections = new Set();
+    container.querySelectorAll(".db-section.open").forEach(s => {
+        const title = s.querySelector(".db-section-title")?.textContent;
+        if (title) openSections.add(title);
+    });
+
     container.innerHTML = "";
     container.appendChild(buildPrismsSection(filterClass));
     container.appendChild(buildAspectsSection(filterClass));
     container.appendChild(buildTempersSection(filterClass));
     container.appendChild(buildUniquesSection(filterClass));
     container.appendChild(buildMythicsSection());
+
+    // Restore previously open sections
+    if (openSections.size > 0) {
+        container.querySelectorAll(".db-section").forEach(s => {
+            const title = s.querySelector(".db-section-title")?.textContent;
+            if (title && openSections.has(title)) {
+                s.querySelector(".db-section-header")?.click();
+            }
+        });
+    }
 }
 
 // ── SECTION BUILDER ───────────────────────────────────────────
@@ -1395,34 +1428,35 @@ function buildSection(title, metaText, toggleDefs, buildBodyFn) {
 
 // ── PRISMS ────────────────────────────────────────────────────
 function buildPrismsSection(filterClass) {
+    const isFiltered = filterClass !== "all";
+    const meta = isFiltered
+        ? `Filtered for ${filterClass.charAt(0).toUpperCase() + filterClass.slice(1)}`
+        : "All Classes";
+
     const toggles = [
-        { label: "Aggressive",  key: "aggressivePrism"  },
-        { label: "Protector",   key: "protectorPrism"   },
-        { label: "Pragmatic",   key: "pragmaticPrism"   },
-        { label: "Resourceful", key: "resourcefulPrism" },
-        { label: "Adept",       key: "adeptPrism"       },
-        { label: "Chromatic",   key: "chromaticPrism"   },
-        { label: "Mobility",    key: "mobilityPrism"    }
+        { label: "Offensive",  key: "aggressivePrism"  },
+        { label: "Defensive",  key: "protectorPrism"   },
+        { label: "Utility",    key: "pragmaticPrism"   },
+        { label: "Mobility",   key: "mobilityPrism"    },
+        { label: "Resource",   key: "resourcefulPrism" },
+        { label: "Core Stats", key: "adeptPrism"       },
+        { label: "Elemental",  key: "chromaticPrism"   }
     ];
 
-    return buildSection("Tuning Prisms", "7 prisms", toggles, (activeCat) => {
-        const grid = document.createElement("div");
-        grid.className = "db-cat-grid";
+    return buildSection("Tuning Prisms", meta, toggles, (activeCat) => {
+        const keysToUse = activeCat
+            ? [activeCat]
+            : Object.keys(window.PrismRegistry);
 
-        const entries = activeCat
-            ? (window.PrismRegistry[activeCat] ? [[activeCat, window.PrismRegistry[activeCat]]] : [])
-            : Object.entries(window.PrismRegistry);
+        const cls = isFiltered ? filterClass : null;
+        let rows = [];
 
-        entries.forEach(([key, data]) => {
-            const block = document.createElement("div");
-            block.className = "db-cat-block";
+        keysToUse.forEach(key => {
+            const data = window.PrismRegistry[key];
+            if (!data) return;
+            const prismName = PRISM_DISPLAY_NAME[key] || key;
+            const catLabel  = PRISM_CATEGORY_LABEL[key] || "";
 
-            const label = document.createElement("div");
-            label.className = "db-cat-label";
-            label.innerHTML = `<span class="db-cat-badge prism-badge ${PRISM_SECTION_COLOR[key] || ""}">${PRISM_DISPLAY_NAME[key] || key}</span>`;
-            block.appendChild(label);
-
-            const cls = filterClass === "all" ? null : filterClass;
             let affixList = [];
             if (Array.isArray(data)) {
                 affixList = data;
@@ -1436,29 +1470,47 @@ function buildPrismsSection(filterClass) {
                         ...(data.classresource?.[cls] || [])
                     ];
                 } else {
-                    const allStats     = data.stats        ? [...new Set(Object.values(data.stats))]                 : [];
-                    const allSkills    = data.classskills  ? [...new Set(Object.values(data.classskills).flat())]    : [];
-                    const allResources = data.classresource? [...new Set(Object.values(data.classresource).flat())]  : [];
+                    const allStats     = data.stats         ? [...new Set(Object.values(data.stats))]                  : [];
+                    const allSkills    = data.classskills   ? [...new Set(Object.values(data.classskills).flat())]     : [];
+                    const allResources = data.classresource ? [...new Set(Object.values(data.classresource).flat())]   : [];
                     affixList = [...allStats, ...(data.universal || []), ...allSkills, ...allResources];
                 }
             }
 
-            if (affixList.length === 0) {
-                const empty = document.createElement("div");
-                empty.className = "db-placeholder-msg";
-                empty.textContent = "No entries for this class.";
-                block.appendChild(empty);
-            } else {
-                affixList.forEach(affix => {
-                    const entry = document.createElement("div");
-                    entry.className   = "db-entry";
-                    entry.textContent = affix;
-                    block.appendChild(entry);
-                });
-            }
-            grid.appendChild(block);
+            affixList.forEach(affix => {
+                rows.push({ name: affix, prism: prismName, category: catLabel, badgeClass: PRISM_SECTION_COLOR[key] || "" });
+            });
         });
-        return grid;
+
+        rows.sort((a, b) => a.name.localeCompare(b.name));
+
+        const table = document.createElement("div");
+        table.className = "db-table";
+
+        const hdr = document.createElement("div");
+        hdr.className = "db-table-header";
+        hdr.innerHTML = "<span>Attribute</span><span>Prism</span><span>Category</span>";
+        table.appendChild(hdr);
+
+        if (rows.length === 0) {
+            const empty = document.createElement("div");
+            empty.className = "db-placeholder-msg";
+            empty.style.padding = "16px 12px";
+            empty.textContent = "No entries for this class.";
+            table.appendChild(empty);
+        } else {
+            rows.forEach(r => {
+                const row = document.createElement("div");
+                row.className = "db-table-row";
+                row.innerHTML = `
+                    <div class="db-row-name">${r.name}</div>
+                    <div class="db-row-tag"><span class="prism-badge ${r.badgeClass}" style="font-size:10px;padding:2px 8px;">${r.prism}</span></div>
+                    <div class="db-row-desc" style="font-size:12px;color:var(--text-secondary);">${r.category}</div>
+                `;
+                table.appendChild(row);
+            });
+        }
+        return table;
     });
 }
 
