@@ -1536,16 +1536,16 @@ function buildTempersSection(filterClass) {
                     const cb = document.createElement("input");
                     cb.type    = "checkbox";
                     cb.value   = id;
-                    cb.checked = temperSlotFilter.size === 0 || temperSlotFilter.has(id);
+                    cb.checked = false; // all unchecked = show all
                     cb.style.accentColor = "var(--gold)";
                     cb.onchange = () => {
+                        // Single select — uncheck all others first
                         const allCbs = slotRow.querySelectorAll("input[type=checkbox]");
-                        const checked = [...allCbs].filter(c => c.checked).map(c => c.value);
-                        temperSlotFilter = checked.length === 0 || checked.length === allCbs.length
-                            ? new Set()
-                            : new Set(checked);
-                        const old = wrap.querySelector(".db-table");
-                        if (old) wrap.removeChild(old);
+                        allCbs.forEach(c => { if (c !== cb) c.checked = false; });
+                        // If this one is now checked, filter to it; else show all
+                        temperSlotFilter = cb.checked ? new Set([id]) : new Set();
+                        const oldTable = wrap.querySelector(".db-table");
+                        if (oldTable) wrap.removeChild(oldTable);
                         wrap.appendChild(buildTemperTable(null));
                     };
 
