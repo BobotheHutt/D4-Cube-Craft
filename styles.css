@@ -36,7 +36,8 @@ body {
     font-family: 'Rajdhani', sans-serif;
     font-size: 14px;
     line-height: 1.5;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
 }
 
 /* ── TABS ─────────────────────────────────────────── */
@@ -933,16 +934,17 @@ body {
 .db-layout {
     display: flex;
     flex-direction: column;
+    height: calc(100vh - 101px);
 }
 
 .db-content {
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
     padding: 24px 28px;
     display: flex;
     flex-direction: column;
     gap: 16px;
-    /* 101px = tab-bar + app-header; 49px = db-toolbar */
-    max-height: calc(100vh - 150px);
 }
 
 .db-toolbar {
