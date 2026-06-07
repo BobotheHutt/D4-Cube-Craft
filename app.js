@@ -1324,9 +1324,113 @@ function switchTab(tabName) {
 }
 
 // ══════════════════════════════════════════════════════════════
+//  SETTINGS & THEMES
+// ══════════════════════════════════════════════════════════════
+const THEMES = {
+    void:     { label: "Void",     bg: [6,6,10],    deep: [9,9,14],    panel: [13,13,20],  card: [16,16,26],  cardHover: [19,19,31],  input: [11,11,18],  borderDim: [30,31,46],  borderMid: [42,43,61],  borderBright: [58,60,85] },
+    obsidian: { label: "Obsidian", bg: [12,12,12],  deep: [16,16,16],  panel: [20,20,20],  card: [26,26,26],  cardHover: [32,32,32],  input: [14,14,14],  borderDim: [44,44,44],  borderMid: [56,56,56],  borderBright: [72,72,72] },
+    inferno:  { label: "Inferno",  bg: [12,6,4],    deep: [16,9,6],    panel: [22,13,10],  card: [28,16,12],  cardHover: [34,20,15],  input: [14,8,6],    borderDim: [50,28,18],  borderMid: [64,36,24],  borderBright: [82,48,32] },
+    arcane:   { label: "Arcane",   bg: [8,4,14],    deep: [12,7,18],   panel: [16,10,24],  card: [20,14,30],  cardHover: [25,18,36],  input: [10,6,16],   borderDim: [36,24,52],  borderMid: [48,32,66],  borderBright: [62,42,84] },
+    frost:    { label: "Frost",    bg: [4,8,14],    deep: [6,11,18],   panel: [10,15,24],  card: [12,18,28],  cardHover: [16,22,34],  input: [6,10,16],   borderDim: [18,30,48],  borderMid: [24,40,60],  borderBright: [34,52,78] },
+};
+
+const TEXT_BASE = { primary: [226,229,240], secondary: [176,180,200], hint: [144,149,168] };
+const SETTINGS_KEY = "d4crafts_settings";
+
+function getSettings() {
+    try { return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {}; } catch { return {}; }
+}
+function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
+
+function clamp(v) { return Math.max(0, Math.min(255, Math.round(v))); }
+function rgb(arr, mult) { return `#${arr.map(c => clamp(c * mult / 100).toString(16).padStart(2,"0")).join("")}`; }
+
+function applyTheme(themeName, bgBrightness, textBrightness) {
+    const t = THEMES[themeName] || THEMES.void;
+    const b = bgBrightness || 100;
+    const x = textBrightness || 100;
+    const r = document.documentElement.style;
+
+    r.setProperty("--bg-void",       rgb(t.bg, b));
+    r.setProperty("--bg-deep",       rgb(t.deep, b));
+    r.setProperty("--bg-panel",      rgb(t.panel, b));
+    r.setProperty("--bg-card",       rgb(t.card, b));
+    r.setProperty("--bg-card-hover", rgb(t.cardHover, b));
+    r.setProperty("--bg-input",      rgb(t.input, b));
+    r.setProperty("--border-dim",    rgb(t.borderDim, b));
+    r.setProperty("--border-mid",    rgb(t.borderMid, b));
+    r.setProperty("--border-bright", rgb(t.borderBright, b));
+
+    r.setProperty("--text-primary",   rgb(TEXT_BASE.primary, x));
+    r.setProperty("--text-secondary", rgb(TEXT_BASE.secondary, x));
+    r.setProperty("--text-hint",      rgb(TEXT_BASE.hint, x));
+}
+
+function toggleSettings() {
+    document.getElementById("settings-overlay").classList.toggle("open");
+}
+
+function resetSettings() {
+    localStorage.removeItem(SETTINGS_KEY);
+    applyTheme("void", 100, 100);
+    document.getElementById("slider-brightness").value = 100;
+    document.getElementById("slider-text").value = 100;
+    document.querySelectorAll(".settings-theme-btn").forEach(b => {
+        b.classList.toggle("active", b.dataset.theme === "void");
+    });
+}
+
+function initSettings() {
+    const s = getSettings();
+    const theme = s.theme || "void";
+    const bgB = s.bgBrightness ?? 100;
+    const txtB = s.textBrightness ?? 100;
+
+    // Build theme buttons
+    const row = document.getElementById("theme-buttons");
+    Object.entries(THEMES).forEach(([key, t]) => {
+        const btn = document.createElement("button");
+        btn.className = "settings-theme-btn" + (key === theme ? " active" : "");
+        btn.textContent = t.label;
+        btn.dataset.theme = key;
+        btn.onclick = () => {
+            row.querySelectorAll(".settings-theme-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            const cur = getSettings();
+            cur.theme = key;
+            saveSettings(cur);
+            applyTheme(key, cur.bgBrightness ?? 100, cur.textBrightness ?? 100);
+        };
+        row.appendChild(btn);
+    });
+
+    // Sliders
+    const bgSlider = document.getElementById("slider-brightness");
+    const txtSlider = document.getElementById("slider-text");
+    bgSlider.value = bgB;
+    txtSlider.value = txtB;
+
+    bgSlider.oninput = () => {
+        const cur = getSettings();
+        cur.bgBrightness = parseInt(bgSlider.value);
+        saveSettings(cur);
+        applyTheme(cur.theme || "void", cur.bgBrightness, cur.textBrightness ?? 100);
+    };
+    txtSlider.oninput = () => {
+        const cur = getSettings();
+        cur.textBrightness = parseInt(txtSlider.value);
+        saveSettings(cur);
+        applyTheme(cur.theme || "void", cur.bgBrightness ?? 100, cur.textBrightness);
+    };
+
+    applyTheme(theme, bgB, txtB);
+}
+
+// ══════════════════════════════════════════════════════════════
 //  BOOT
 // ══════════════════════════════════════════════════════════════
 document.addEventListener("DOMContentLoaded", () => {
+    initSettings();
     initStorage();
     renderCharacterSelector();
     loadCharacterIntoApp(getActiveCharacter());

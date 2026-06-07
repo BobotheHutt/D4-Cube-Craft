@@ -8,9 +8,9 @@
     --border-dim: #1e1f2e;
     --border-mid: #2a2b3d;
     --border-bright: #3a3c55;
-    --text-primary: #c8cce0;
-    --text-secondary: #6b6f8a;
-    --text-hint: #3e4158;
+    --text-primary: #e2e5f0;
+    --text-secondary: #b0b4c8;
+    --text-hint: #9095a8;
     --gold: #d4a843;
     --gold-bright: #f0c860;
     --gold-dim: #7a5f20;
@@ -29,6 +29,161 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── SETTINGS GEAR ──────────────────────────────── */
+.settings-gear {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: var(--text-hint);
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    transition: color 0.15s;
+}
+.settings-gear:hover { color: var(--text-primary); }
+
+/* ── SETTINGS PANEL ─────────────────────────────── */
+.settings-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    justify-content: flex-end;
+}
+.settings-overlay.open {
+    display: flex;
+}
+.settings-panel {
+    width: 320px;
+    max-width: 90vw;
+    height: 100vh;
+    background: var(--bg-panel);
+    border-left: 1px solid var(--border-dim);
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 24px rgba(0,0,0,0.4);
+}
+.settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-dim);
+}
+.settings-title {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+.settings-close {
+    background: none;
+    border: none;
+    color: var(--text-hint);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 8px;
+}
+.settings-close:hover { color: var(--text-primary); }
+.settings-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    overflow-y: auto;
+}
+.settings-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.settings-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+.settings-theme-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.settings-theme-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--border-dim);
+    border-radius: 4px;
+    background: var(--bg-deep);
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.settings-theme-btn:hover {
+    border-color: var(--text-secondary);
+    color: var(--text-primary);
+}
+.settings-theme-btn.active {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: var(--gold-dim);
+}
+.settings-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border-mid);
+    outline: none;
+    cursor: pointer;
+}
+.settings-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--gold);
+    cursor: pointer;
+    border: 2px solid var(--bg-panel);
+}
+.settings-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--gold);
+    cursor: pointer;
+    border: 2px solid var(--bg-panel);
+}
+.settings-slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--text-hint);
+}
+.settings-reset {
+    margin-top: 8px;
+    padding: 8px 16px;
+    border: 1px solid var(--border-dim);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    align-self: flex-start;
+}
+.settings-reset:hover {
+    border-color: var(--text-secondary);
+    color: var(--text-primary);
+}
 
 body {
     background-color: var(--bg-void);
