@@ -1271,7 +1271,6 @@ function renderDatabase(filterClass) {
     const container = document.getElementById("db-content");
     if (!container) return;
     container.innerHTML = "";
-
     container.appendChild(buildPrismsSection(filterClass));
     container.appendChild(buildAspectsSection(filterClass));
     container.appendChild(buildTempersSection(filterClass));
@@ -1279,8 +1278,9 @@ function renderDatabase(filterClass) {
     container.appendChild(buildMythicsSection());
 }
 
-// ── SECTION BUILDER HELPER ────────────────────────────────────
-function buildSection(title, metaText, buildBodyFn) {
+// ── SECTION BUILDER ───────────────────────────────────────────
+// toggleDefs: array of { label, key } or null for no toggles
+function buildSection(title, metaText, toggleDefs, buildBodyFn) {
     const section = document.createElement("div");
     section.className = "db-section";
 
@@ -1293,44 +1293,95 @@ function buildSection(title, metaText, buildBodyFn) {
             <span class="db-section-chevron">▼</span>
         </span>
     `;
-    header.onclick = () => {
-        section.classList.toggle("open");
-        if (section.classList.contains("open") && !section._built) {
-            section._built = true;
-            body.appendChild(buildBodyFn());
-        }
-    };
+
+    let toggleRow = null;
+    if (toggleDefs && toggleDefs.length > 0) {
+        toggleRow = document.createElement("div");
+        toggleRow.className = "db-cat-toggles";
+        toggleRow.style.display = "none";
+        toggleRow.onclick = e => e.stopPropagation();
+    }
 
     const body = document.createElement("div");
     body.className = "db-section-body";
+    let built = false;
+
+    function rebuildBody(activeCat) {
+        body.innerHTML = "";
+        body.appendChild(buildBodyFn(activeCat));
+    }
+
+    header.onclick = () => {
+        section.classList.toggle("open");
+        const isOpen = section.classList.contains("open");
+        if (toggleRow) toggleRow.style.display = isOpen ? "flex" : "none";
+        if (isOpen && !built) {
+            built = true;
+            rebuildBody(null);
+        }
+    };
+
+    if (toggleDefs && toggleRow) {
+        const allBtn = document.createElement("button");
+        allBtn.className = "db-cat-toggle active";
+        allBtn.textContent = "All";
+        allBtn.onclick = () => {
+            toggleRow.querySelectorAll(".db-cat-toggle").forEach(b => b.classList.remove("active"));
+            allBtn.classList.add("active");
+            rebuildBody(null);
+        };
+        toggleRow.appendChild(allBtn);
+
+        toggleDefs.forEach(({ label, key }) => {
+            const btn = document.createElement("button");
+            btn.className = "db-cat-toggle";
+            btn.textContent = label;
+            btn.onclick = () => {
+                toggleRow.querySelectorAll(".db-cat-toggle").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                rebuildBody(key);
+            };
+            toggleRow.appendChild(btn);
+        });
+    }
 
     section.appendChild(header);
+    if (toggleRow) section.appendChild(toggleRow);
     section.appendChild(body);
     return section;
 }
 
-// ── PRISMS SECTION ────────────────────────────────────────────
+// ── PRISMS ────────────────────────────────────────────────────
 function buildPrismsSection(filterClass) {
-    return buildSection("Tuning Prisms", "7 prisms — click to expand", () => {
+    const toggles = [
+        { label: "Aggressive",  key: "aggressivePrism"  },
+        { label: "Protector",   key: "protectorPrism"   },
+        { label: "Pragmatic",   key: "pragmaticPrism"   },
+        { label: "Resourceful", key: "resourcefulPrism" },
+        { label: "Adept",       key: "adeptPrism"       },
+        { label: "Chromatic",   key: "chromaticPrism"   },
+        { label: "Mobility",    key: "mobilityPrism"    }
+    ];
+
+    return buildSection("Tuning Prisms", "7 prisms", toggles, (activeCat) => {
         const grid = document.createElement("div");
         grid.className = "db-cat-grid";
 
-        Object.entries(window.PrismRegistry).forEach(([key, data]) => {
+        const entries = activeCat
+            ? (window.PrismRegistry[activeCat] ? [[activeCat, window.PrismRegistry[activeCat]]] : [])
+            : Object.entries(window.PrismRegistry);
+
+        entries.forEach(([key, data]) => {
             const block = document.createElement("div");
             block.className = "db-cat-block";
 
             const label = document.createElement("div");
             label.className = "db-cat-label";
-            const badgeClass = PRISM_SECTION_COLOR[key] || "";
-            label.innerHTML = `
-                <span class="db-cat-badge prism-badge ${badgeClass}">${PRISM_DISPLAY_NAME[key] || key}</span>
-            `;
+            label.innerHTML = `<span class="db-cat-badge prism-badge ${PRISM_SECTION_COLOR[key] || ""}">${PRISM_DISPLAY_NAME[key] || key}</span>`;
             block.appendChild(label);
 
-            // Get class-aware flat list
-            const cls      = filterClass === "all" ? null : filterClass;
-            let affixList  = [];
-
+            const cls = filterClass === "all" ? null : filterClass;
+            let affixList = [];
             if (Array.isArray(data)) {
                 affixList = data;
             } else if (typeof data === "object") {
@@ -1343,22 +1394,16 @@ function buildPrismsSection(filterClass) {
                         ...(data.classresource?.[cls] || [])
                     ];
                 } else {
-                    // All classes — show universal + all class entries deduplicated
-                    const allStats     = data.stats     ? Object.values(data.stats)     : [];
-                    const allSkills    = data.classskills   ? Object.values(data.classskills).flat()   : [];
-                    const allResources = data.classresource ? Object.values(data.classresource).flat() : [];
-                    affixList = [
-                        ...[...new Set(allStats)],
-                        ...(data.universal || []),
-                        ...[...new Set(allSkills)],
-                        ...[...new Set(allResources)]
-                    ];
+                    const allStats     = data.stats        ? [...new Set(Object.values(data.stats))]                 : [];
+                    const allSkills    = data.classskills  ? [...new Set(Object.values(data.classskills).flat())]    : [];
+                    const allResources = data.classresource? [...new Set(Object.values(data.classresource).flat())]  : [];
+                    affixList = [...allStats, ...(data.universal || []), ...allSkills, ...allResources];
                 }
             }
 
             if (affixList.length === 0) {
                 const empty = document.createElement("div");
-                empty.className   = "db-placeholder-msg";
+                empty.className = "db-placeholder-msg";
                 empty.textContent = "No entries for this class.";
                 block.appendChild(empty);
             } else {
@@ -1369,136 +1414,134 @@ function buildPrismsSection(filterClass) {
                     block.appendChild(entry);
                 });
             }
-
             grid.appendChild(block);
         });
-
         return grid;
     });
 }
 
-// ── ASPECTS SECTION ───────────────────────────────────────────
+// ── ASPECTS ───────────────────────────────────────────────────
 function buildAspectsSection(filterClass) {
     const isFiltered = filterClass !== "all";
     const meta = isFiltered
         ? `Filtered for ${filterClass.charAt(0).toUpperCase() + filterClass.slice(1)}`
         : "All Classes";
 
-    return buildSection("Legendary Aspects", meta, () => {
-        const wrap = document.createElement("div");
-        const grid = document.createElement("div");
-        grid.className = "db-cat-grid";
+    return buildSection("Legendary Aspects", meta,
+        ASPECT_CATEGORY_MAP.map(c => ({ label: c.label, key: c.key })),
+        (activeCat) => {
+            const wrap = document.createElement("div");
+            const grid = document.createElement("div");
+            grid.className = "db-cat-grid";
 
-        ASPECT_CATEGORY_MAP.forEach(({ label, key }) => {
-            const block = document.createElement("div");
-            block.className = "db-cat-block";
+            const catsToShow = activeCat
+                ? ASPECT_CATEGORY_MAP.filter(c => c.key === activeCat)
+                : ASPECT_CATEGORY_MAP;
 
-            const catLabel = document.createElement("div");
-            catLabel.className   = "db-cat-label";
-            catLabel.textContent = label;
-            block.appendChild(catLabel);
+            catsToShow.forEach(({ label, key }) => {
+                const block = document.createElement("div");
+                block.className = "db-cat-block";
 
-            const aspects = window.AspectRegistry[key] || [];
-            const filtered = isFiltered
-                ? aspects.filter(a => {
-                    if (typeof a === "string") return true;
-                    if (!a.classes || a.classes.length === 0) return true;
-                    return a.classes.includes(filterClass);
-                })
-                : aspects; // All classes — show everything
+                const catLabel = document.createElement("div");
+                catLabel.className   = "db-cat-label";
+                catLabel.textContent = label;
+                block.appendChild(catLabel);
 
-            if (filtered.length === 0) {
-                const empty = document.createElement("div");
-                empty.className   = "db-placeholder-msg";
-                empty.textContent = "None available.";
-                block.appendChild(empty);
-            } else {
-                filtered.forEach(a => {
-                    const name  = typeof a === "string" ? a : a.name;
-                    const entry = document.createElement("div");
-                    entry.className   = "db-entry";
-                    entry.textContent = name;
-                    block.appendChild(entry);
-                });
-            }
+                const aspects  = window.AspectRegistry[key] || [];
+                const filtered = isFiltered
+                    ? aspects.filter(a => !a.classes || a.classes.length === 0 || a.classes.includes(filterClass))
+                    : aspects;
 
-            grid.appendChild(block);
-        });
+                if (filtered.length === 0) {
+                    const empty = document.createElement("div");
+                    empty.className = "db-placeholder-msg";
+                    empty.textContent = "None available.";
+                    block.appendChild(empty);
+                } else {
+                    filtered.forEach(a => {
+                        const entry = document.createElement("div");
+                        entry.className   = "db-entry";
+                        entry.textContent = typeof a === "string" ? a : a.name;
+                        block.appendChild(entry);
+                    });
+                }
+                grid.appendChild(block);
+            });
 
-        wrap.appendChild(grid);
-        return wrap;
-    });
+            wrap.appendChild(grid);
+            return wrap;
+        }
+    );
 }
 
-// ── TEMPERS SECTION ───────────────────────────────────────────
+// ── TEMPERS ───────────────────────────────────────────────────
 function buildTempersSection(filterClass) {
     const isFiltered = filterClass !== "all";
     const meta = isFiltered
         ? `Filtered for ${filterClass.charAt(0).toUpperCase() + filterClass.slice(1)}`
         : "All Classes";
 
-    return buildSection("Temper Manuals", meta, () => {
-        const wrap = document.createElement("div");
-        const grid = document.createElement("div");
-        grid.className = "db-cat-grid";
+    return buildSection("Temper Manuals", meta,
+        TEMPER_CATEGORY_MAP.map(c => ({ label: c.label, key: c.key })),
+        (activeCat) => {
+            const wrap = document.createElement("div");
+            const grid = document.createElement("div");
+            grid.className = "db-cat-grid";
 
-        TEMPER_CATEGORY_MAP.forEach(({ label, key }) => {
-            const block = document.createElement("div");
-            block.className = "db-cat-block";
+            const catsToShow = activeCat
+                ? TEMPER_CATEGORY_MAP.filter(c => c.key === activeCat)
+                : TEMPER_CATEGORY_MAP;
 
-            const catLabel = document.createElement("div");
-            catLabel.className   = "db-cat-label";
-            catLabel.textContent = label;
-            block.appendChild(catLabel);
+            catsToShow.forEach(({ label, key }) => {
+                const block = document.createElement("div");
+                block.className = "db-cat-block";
 
-            const tempers  = window.TemperRegistry[key] || [];
-            const filtered = isFiltered
-                ? tempers.filter(t => {
-                    if (typeof t === "string") return true;
-                    if (!t.classes || t.classes.length === 0) return true;
-                    return t.classes.includes(filterClass);
-                })
-                : tempers; // All classes — show everything
+                const catLabel = document.createElement("div");
+                catLabel.className   = "db-cat-label";
+                catLabel.textContent = label;
+                block.appendChild(catLabel);
 
-            if (filtered.length === 0) {
-                const empty = document.createElement("div");
-                empty.className   = "db-placeholder-msg";
-                empty.textContent = "None available.";
-                block.appendChild(empty);
-            } else {
-                filtered.forEach(t => {
-                    const name  = typeof t === "string" ? t : t.name;
-                    const slots = typeof t === "object" && t.slots?.length
-                        ? t.slots.map(s => s.replace("weapon-", "Weapon ")).join(", ")
-                        : "";
-                    const entry = document.createElement("div");
-                    entry.className = "db-entry";
-                    entry.innerHTML = name + (slots ? `<span class="db-entry-slot">${slots}</span>` : "");
-                    block.appendChild(entry);
-                });
-            }
+                const tempers  = window.TemperRegistry[key] || [];
+                const filtered = isFiltered
+                    ? tempers.filter(t => !t.classes || t.classes.length === 0 || t.classes.includes(filterClass))
+                    : tempers;
 
-            grid.appendChild(block);
-        });
+                if (filtered.length === 0) {
+                    const empty = document.createElement("div");
+                    empty.className = "db-placeholder-msg";
+                    empty.textContent = "None available.";
+                    block.appendChild(empty);
+                } else {
+                    filtered.forEach(t => {
+                        const name  = typeof t === "string" ? t : t.name;
+                        const slots = typeof t === "object" && t.slots?.length
+                            ? t.slots.map(s => s.replace("weapon-", "Weapon ")).join(", ")
+                            : "";
+                        const entry = document.createElement("div");
+                        entry.className = "db-entry";
+                        entry.innerHTML = name + (slots ? `<span class="db-entry-slot">${slots}</span>` : "");
+                        block.appendChild(entry);
+                    });
+                }
+                grid.appendChild(block);
+            });
 
-        wrap.appendChild(grid);
-        return wrap;
-    });
+            wrap.appendChild(grid);
+            return wrap;
+        }
+    );
 }
 
-// ── UNIQUES SECTION ──────────────────────────────────────────
+// ── UNIQUES ───────────────────────────────────────────────────
 function buildUniquesSection(filterClass) {
     const isFiltered = filterClass !== "all";
     const meta = isFiltered
         ? `${filterClass.charAt(0).toUpperCase() + filterClass.slice(1)} only`
         : "All Classes";
 
-    return buildSection("Unique Items", meta, () => {
+    return buildSection("Unique Items", meta, null, () => {
         const wrap = document.createElement("div");
-
-        const classes = isFiltered
-            ? [filterClass]
-            : Object.keys(window.UniqueRegistry);
+        const classes = isFiltered ? [filterClass] : Object.keys(window.UniqueRegistry);
 
         classes.forEach(cls => {
             const items = window.UniqueRegistry[cls] || [];
@@ -1526,118 +1569,36 @@ function buildUniquesSection(filterClass) {
 
                 const card = document.createElement("div");
                 card.className = "db-mythic-card";
-                card.innerHTML = `
-                    <div class="db-unique-name">${item.name}</div>
-                    <div class="db-mythic-slot">${slotLabel}</div>
-                `;
+                card.innerHTML = `<div class="db-unique-name">${item.name}</div><div class="db-mythic-slot">${slotLabel}</div>`;
                 grid.appendChild(card);
             });
-
             wrap.appendChild(grid);
         });
-
         return wrap;
     });
 }
 
-// ── MYTHICS SECTION ───────────────────────────────────────────
+// ── MYTHICS ───────────────────────────────────────────────────
 function buildMythicsSection() {
-    return buildSection("Mythic Uniques", "All classes — slot-locked", () => {
+    return buildSection("Mythic Uniques", "All classes — slot-locked", null, () => {
         const grid = document.createElement("div");
         grid.className = "db-mythic-grid";
 
-        const all = window.MythicRegistry || {};
-        const items = [];
+        Object.values(window.MythicRegistry || {}).flat().forEach(item => {
+            if (!item?.name) return;
+            const slotLabel = item.slot
+                ? item.slot.charAt(0).toUpperCase() + item.slot.slice(1)
+                : (item.slots || []).map(s =>
+                    s.startsWith("weapon") ? "Weapons" :
+                    s.startsWith("ring")   ? "Rings"   :
+                    s.charAt(0).toUpperCase() + s.slice(1)
+                ).filter((v, i, a) => a.indexOf(v) === i).join(", ");
 
-        Object.entries(all).forEach(([category, list]) => {
-            (list || []).forEach(item => {
-                if (!item?.name) return;
-                const slotLabel = item.slot
-                    ? item.slot.charAt(0).toUpperCase() + item.slot.slice(1)
-                    : (item.slots || []).map(s =>
-                        s.startsWith("weapon") ? "Weapons" :
-                        s.startsWith("ring")   ? "Rings"   :
-                        s.charAt(0).toUpperCase() + s.slice(1)
-                    ).filter((v, i, a) => a.indexOf(v) === i).join(", ");
-
-                items.push({ name: item.name, slot: slotLabel, category });
-            });
+            const card = document.createElement("div");
+            card.className = "db-mythic-card";
+            card.innerHTML = `<div class="db-mythic-name">${item.name}</div><div class="db-mythic-slot">${slotLabel}</div>`;
+            grid.appendChild(card);
         });
-
-        if (items.length === 0) {
-            const empty = document.createElement("div");
-            empty.className   = "db-placeholder-msg";
-            empty.textContent = "No mythic items in registry.";
-            grid.appendChild(empty);
-        } else {
-            items.forEach(item => {
-                const card = document.createElement("div");
-                card.className = "db-mythic-card";
-                card.innerHTML = `
-                    <div class="db-mythic-name">${item.name}</div>
-                    <div class="db-mythic-slot">${item.slot}</div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
         return grid;
     });
 }
-
-
-
-// ══════════════════════════════════════════════════════════════
-//  ITEM TOOLTIP  (delayed hover — 1 second delay)
-// ══════════════════════════════════════════════════════════════
-
-let tooltipTimer   = null;
-const TOOLTIP_DELAY = 1000; // ms
-
-function showTooltip(e, name, type, power) {
-    clearTimeout(tooltipTimer);
-    tooltipTimer = setTimeout(() => {
-        const tip = document.getElementById("item-tooltip");
-        if (!tip) return;
-        document.getElementById("tooltip-name").textContent  = name;
-        document.getElementById("tooltip-type").textContent  = type;
-        document.getElementById("tooltip-power").textContent = power || "";
-        document.getElementById("tooltip-power").style.display = power ? "block" : "none";
-
-        positionTooltip(e);
-        tip.classList.add("visible");
-    }, TOOLTIP_DELAY);
-}
-
-function moveTooltip(e) {
-    positionTooltip(e);
-}
-
-function hideTooltip() {
-    clearTimeout(tooltipTimer);
-    const tip = document.getElementById("item-tooltip");
-    if (tip) tip.classList.remove("visible");
-}
-
-function positionTooltip(e) {
-    const tip = document.getElementById("item-tooltip");
-    if (!tip) return;
-    const pad  = 14;
-    const tw   = tip.offsetWidth  || 280;
-    const th   = tip.offsetHeight || 100;
-    let x = e.clientX + pad;
-    let y = e.clientY + pad;
-    if (x + tw > window.innerWidth)  x = e.clientX - tw - pad;
-    if (y + th > window.innerHeight) y = e.clientY - th - pad;
-    tip.style.left = `${x}px`;
-    tip.style.top  = `${y}px`;
-}
-
-// Attach tooltip to an element
-function attachTooltip(el, name, type, power) {
-    el.addEventListener("mouseenter", (e) => showTooltip(e, name, type, power));
-    el.addEventListener("mousemove",  (e) => moveTooltip(e));
-    el.addEventListener("mouseleave", ()  => hideTooltip());
-}
-
-
