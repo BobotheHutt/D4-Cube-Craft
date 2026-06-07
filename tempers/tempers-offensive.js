@@ -31,7 +31,13 @@ registerTemperCategory("offensive", {
     ],
     classEntries: {
         barbarian: [
-            "Placeholder Barbarian Temper",
+            "Damage with Two-Handed Bludgeoning Weapons",
+            "Damage with Two-Handed Slashing Weapons",
+            "Damage with Dual-Wielded Weapons",
+            "Ancient Damage",
+            "Brawling Damage",
+            "Earthquake Damage",
+            "Weapon Mastery Damage",
         ],
         druid: [
             "Placeholder Druid Temper",
@@ -40,7 +46,16 @@ registerTemperCategory("offensive", {
             "Placeholder Necromancer Temper",
         ],
         rogue: [
-            "Placeholder Rogue Temper",
+            "Cutthroat Damage",
+            "Marksman Damage",
+            "Agility Damage",
+            "Damage per Combo Point Spent",
+            "Trap Damage",
+            "Traps Arm Faster",
+            "Grenade Damage",
+            "Imbuement Potency",
+            "Imbued Damage",
+            "Shade Damage",
         ],
         sorcerer: [
             "Placeholder Sorcerer Temper",
