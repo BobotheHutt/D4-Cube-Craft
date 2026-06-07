@@ -141,7 +141,7 @@ body {
 
 /* ── TAB PAGES ────────────────────────────────────── */
 .tab-page { display: none; }
-.tab-page.active { display: block; }
+.tab-page.active { display: block; height: 100%; }
 
 /* ── MAIN 3-PANEL LAYOUT ──────────────────────────── */
 .planner-layout {

@@ -15,7 +15,7 @@ window.UniqueRegistry  = window.UniqueRegistry  || {};
 function registerPrismBucket(prismName, affixList) { window.PrismRegistry[prismName] = affixList; }
 function registerAspectCategory(k, v)              { window.AspectRegistry[k] = v; }
 function registerMythics(d)                        { window.MythicRegistry = d; }
-function registerTemperCategory(k, v)              { window.TemperRegistry[k] = v; }
+function registerTemperCategory(k, v)              { window.TemperRegistry[k] = v; } // v = { slots:[], entries:[] }
 function registerUniques(className, itemList)       { window.UniqueRegistry[className] = itemList; }
 
 // ── PRISM DISPLAY MAPS ────────────────────────────────────────
@@ -1481,36 +1481,24 @@ function buildAspectsSection(filterClass) {
 
 // ── TEMPERS ───────────────────────────────────────────────────
 
-// All slot IDs that tempers can appear on, with readable labels
-const TEMPER_SLOT_DEFS = [
-    { id: "helm",       label: "Helm"       },
-    { id: "chest",      label: "Chest"      },
-    { id: "gloves",     label: "Gloves"     },
-    { id: "pants",      label: "Pants"      },
-    { id: "boots",      label: "Boots"      },
-    { id: "amulet",     label: "Amulet"     },
-    { id: "ring-left",  label: "Rings"      },
-    { id: "ring-right", label: "Rings"      },
-    { id: "weapon",     label: "Weapons"    }
-];
-
-// Readable slot label for a temper entry
-function temperSlotLabel(t) {
-    if (!t.slots || t.slots.length === 0) return "All";
-    const labels = [...new Set(t.slots.map(s => {
-        if (s.startsWith("weapon")) return "Weapons";
-        if (s.startsWith("ring"))   return "Rings";
+// Category slot rules — derived from data files
+// Readable slot label for a category's slots
+function temperCategorySlotLabel(key) {
+    const data = window.TemperRegistry[key];
+    if (!data?.slots?.length) return "All";
+    const labels = [...new Set(data.slots.map(s => {
+        if (s === "weapon" || s.startsWith("weapon-")) return "Weapons";
+        if (s.startsWith("ring")) return "Rings";
         return s.charAt(0).toUpperCase() + s.slice(1);
     }))];
-    return labels.sort().join(", ");
+    return labels.join(", ");
 }
 
-// Active slot filter state for the tempers section
-let temperSlotFilter = new Set(); // empty = show all
+// Slot filter checkboxes state
+let temperSlotFilter = new Set();
 
 function buildTempersSection(filterClass) {
-    const isFiltered = filterClass !== "all";
-    const meta = isFiltered
+    const meta = filterClass !== "all"
         ? `Filtered for ${filterClass.charAt(0).toUpperCase() + filterClass.slice(1)}`
         : "All Classes";
 
@@ -1519,96 +1507,97 @@ function buildTempersSection(filterClass) {
         (activeCat) => {
             const wrap = document.createElement("div");
 
-            // ── Slot checkboxes (only when viewing All categories) ──
+            // Slot checkboxes only when All categories shown
             if (!activeCat) {
-                const slotFilterRow = document.createElement("div");
-                slotFilterRow.style.cssText = "display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;padding:10px 12px;background:var(--bg-deep);border-radius:4px;border:1px solid var(--border-dim);";
+                const slotDefs = [
+                    { id: "helm",    label: "Helm"    },
+                    { id: "chest",   label: "Chest"   },
+                    { id: "gloves",  label: "Gloves"  },
+                    { id: "pants",   label: "Pants"   },
+                    { id: "boots",   label: "Boots"   },
+                    { id: "amulet",  label: "Amulet"  },
+                    { id: "ring",    label: "Rings"   },
+                    { id: "weapon",  label: "Weapons" },
+                    { id: "offhand", label: "Offhand" }
+                ];
 
-                const filterLabel = document.createElement("span");
-                filterLabel.style.cssText = "font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-hint);align-self:center;margin-right:4px;";
-                filterLabel.textContent = "Filter by slot:";
-                slotFilterRow.appendChild(filterLabel);
+                const slotRow = document.createElement("div");
+                slotRow.style.cssText = "display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;padding:10px 12px;background:var(--bg-deep);border-radius:4px;border:1px solid var(--border-dim);align-items:center;";
 
-                // Deduplicate by label (Rings appears twice)
-                const seen = new Set();
-                TEMPER_SLOT_DEFS.forEach(({ id, label }) => {
-                    if (seen.has(label)) return;
-                    seen.add(label);
+                const lbl = document.createElement("span");
+                lbl.style.cssText = "font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-hint);margin-right:4px;";
+                lbl.textContent = "Filter by slot:";
+                slotRow.appendChild(lbl);
 
+                slotDefs.forEach(({ id, label }) => {
                     const checkLabel = document.createElement("label");
-                    checkLabel.style.cssText = "display:flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--text-secondary);cursor:pointer;";
+                    checkLabel.style.cssText = "display:flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--text-secondary);cursor:pointer;user-select:none;";
 
                     const cb = document.createElement("input");
                     cb.type    = "checkbox";
                     cb.value   = id;
                     cb.checked = temperSlotFilter.size === 0 || temperSlotFilter.has(id);
                     cb.style.accentColor = "var(--gold)";
-
                     cb.onchange = () => {
-                        // Rebuild filter set from all checkboxes in this row
-                        const allCbs = slotFilterRow.querySelectorAll("input[type=checkbox]");
+                        const allCbs = slotRow.querySelectorAll("input[type=checkbox]");
                         const checked = [...allCbs].filter(c => c.checked).map(c => c.value);
-                        // If all checked or none checked, treat as "show all"
-                        temperSlotFilter = checked.length === allCbs.length || checked.length === 0
+                        temperSlotFilter = checked.length === 0 || checked.length === allCbs.length
                             ? new Set()
                             : new Set(checked);
-                        // Rebuild the table
-                        const tableEl = wrap.querySelector(".db-table");
-                        if (tableEl) wrap.removeChild(tableEl);
-                        wrap.appendChild(buildTemperTable(null, filterClass));
+                        const old = wrap.querySelector(".db-table");
+                        if (old) wrap.removeChild(old);
+                        wrap.appendChild(buildTemperTable(null));
                     };
 
                     checkLabel.appendChild(cb);
                     checkLabel.appendChild(document.createTextNode(label));
-                    slotFilterRow.appendChild(checkLabel);
+                    slotRow.appendChild(checkLabel);
                 });
 
-                wrap.appendChild(slotFilterRow);
+                wrap.appendChild(slotRow);
             }
 
-            wrap.appendChild(buildTemperTable(activeCat, filterClass));
+            wrap.appendChild(buildTemperTable(activeCat));
             return wrap;
         }
     );
 }
 
-function buildTemperTable(activeCat, filterClass) {
-    const isFiltered = filterClass !== "all";
+function buildTemperTable(activeCat) {
     const showAll = !activeCat;
 
-    // Gather all tempers across relevant categories
     const catsToUse = activeCat
         ? TEMPER_CATEGORY_MAP.filter(c => c.key === activeCat)
         : TEMPER_CATEGORY_MAP;
 
     let rows = [];
     catsToUse.forEach(({ label, key }) => {
-        const tempers  = window.TemperRegistry[key] || [];
-        const filtered = isFiltered
-            ? tempers.filter(t => !t.classes || t.classes.length === 0 || t.classes.includes(filterClass))
-            : tempers;
+        const data    = window.TemperRegistry[key];
+        if (!data) return;
+        const entries = Array.isArray(data) ? data : (data.entries || []);
+        const slots   = Array.isArray(data) ? [] : (data.slots || []);
 
-        filtered.forEach(t => {
-            const name      = typeof t === "string" ? t : t.name;
-            const slotLabel = typeof t === "object" ? temperSlotLabel(t) : "All";
+        // Build readable slot label for this category
+        const slotLabel = slots.length === 0 ? "All" :
+            [...new Set(slots.map(s => {
+                if (s === "weapon" || s.startsWith("weapon-")) return "Weapons";
+                if (s.startsWith("ring")) return "Rings";
+                return s.charAt(0).toUpperCase() + s.slice(1);
+            }))].join(", ");
 
-            // Apply slot filter when viewing All categories
-            if (showAll && temperSlotFilter.size > 0) {
-                // Check if this temper matches any selected slot
-                const tSlots = typeof t === "object" && t.slots?.length ? t.slots : [];
-                if (tSlots.length === 0) {
-                    // "All" temper — show if any slot in the category config is selected
-                    // (just show it — it applies broadly)
-                } else {
-                    // Only show if at least one of its slots is in the filter
-                    // Normalize weapon-0,1,2,3 to "weapon" for matching
-                    const normalizedSlots = tSlots.map(s => s.startsWith("weapon") ? "weapon" : s.startsWith("ring") ? "ring-left" : s);
-                    const hasMatch = normalizedSlots.some(s => temperSlotFilter.has(s));
-                    if (!hasMatch) return;
-                }
-            }
+        // Apply slot filter
+        if (showAll && temperSlotFilter.size > 0) {
+            // Check if this category's slots overlap with filter
+            const catSlotIds = slots.map(s =>
+                s.startsWith("weapon") ? "weapon" :
+                s.startsWith("ring")   ? "ring"   : s
+            );
+            const hasMatch = catSlotIds.some(s => temperSlotFilter.has(s));
+            if (!hasMatch) return;
+        }
 
-            rows.push({ name, cat: label, slotLabel });
+        entries.forEach(name => {
+            rows.push({ name: typeof name === "string" ? name : name.name, cat: label, slotLabel });
         });
     });
 
@@ -1617,7 +1606,6 @@ function buildTemperTable(activeCat, filterClass) {
     const table = document.createElement("div");
     table.className = "db-table";
 
-    // Header — include Category column only when showing All
     const hdr = document.createElement("div");
     hdr.className = showAll ? "db-table-header" : "db-table-header db-table-header--no-cat";
     hdr.innerHTML = showAll
@@ -1644,7 +1632,6 @@ function buildTemperTable(activeCat, filterClass) {
 
     return table;
 }
-
 
 
 // ── UNIQUES ───────────────────────────────────────────────────

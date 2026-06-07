@@ -1,36 +1,33 @@
 // ══════════════════════════════════════════════════════════════
 //  tempers-mobility.js  —  Mobility Temper Manuals
+//  Valid slots: Amulet, Boots
+//  Slots are universal — same for all classes
 // ══════════════════════════════════════════════════════════════
-registerTemperCategory("mobility", [
-    { name: "Dodge Chance after Evade",                 slots: ["boots","pants"] },
-    { name: "Evade Cooldown Reduction",                 slots: ["boots","pants"] },
-    { name: "Movement Speed",                           slots: ["boots","pants","amulet"] },
-    { name: "Movement Speed after Elite Kill",          slots: ["boots"] },
-    { name: "Movement Speed after Evade",               slots: ["boots"] },
-    { name: "Unstoppable Duration",                     slots: [] },
-    // ── Barbarian ─────────────────────────────────────────
-    { name: "Charge Cooldown Reduction",                slots: [] },
-    { name: "Leap Cooldown Reduction",                  slots: [] },
-    // ── Druid ─────────────────────────────────────────────
-    { name: "Shapeshifting Speed",                      slots: [] },
-    { name: "Wolf Companion Movement Speed",            slots: [] },
-    // ── Necromancer ───────────────────────────────────────
-    { name: "Bone Storm Cooldown Reduction",            slots: [] },
-    { name: "Blood Mist Cooldown Reduction",            slots: [] },
-    // ── Rogue ─────────────────────────────────────────────
-    { name: "Dash Charges",                             slots: [] },
-    { name: "Dash Cooldown Reduction",                  slots: [] },
-    { name: "Shadow Step Cooldown Reduction",           slots: [] },
-    // ── Sorcerer ──────────────────────────────────────────
-    { name: "Teleport Cooldown Reduction",              slots: [] },
-    { name: "Flame Shield Cooldown Reduction",          slots: [] },
-    // ── Spiritborn ────────────────────────────────────────
-    { name: "Soar Cooldown Reduction",                  slots: [] },
-    { name: "Vine Creeper Cooldown Reduction",          slots: [] },
-    // ── Paladin ───────────────────────────────────────────
-    { name: "Charge of Justice Cooldown Reduction",     slots: [] },
-    { name: "Paladin Movement Speed",                   slots: [] },
-    // ── Warlock ───────────────────────────────────────────
-    { name: "Shadow Dash Cooldown Reduction",           slots: [] },
-    { name: "Warlock Movement Speed",                   slots: [] }
-]);
+registerTemperCategory("mobility", {
+    slots: ["amulet", "boots"],
+    entries: [
+        "Blood Mist Cooldown Reduction",
+        "Bone Storm Cooldown Reduction",
+        "Charge Cooldown Reduction",
+        "Charge of Justice Cooldown Reduction",
+        "Dash Charges",
+        "Dash Cooldown Reduction",
+        "Dodge Chance after Evade",
+        "Evade Cooldown Reduction",
+        "Flame Shield Cooldown Reduction",
+        "Leap Cooldown Reduction",
+        "Movement Speed",
+        "Movement Speed after Elite Kill",
+        "Movement Speed after Evade",
+        "Paladin Movement Speed",
+        "Shadow Dash Cooldown Reduction",
+        "Shadow Step Cooldown Reduction",
+        "Shapeshifting Speed",
+        "Soar Cooldown Reduction",
+        "Teleport Cooldown Reduction",
+        "Unstoppable Duration",
+        "Vine Creeper Cooldown Reduction",
+        "Warlock Movement Speed",
+        "Wolf Companion Movement Speed",
+    ]
+});
