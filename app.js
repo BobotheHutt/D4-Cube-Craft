@@ -864,7 +864,8 @@ function renderTemperList() {
     container.innerHTML = "";
     const slotId     = temperModalState.slotId;
     const currentVal = AppState.temperSelections[slotId];
-    const tempers    = window.TemperRegistry[temperModalState.activeCategory] || [];
+    const regEntry   = window.TemperRegistry[temperModalState.activeCategory];
+    const tempers    = Array.isArray(regEntry) ? regEntry : (regEntry?.entries || []);
 
     // Filter to slot-eligible tempers
     const filtered = tempers.filter(t => {
