@@ -941,8 +941,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    /* height = viewport minus tab-bar(49px) + app-header(52px) + db-toolbar(49px) */
-    height: calc(100vh - 150px);
+    /* 101px = tab-bar + app-header; 49px = db-toolbar */
+    max-height: calc(100vh - 150px);
 }
 
 .db-toolbar {
