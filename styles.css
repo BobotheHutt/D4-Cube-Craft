@@ -14,6 +14,10 @@
     --gold: #d4a843;
     --gold-bright: #f0c860;
     --gold-dim: #7a5f20;
+    --accent: #d4a843;
+    --accent-bright: #f0c860;
+    --accent-dim: #7a5f20;
+    --accent2: #8eb8d4;
     --purple: #9b6ef5;
     --purple-dim: #4a2d8a;
     --mythic-color: #e090ff;
@@ -79,7 +83,7 @@
     font-family: 'Cinzel', serif;
     font-size: 14px;
     font-weight: 700;
-    color: var(--gold);
+    color: var(--accent2);
     letter-spacing: 1.5px;
     text-transform: uppercase;
 }
@@ -132,9 +136,9 @@
     color: var(--text-primary);
 }
 .settings-theme-btn.active {
-    border-color: var(--gold);
-    color: var(--gold);
-    background: var(--gold-dim);
+    border-color: var(--accent2);
+    color: var(--accent2);
+    background: var(--accent-dim);
 }
 .settings-slider {
     -webkit-appearance: none;
@@ -152,7 +156,7 @@
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: var(--gold);
+    background: var(--accent);
     cursor: pointer;
     border: 2px solid var(--bg-panel);
 }
@@ -160,7 +164,7 @@
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: var(--gold);
+    background: var(--accent);
     cursor: pointer;
     border: 2px solid var(--bg-panel);
 }
@@ -211,7 +215,7 @@ body {
     font-family: 'Cinzel', serif;
     font-size: 13px;
     font-weight: 700;
-    color: var(--gold);
+    color: var(--accent);
     letter-spacing: 2px;
     padding: 14px 24px 14px 0;
     margin-right: 16px;
@@ -225,7 +229,7 @@ body {
 .tab-brand::before {
     content: '⬡';
     font-size: 16px;
-    color: var(--gold-dim);
+    color: var(--accent-dim);
 }
 
 .tab-btn {
@@ -246,8 +250,8 @@ body {
 .tab-btn:hover { color: var(--text-primary); }
 
 .tab-btn.active {
-    color: var(--gold);
-    border-bottom-color: var(--gold);
+    color: var(--accent2);
+    border-bottom-color: var(--accent2);
 }
 
 /* ── HEADER ROW ───────────────────────────────────── */
@@ -283,7 +287,7 @@ body {
 
 .class-select {
     background: var(--bg-card);
-    color: var(--gold);
+    color: var(--accent2);
     border: 1px solid var(--border-mid);
     padding: 7px 14px;
     font-family: 'Rajdhani', sans-serif;
@@ -394,7 +398,7 @@ body {
     font-family: 'Cinzel', serif;
     font-size: 13px;
     font-weight: 600;
-    color: var(--gold);
+    color: var(--accent);
     letter-spacing: 2px;
     text-transform: uppercase;
     margin-bottom: 4px;
@@ -429,7 +433,7 @@ body {
 }
 
 .item-card.focused {
-    border-color: var(--gold-dim);
+    border-color: var(--accent-dim);
     background: var(--bg-card-hover);
     box-shadow: inset 0 0 20px var(--slot-active-glow);
 }
@@ -439,7 +443,7 @@ body {
     position: absolute;
     left: 0; top: 0; bottom: 0;
     width: 3px;
-    background: var(--gold);
+    background: var(--accent);
     border-radius: 6px 0 0 6px;
 }
 
@@ -522,12 +526,12 @@ body {
 .affix-select.has-value { color: #6ab0ff; }
 
 /* Slot 5 — Temper placeholder */
-.affix-row.temper-slot .affix-num { color: var(--gold-dim); }
+.affix-row.temper-slot .affix-num { color: var(--accent-dim); }
 
 .affix-row.temper-slot .affix-select {
-    color: var(--gold-dim);
+    color: var(--accent-dim);
     border-style: dashed;
-    border-color: var(--gold-dim);
+    border-color: var(--accent-dim);
     cursor: pointer;
     opacity: 0.75;
 }
@@ -607,7 +611,7 @@ body {
 .modal-header h3 {
     font-family: 'Cinzel', serif;
     font-size: 13px;
-    color: var(--gold);
+    color: var(--accent);
     letter-spacing: 1.5px;
     text-transform: uppercase;
 }
@@ -668,8 +672,8 @@ body {
 .modal-cat-btn:hover { color: var(--text-primary); background: var(--bg-card); }
 
 .modal-cat-btn.active {
-    color: var(--gold);
-    border-left-color: var(--gold);
+    color: var(--accent);
+    border-left-color: var(--accent);
     background: var(--bg-card);
 }
 
@@ -749,11 +753,11 @@ body {
 .tier-btn:hover { background: var(--bg-card-hover); }
 
 .tier-btn.legendary {
-    color: var(--gold);
-    border-color: var(--gold-dim);
+    color: var(--accent);
+    border-color: var(--accent-dim);
 }
 
-.tier-btn.legendary:hover { border-color: var(--gold); }
+.tier-btn.legendary:hover { border-color: var(--accent); }
 
 .tier-btn.unique {
     color: #7ec8f5;
@@ -965,7 +969,7 @@ body {
 }
 
 .confirm-modal-body p { margin-bottom: 8px; }
-.confirm-modal-body strong { color: var(--gold); }
+.confirm-modal-body strong { color: var(--accent2); }
 
 .confirm-modal-actions {
     display: flex;
@@ -1064,9 +1068,9 @@ body {
 }
 
 .char-modal-submit {
-    background: var(--gold-dim);
-    color: var(--gold-bright);
-    border: 1px solid var(--gold-dim);
+    background: var(--accent-dim);
+    color: var(--accent-bright);
+    border: 1px solid var(--accent-dim);
     border-radius: 4px;
     padding: 8px 20px;
     font-family: 'Rajdhani', sans-serif;
@@ -1126,7 +1130,7 @@ body {
     font-family: 'Cinzel', serif;
     font-size: 13px;
     font-weight: 600;
-    color: var(--gold);
+    color: var(--accent);
     letter-spacing: 2px;
     text-transform: uppercase;
 }
@@ -1177,7 +1181,7 @@ body {
     font-family: 'Cinzel', serif;
     font-size: 13px;
     font-weight: 600;
-    color: var(--gold);
+    color: var(--accent);
     letter-spacing: 1.5px;
     text-transform: uppercase;
 }
@@ -1221,9 +1225,9 @@ body {
     color: var(--text-primary);
 }
 .db-slot-toggle.active {
-    background: var(--gold-dim);
-    border-color: var(--gold);
-    color: var(--gold);
+    background: var(--accent-dim);
+    border-color: var(--accent2);
+    color: var(--accent2);
 }
 
 /* ── Category grid inside a section ──────────────── */
@@ -1351,8 +1355,8 @@ body {
 
 .db-cat-toggle.active {
     background: var(--bg-panel);
-    color: var(--gold);
-    border-color: var(--gold-dim);
+    color: var(--accent2);
+    border-color: var(--accent-dim);
 }
 
 /* ── LOCK TOGGLE ──────────────────────────────────────── */
@@ -1466,7 +1470,7 @@ body {
 
 /* Temper slot locked label */
 .affix-row.temper-slot .affix-locked-label {
-    color: var(--gold-dim);
+    color: var(--accent-dim);
     font-style: italic;
 }
 

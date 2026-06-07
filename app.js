@@ -1327,11 +1327,11 @@ function switchTab(tabName) {
 //  SETTINGS & THEMES
 // ══════════════════════════════════════════════════════════════
 const THEMES = {
-    void:     { label: "Void",     bg: [6,6,10],    deep: [9,9,14],    panel: [13,13,20],  card: [16,16,26],  cardHover: [19,19,31],  input: [11,11,18],  borderDim: [30,31,46],  borderMid: [42,43,61],  borderBright: [58,60,85] },
-    obsidian: { label: "Obsidian", bg: [12,12,12],  deep: [16,16,16],  panel: [20,20,20],  card: [26,26,26],  cardHover: [32,32,32],  input: [14,14,14],  borderDim: [44,44,44],  borderMid: [56,56,56],  borderBright: [72,72,72] },
-    inferno:  { label: "Inferno",  bg: [12,6,4],    deep: [16,9,6],    panel: [22,13,10],  card: [28,16,12],  cardHover: [34,20,15],  input: [14,8,6],    borderDim: [50,28,18],  borderMid: [64,36,24],  borderBright: [82,48,32] },
-    arcane:   { label: "Arcane",   bg: [8,4,14],    deep: [12,7,18],   panel: [16,10,24],  card: [20,14,30],  cardHover: [25,18,36],  input: [10,6,16],   borderDim: [36,24,52],  borderMid: [48,32,66],  borderBright: [62,42,84] },
-    frost:    { label: "Frost",    bg: [4,8,14],    deep: [6,11,18],   panel: [10,15,24],  card: [12,18,28],  cardHover: [16,22,34],  input: [6,10,16],   borderDim: [18,30,48],  borderMid: [24,40,60],  borderBright: [34,52,78] },
+    void:     { label: "Void",     accent: [212,168,67], accentBright: [240,200,96], accentDim: [122,95,32], accent2: [142,184,212],  bg: [6,6,10],    deep: [9,9,14],    panel: [13,13,20],  card: [16,16,26],  cardHover: [19,19,31],  input: [11,11,18],  borderDim: [30,31,46],  borderMid: [42,43,61],  borderBright: [58,60,85] },
+    obsidian: { label: "Obsidian", accent: [180,185,195], accentBright: [220,224,230], accentDim: [90,93,98], accent2: [196,168,112],  bg: [12,12,12],  deep: [16,16,16],  panel: [20,20,20],  card: [26,26,26],  cardHover: [32,32,32],  input: [14,14,14],  borderDim: [44,44,44],  borderMid: [56,56,56],  borderBright: [72,72,72] },
+    inferno:  { label: "Inferno",  accent: [230,140,50], accentBright: [255,175,70], accentDim: [130,70,20], accent2: [224,96,80],  bg: [12,6,4],    deep: [16,9,6],    panel: [22,13,10],  card: [28,16,12],  cardHover: [34,20,15],  input: [14,8,6],    borderDim: [50,28,18],  borderMid: [64,36,24],  borderBright: [82,48,32] },
+    arcane:   { label: "Arcane",   accent: [170,120,245], accentBright: [200,155,255], accentDim: [85,55,140], accent2: [96,208,192],  bg: [8,4,14],    deep: [12,7,18],   panel: [16,10,24],  card: [20,14,30],  cardHover: [25,18,36],  input: [10,6,16],   borderDim: [36,24,52],  borderMid: [48,32,66],  borderBright: [62,42,84] },
+    frost:    { label: "Frost",    accent: [90,190,230], accentBright: [130,215,250], accentDim: [40,95,130], accent2: [192,208,224],  bg: [4,8,14],    deep: [6,11,18],   panel: [10,15,24],  card: [12,18,28],  cardHover: [16,22,34],  input: [6,10,16],   borderDim: [18,30,48],  borderMid: [24,40,60],  borderBright: [34,52,78] },
 };
 
 const TEXT_BASE = { primary: [226,229,240], secondary: [176,180,200], hint: [144,149,168] };
@@ -1364,6 +1364,11 @@ function applyTheme(themeName, bgBrightness, textBrightness) {
     r.setProperty("--text-primary",   rgb(TEXT_BASE.primary, x));
     r.setProperty("--text-secondary", rgb(TEXT_BASE.secondary, x));
     r.setProperty("--text-hint",      rgb(TEXT_BASE.hint, x));
+
+    r.setProperty("--accent",        rgb(t.accent, 100));
+    r.setProperty("--accent-bright", rgb(t.accentBright, 100));
+    r.setProperty("--accent-dim",    rgb(t.accentDim, 100));
+    r.setProperty("--accent2",       rgb(t.accent2, 100));
 }
 
 function toggleSettings() {
