@@ -1293,45 +1293,79 @@
         .gear-locked .card-item-name  { margin-bottom: 4px; padding-bottom: 4px; }
 
 
-        /* ── DATABASE DESCRIPTION CARDS ──────────────────────── */
-        .db-desc-grid {
+        /* ── DATABASE TABLE ROWS ─────────────────────────────── */
+        .db-table {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            width: 100%;
+        }
+
+        .db-table-header {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 10px;
+            grid-template-columns: 220px 120px 1fr;
+            gap: 0 16px;
+            padding: 6px 12px;
+            background: var(--bg-deep);
+            border-bottom: 1px solid var(--border-mid);
+            border-radius: 4px 4px 0 0;
+            position: sticky;
+            top: 0;
+            z-index: 2;
         }
 
-        .db-desc-card {
-            background: var(--bg-panel);
-            border: 1px solid var(--border-dim);
-            border-radius: 5px;
-            padding: 10px 12px;
-        }
-
-        .db-desc-name {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 5px;
-            line-height: 1.3;
-        }
-
-        .db-desc-name.is-legendary { color: var(--gold); }
-        .db-desc-name.is-mythic    { color: var(--mythic-color); }
-        .db-desc-name.is-unique    { color: #7ec8f5; }
-
-        .db-desc-slot {
+        .db-table-header span {
             font-size: 10px;
             font-weight: 600;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
             color: var(--text-hint);
-            margin-bottom: 6px;
         }
 
-        .db-desc-power {
+        .db-table-row {
+            display: grid;
+            grid-template-columns: 220px 120px 1fr;
+            gap: 0 16px;
+            padding: 9px 12px;
+            border-bottom: 1px solid var(--border-dim);
+            align-items: start;
+            transition: background 0.1s;
+        }
+
+        .db-table-row:hover { background: var(--bg-card-hover); }
+        .db-table-row:last-child { border-bottom: none; }
+
+        .db-row-name {
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .db-row-name.is-legendary { color: var(--gold); }
+        .db-row-name.is-mythic    { color: var(--mythic-color); }
+        .db-row-name.is-unique    { color: #7ec8f5; }
+
+        .db-row-tag {
             font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: capitalize;
+            line-height: 1.4;
+        }
+
+        .db-row-desc {
+            font-size: 12px;
             color: var(--text-secondary);
             line-height: 1.6;
+        }
+
+        /* Simpler table for prisms/tempers - no desc column */
+        .db-table-row.slim {
+            grid-template-columns: 280px 1fr;
+        }
+
+        .db-table-header.slim {
+            grid-template-columns: 280px 1fr;
         }
 
         /* ── SCROLLBAR ────────────────────────────────────── */

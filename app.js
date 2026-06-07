@@ -1430,54 +1430,51 @@ function buildAspectsSection(filterClass) {
     return buildSection("Legendary Aspects", meta,
         ASPECT_CATEGORY_MAP.map(c => ({ label: c.label, key: c.key })),
         (activeCat) => {
-            const wrap = document.createElement("div");
-            const grid = document.createElement("div");
-            grid.className = "db-cat-grid";
-
-            const catsToShow = activeCat
+            // Gather all matching aspects across relevant categories, sorted alpha
+            const catsToUse = activeCat
                 ? ASPECT_CATEGORY_MAP.filter(c => c.key === activeCat)
                 : ASPECT_CATEGORY_MAP;
 
-            catsToShow.forEach(({ label, key }) => {
-                const block = document.createElement("div");
-                block.className = "db-cat-block";
-
-                const catLabel = document.createElement("div");
-                catLabel.className   = "db-cat-label";
-                catLabel.textContent = label;
-                block.appendChild(catLabel);
-
-                const aspects  = window.AspectRegistry[key] || [];
+            let rows = [];
+            catsToUse.forEach(({ label, key }) => {
+                const aspects = window.AspectRegistry[key] || [];
                 const filtered = isFiltered
                     ? aspects.filter(a => !a.classes || a.classes.length === 0 || a.classes.includes(filterClass))
                     : aspects;
-
-                if (filtered.length === 0) {
-                    const empty = document.createElement("div");
-                    empty.className = "db-placeholder-msg";
-                    empty.textContent = "None available.";
-                    block.appendChild(empty);
-                } else {
-                    const descGrid = document.createElement("div");
-                    descGrid.className = "db-desc-grid";
-                    filtered.forEach(a => {
-                        const name  = typeof a === "string" ? a : a.name;
-                        const power = typeof a === "object" ? (a.power || "") : "";
-                        const card  = document.createElement("div");
-                        card.className = "db-desc-card";
-                        card.innerHTML = `
-                            <div class="db-desc-name is-legendary">${name}</div>
-                            ${power ? `<div class="db-desc-power">${power}</div>` : ""}
-                        `;
-                        descGrid.appendChild(card);
-                    });
-                    block.appendChild(descGrid);
-                }
-                grid.appendChild(block);
+                filtered.forEach(a => {
+                    rows.push({ name: typeof a === "string" ? a : a.name, tag: label, desc: typeof a === "object" ? (a.power || "") : "" });
+                });
             });
 
-            wrap.appendChild(grid);
-            return wrap;
+            rows.sort((a, b) => a.name.localeCompare(b.name));
+
+            const table = document.createElement("div");
+            table.className = "db-table";
+
+            const hdr = document.createElement("div");
+            hdr.className = "db-table-header";
+            hdr.innerHTML = "<span>Aspect</span><span>Category</span><span>Effect</span>";
+            table.appendChild(hdr);
+
+            if (rows.length === 0) {
+                const empty = document.createElement("div");
+                empty.className = "db-placeholder-msg";
+                empty.style.padding = "16px 12px";
+                empty.textContent = "None available.";
+                table.appendChild(empty);
+            } else {
+                rows.forEach(r => {
+                    const row = document.createElement("div");
+                    row.className = "db-table-row";
+                    row.innerHTML = `
+                        <div class="db-row-name is-legendary">${r.name}</div>
+                        <div class="db-row-tag">${r.tag}</div>
+                        <div class="db-row-desc">${r.desc}</div>
+                    `;
+                    table.appendChild(row);
+                });
+            }
+            return table;
         }
     );
 }
@@ -1548,10 +1545,14 @@ function buildTempersSection(filterClass) {
                     filtered.forEach(t => {
                         const name  = typeof t === "string" ? t : t.name;
                         const entry = document.createElement("div");
-                        entry.className   = "db-entry";
+                        entry.className = "db-entry";
                         entry.textContent = name;
                         block.appendChild(entry);
                     });
+                    // Sort entries alphabetically
+                    const entryNodes = [...block.querySelectorAll(".db-entry")];
+                    entryNodes.sort((a, b) => a.textContent.localeCompare(b.textContent))
+                             .forEach(n => block.appendChild(n));
                 }
                 grid.appendChild(block);
             });
@@ -1596,10 +1597,15 @@ function buildUniquesSection(filterClass) {
             }
 
             const grid = document.createElement("div");
-            grid.className = "db-desc-grid";
+            grid.className = "db-table";
             grid.style.marginBottom = "16px";
 
-            items.forEach(item => {
+            const hdr = document.createElement("div");
+            hdr.className = "db-table-header";
+            hdr.innerHTML = "<span>Item</span><span>Slot</span><span>Unique Power</span>";
+            grid.appendChild(hdr);
+
+            items.sort((a, b) => a.name.localeCompare(b.name)).forEach(item => {
                 const slotLabel = item.slot
                     ? item.slot.charAt(0).toUpperCase() + item.slot.slice(1)
                     : (item.slots || []).map(s =>
@@ -1608,14 +1614,14 @@ function buildUniquesSection(filterClass) {
                         s.charAt(0).toUpperCase() + s.slice(1)
                     ).filter((v, i, a) => a.indexOf(v) === i).join(", ");
 
-                const card = document.createElement("div");
-                card.className = "db-desc-card";
-                card.innerHTML = `
-                    <div class="db-desc-name is-unique">${item.name}</div>
-                    <div class="db-desc-slot">${slotLabel}</div>
-                    ${item.power ? `<div class="db-desc-power">${item.power}</div>` : ""}
+                const row = document.createElement("div");
+                row.className = "db-table-row";
+                row.innerHTML = `
+                    <div class="db-row-name is-unique">${item.name}</div>
+                    <div class="db-row-tag">${slotLabel}</div>
+                    <div class="db-row-desc">${item.power || "—"}</div>
                 `;
-                grid.appendChild(card);
+                grid.appendChild(row);
             });
             wrap.appendChild(grid);
         });
