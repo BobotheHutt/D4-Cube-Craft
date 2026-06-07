@@ -2,6 +2,7 @@
 //  tempers-offensive.js  —  Offensive Temper Manuals
 //  Valid slots: Weapons, Offhand, Amulet, Rings, Gloves
 //  Slots are universal — same for all classes
+//  ~half are shared across all classes, rest are class-specific
 // ══════════════════════════════════════════════════════════════
 registerTemperCategory("offensive", {
     slots: ["weapon", "offhand", "amulet", "ring-left", "ring-right", "gloves"],
@@ -27,5 +28,31 @@ registerTemperCategory("offensive", {
         "Werebear Skill Damage",
         "Werewolf Skill Damage",
         "Whirlwind Damage",
-    ]
+    ],
+    classEntries: {
+        barbarian: [
+            "Placeholder Barbarian Temper",
+        ],
+        druid: [
+            "Placeholder Druid Temper",
+        ],
+        necromancer: [
+            "Placeholder Necromancer Temper",
+        ],
+        rogue: [
+            "Placeholder Rogue Temper",
+        ],
+        sorcerer: [
+            "Placeholder Sorcerer Temper",
+        ],
+        spiritborn: [
+            "Placeholder Spiritborn Temper",
+        ],
+        paladin: [
+            "Placeholder Paladin Temper",
+        ],
+        warlock: [
+            "Placeholder Warlock Temper",
+        ]
+    }
 });
