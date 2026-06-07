@@ -1738,7 +1738,9 @@ function buildTemperTable(activeCat, filterClass) {
         const data    = window.TemperRegistry[key];
         if (!data) return;
         const shared  = Array.isArray(data) ? data : (data.entries || []);
-        const classEx = cls ? (data.classEntries?.[cls] || []) : [];
+        const classEx = cls
+            ? (data.classEntries?.[cls] || [])
+            : (data.classEntries ? [...new Set(Object.values(data.classEntries).flat())] : []);
         const entries = [...shared, ...classEx];
         const slots   = Array.isArray(data) ? [] : (data.slots || []);
 
