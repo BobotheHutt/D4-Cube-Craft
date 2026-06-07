@@ -1535,7 +1535,7 @@ body {
 
 .db-row-desc {
     font-size: 12px;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     line-height: 1.6;
 }
 
