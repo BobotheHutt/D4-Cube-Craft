@@ -754,15 +754,15 @@ body {
 .tier-btn:hover { background: var(--bg-card-hover); }
 
 .tier-btn.legendary {
-    color: var(--accent);
-    border-color: var(--accent-dim);
+    color: var(--gold);
+    border-color: var(--gold-dim);
 }
 
-.tier-btn.legendary:hover { border-color: var(--accent); }
+.tier-btn.legendary:hover { border-color: var(--gold); }
 
 .tier-btn.unique {
     color: var(--unique-color);
-    border-color: #1a4a66;
+    border-color: #4a4020;
 }
 
 .tier-btn.unique:hover { border-color: var(--unique-color); }
@@ -1445,11 +1445,14 @@ body {
 
 .tooltip-power {
     font-size: 12px;
-    color: #c8a0ff;
+    color: var(--text-primary);
     line-height: 1.6;
-    border-top: 1px solid #2a1a3d;
+    border-top: 1px solid var(--border-dim);
     padding-top: 8px;
 }
+#item-tooltip.rarity-legendary .tooltip-power { color: var(--gold); }
+#item-tooltip.rarity-unique    .tooltip-power { color: var(--unique-color); }
+#item-tooltip.rarity-mythic    .tooltip-power { color: #c8a0ff; }
 
 
 /* ── LOCKED COMPACT MODE ──────────────────────────────── */
