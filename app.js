@@ -1458,12 +1458,20 @@ function buildAspectsSection(filterClass) {
                     empty.textContent = "None available.";
                     block.appendChild(empty);
                 } else {
+                    const descGrid = document.createElement("div");
+                    descGrid.className = "db-desc-grid";
                     filtered.forEach(a => {
-                        const entry = document.createElement("div");
-                        entry.className   = "db-entry";
-                        entry.textContent = typeof a === "string" ? a : a.name;
-                        block.appendChild(entry);
+                        const name  = typeof a === "string" ? a : a.name;
+                        const power = typeof a === "object" ? (a.power || "") : "";
+                        const card  = document.createElement("div");
+                        card.className = "db-desc-card";
+                        card.innerHTML = `
+                            <div class="db-desc-name is-legendary">${name}</div>
+                            ${power ? `<div class="db-desc-power">${power}</div>` : ""}
+                        `;
+                        descGrid.appendChild(card);
                     });
+                    block.appendChild(descGrid);
                 }
                 grid.appendChild(block);
             });
@@ -1588,7 +1596,7 @@ function buildUniquesSection(filterClass) {
             }
 
             const grid = document.createElement("div");
-            grid.className = "db-mythic-grid";
+            grid.className = "db-desc-grid";
             grid.style.marginBottom = "16px";
 
             items.forEach(item => {
@@ -1601,8 +1609,12 @@ function buildUniquesSection(filterClass) {
                     ).filter((v, i, a) => a.indexOf(v) === i).join(", ");
 
                 const card = document.createElement("div");
-                card.className = "db-mythic-card";
-                card.innerHTML = `<div class="db-unique-name">${item.name}</div><div class="db-mythic-slot">${slotLabel}</div>`;
+                card.className = "db-desc-card";
+                card.innerHTML = `
+                    <div class="db-desc-name is-unique">${item.name}</div>
+                    <div class="db-desc-slot">${slotLabel}</div>
+                    ${item.power ? `<div class="db-desc-power">${item.power}</div>` : ""}
+                `;
                 grid.appendChild(card);
             });
             wrap.appendChild(grid);
