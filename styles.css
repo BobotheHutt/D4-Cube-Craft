@@ -994,6 +994,7 @@ body {
     border: 1px solid var(--border-dim);
     border-radius: 6px;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .db-section-header {
