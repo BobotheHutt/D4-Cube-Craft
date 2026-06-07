@@ -1921,7 +1921,7 @@ function buildUniquesSection(filterClass) {
     // Build class toggles from registered unique classes
     const classToggleKeys = Object.keys(window.UniqueRegistry || {});
     const classToggles = classToggleKeys.map(cls => ({
-        label: cls.charAt(0).toUpperCase() + cls.slice(1),
+        label: cls === "general" ? "General" : cls.charAt(0).toUpperCase() + cls.slice(1),
         key:   cls
     }));
 
