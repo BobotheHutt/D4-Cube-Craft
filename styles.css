@@ -21,6 +21,7 @@
     --purple: #9b6ef5;
     --purple-dim: #4a2d8a;
     --mythic-color: #e090ff;
+    --unique-color: #c8b860;
     --slot-active-glow: rgba(212, 168, 67, 0.12);
     --badge-aggressive-bg: #2a0e0e; --badge-aggressive-text: #ff8a8a; --badge-aggressive-border: #6b1a1a;
     --badge-protector-bg: #0e1e2a; --badge-protector-text: #7ec8f5; --badge-protector-border: #1a4a66;
@@ -476,8 +477,8 @@ body {
 /* Tier color overrides applied via JS */
 .card-item-name.is-legendary { color: var(--gold); }
 .card-item-name.is-legendary:hover { color: var(--gold-bright); }
-.card-item-name.is-unique { color: #7ec8f5; }
-.card-item-name.is-unique:hover { color: #aaddff; }
+.card-item-name.is-unique { color: var(--unique-color); }
+.card-item-name.is-unique:hover { color: #ddd090; }
 .card-item-name.is-mythic { color: var(--mythic-color); }
 .card-item-name.is-mythic:hover { color: #f0b0ff; }
 
@@ -760,11 +761,11 @@ body {
 .tier-btn.legendary:hover { border-color: var(--accent); }
 
 .tier-btn.unique {
-    color: #7ec8f5;
+    color: var(--unique-color);
     border-color: #1a4a66;
 }
 
-.tier-btn.unique:hover { border-color: #7ec8f5; }
+.tier-btn.unique:hover { border-color: var(--unique-color); }
 
 .tier-btn.mythic {
     color: var(--mythic-color);
@@ -856,7 +857,7 @@ body {
 .item-modal-btn:last-child { border-bottom: none; }
 .item-modal-btn:hover { background: var(--bg-card-hover); }
 .item-modal-btn.tier-legendary .item-btn-name { color: var(--gold); }
-.item-modal-btn.tier-unique    .item-btn-name { color: #7ec8f5; }
+.item-modal-btn.tier-unique    .item-btn-name { color: var(--unique-color); }
 .item-modal-btn.tier-mythic    .item-btn-name { color: var(--mythic-color); }
 
 .item-btn-name {
@@ -1313,7 +1314,7 @@ body {
 .db-unique-name {
     font-size: 13px;
     font-weight: 600;
-    color: #7ec8f5;
+    color: var(--unique-color);
     margin-bottom: 4px;
 }
 
@@ -1406,7 +1407,7 @@ body {
     position: fixed;
     z-index: 200;
     background: #0d0d18;
-    border: 1px solid #5a3d80;
+    border: 1px solid var(--border-mid);
     border-radius: 6px;
     padding: 12px 16px;
     max-width: 280px;
@@ -1415,6 +1416,9 @@ body {
     transition: opacity 0.15s ease;
     box-shadow: 0 4px 24px rgba(0,0,0,0.6);
 }
+#item-tooltip.rarity-legendary { border-color: var(--gold); }
+#item-tooltip.rarity-unique    { border-color: var(--unique-color); }
+#item-tooltip.rarity-mythic    { border-color: var(--mythic-color); }
 
 #item-tooltip.visible { opacity: 1; }
 
@@ -1422,10 +1426,13 @@ body {
     font-family: 'Cinzel', serif;
     font-size: 12px;
     font-weight: 600;
-    color: #e090ff;
+    color: var(--text-primary);
     margin-bottom: 8px;
     letter-spacing: 0.5px;
 }
+#item-tooltip.rarity-legendary .tooltip-name { color: var(--gold); }
+#item-tooltip.rarity-unique    .tooltip-name { color: var(--unique-color); }
+#item-tooltip.rarity-mythic    .tooltip-name { color: var(--mythic-color); }
 
 .tooltip-type {
     font-size: 10px;
@@ -1529,7 +1536,7 @@ body {
 
 .db-row-name.is-legendary { color: var(--gold); }
 .db-row-name.is-mythic    { color: var(--mythic-color); }
-.db-row-name.is-unique    { color: #7ec8f5; }
+.db-row-name.is-unique    { color: var(--unique-color); }
 
 .db-row-tag {
     font-size: 11px;

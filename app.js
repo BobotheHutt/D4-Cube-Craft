@@ -653,7 +653,7 @@ function updateItemNameDisplay(slotId) {
         const typeLabel = selection.tier === "mythic" ? "Mythic Unique"
                         : selection.tier === "unique" ? "Unique"
                         : "Legendary Aspect";
-        attachTooltip(freshNameEl, selection.name, typeLabel, power);
+        attachTooltip(freshNameEl, selection.name, typeLabel, power, selection.tier);
     }
 }
 
@@ -1268,12 +1268,14 @@ function selectItem(itemObj) {
 let _tooltipTimer = null;
 const TOOLTIP_DELAY = 1000;
 
-function attachTooltip(el, name, type, power) {
+function attachTooltip(el, name, type, power, tier) {
     el.addEventListener("mouseenter", (e) => {
         clearTimeout(_tooltipTimer);
         _tooltipTimer = setTimeout(() => {
             const tip = document.getElementById("item-tooltip");
             if (!tip) return;
+            tip.className = "";  // clear previous rarity class
+            if (tier) tip.classList.add("rarity-" + tier);
             document.getElementById("tooltip-name").textContent  = name;
             document.getElementById("tooltip-type").textContent  = type;
             const powerEl = document.getElementById("tooltip-power");
