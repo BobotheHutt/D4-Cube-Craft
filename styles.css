@@ -934,7 +934,6 @@ body {
     display: flex;
     flex-direction: column;
     height: calc(100vh - 101px);
-    overflow: hidden;
 }
 
 .db-content {
@@ -945,8 +944,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    /* Sections expand freely — db-content is the single scroll container */
-    overflow-x: hidden;
 }
 
 .db-toolbar {
@@ -999,6 +996,9 @@ body {
     user-select: none;
     transition: background 0.15s;
     background: var(--bg-deep);
+    position: sticky;
+    top: 0;
+    z-index: 4;
     position: sticky;
     top: 0;
     z-index: 4;
@@ -1302,12 +1302,9 @@ body {
     padding: 6px 12px;
     background: var(--bg-deep);
     border-bottom: 1px solid var(--border-mid);
-    border-radius: 4px 4px 0 0;
     position: sticky;
-    top: 0;
-    z-index: 5;
-    isolation: isolate;
-    box-shadow: 0 2px 0 var(--bg-deep), 0 4px 12px rgba(0,0,0,0.8);
+    top: 49px;
+    z-index: 3;
 }
 
 .db-table-header span {
