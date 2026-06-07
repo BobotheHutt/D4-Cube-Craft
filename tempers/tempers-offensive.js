@@ -40,10 +40,20 @@ registerTemperCategory("offensive", {
             "Weapon Mastery Damage",
         ],
         druid: [
-            "Placeholder Druid Temper",
+            "Human Damage",
+            "Werebear Damage",
+            "Werewolf Damage",
+            "Earth Damage",
+            "Versatile Damage",
+            "Storm Damage",
+            "Companion Damage",
         ],
         necromancer: [
-            "Placeholder Necromancer Temper",
+            "Macabre Damage",
+            "Darkness Damage",
+            "Blood Damage",
+            "Bone Damage",
+            "Summon Damage",
         ],
         rogue: [
             "Cutthroat Damage",
