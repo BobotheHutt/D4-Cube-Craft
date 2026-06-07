@@ -1,6 +1,6 @@
 // ══════════════════════════════════════════════════════════════
 //  aspects-mobility.js  —  Mobility Legendary Aspects
-//  Source: D4 Wiki (all classes). classes:[] = all classes.
+//  Source: D4 in-game verified. classes:[] = all classes.
 //  power: aspect description shown in tooltip/modal.
 // ══════════════════════════════════════════════════════════════
 registerAspectCategory("mobility", [

@@ -1,6 +1,6 @@
 // ══════════════════════════════════════════════════════════════
 //  aspects-resource.js  —  Resource Legendary Aspects
-//  Source: D4 Wiki (all classes). classes:[] = all classes.
+//  Source: D4 in-game verified. classes:[] = all classes.
 //  power: aspect description shown in tooltip/modal.
 // ══════════════════════════════════════════════════════════════
 registerAspectCategory("resource", [
@@ -21,7 +21,6 @@ registerAspectCategory("resource", [
     { name: "Aspect of Empowered Feathers", classes: ["spiritborn"], power: "Lucky Hit: Eagle Skills have up to a [25 - 32]% chance to spawn a Storm Feather at your target.\n\nEach Storm Feather you pick up now also reduces your Mobility Skill Cooldowns by 0.5 seconds." },
     { name: "Aspect of Exhilaration", classes: ["spiritborn"], power: "Lucky Hit: Hitting an enemy has up to a [20 - 35]% chance to reduce your Evade Cooldown by 5 seconds. Each stack of Ferocity you have increases this chance by 5%." },
     { name: "Aspect of Furious Impulse", classes: ["barbarian"], power: "Each time you swap weapons, gain [7 - 11] Fury." },
-    { name: "Aspect of Giant Strides", classes: ["barbarian"], power: "Reduces the Cooldown of Leap by [1.3 - 3.5] seconds per enemy hit, up to a maximum of 7 seconds. Hitting a Boss with Leap provides the maximum reduction." },
     { name: "Aspect of Intricacy", classes: ["spiritborn"], power: "Upon casting an Ultimate Skill, the last different Potency, Defensive, or Focus Skill you Cast prior is reset and can be Cast for free up to [3 - 5] times in the next 10 seconds." },
     { name: "Aspect of Pilgrim's Progress", classes: ["paladin"], power: "Your Disciple Skills with Cooldowns generate up to [20 - 60] Faith based on how far your travel with them." },
     { name: "Aspect of Potent Blood", classes: ["necromancer"], power: "Blood Orbs grant [20 - 30] Essence." },
@@ -32,10 +31,8 @@ registerAspectCategory("resource", [
     { name: "Aspect of Torment", classes: ["necromancer"], power: "Critical Strikes with Bone Skills increase your Essence Regeneration by [300.0 - 500.0]%[x] for 4 seconds." },
     { name: "Aspect of Vocalized Empowerment", classes: ["barbarian", "druid"], power: "Your Shout Skills grant you [10.0 - 15.0] Primary Resource Regeneration while active." },
     { name: "Aspect of Voracious Rage", classes: [], power: "Killing an enemy with a Core Skill refunds [20.0 - 30.0]% of its base cost. Can only happen once per Skill cast." },
-    { name: "Aspect of the Calm Breeze", classes: ["druid"], power: "Wind Shear now deals [165 - 345] Poisoning damage over 4 seconds.\n\nLucky Hit: Wind Shear has up to a [6.0 - 14.0]% chance to restore 100 Spirit." },
     { name: "Aspect of the Long Shadow", classes: ["necromancer"], power: "Lucky Hit: Your Corrupting effects have a [50.0 - 80.0]% chance to generate 3 Essence." },
     { name: "Aspect of the Orange Herald", classes: [], power: "Cast Core Skill damage reduces the Cooldown of one of your Skills by [0.7 - 1.0] second." },
-    { name: "Aspect of the Relentless Armsmaster", classes: ["barbarian"], power: "Gain [35.0 - 75.0]%[x] increased Fury Generation and 15% reduced Fury cost while all damage bonuses from the Walking Arsenal Key Passive are active." },
     { name: "Aspect of the Umbral", classes: [], power: "Incapacitating enemies generates [4.0 - 6.0] Primary Resource." },
     { name: "Aspect of the Unsatiated", classes: ["druid"], power: "After Critically Striking an enemy with Shred, you gain 15 Spirit. While at 100 Spirit, your Werewolf Skills deal [20.0 - 40.0]%[x] increased damage until you go below 30 Spirit." },
     { name: "Aspect of the Wildrage", classes: ["druid"], power: "Your Companion Skill Cooldowns are reduced by [5.0 - 7.5] seconds." },
