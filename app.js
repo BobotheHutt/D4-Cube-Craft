@@ -971,9 +971,20 @@ function renderAffixModalCategories() {
 function renderAffixModalList() {
     const container  = document.getElementById("modal-affix-list");
     container.innerHTML = "";
-    const currentVal = AppState.affixSelections[affixModalState.slotId]?.[`slot${affixModalState.slotIndex}`];
+    const slotId     = affixModalState.slotId;
+    const slotIndex  = affixModalState.slotIndex;
+    const currentVal = AppState.affixSelections[slotId]?.[`slot${slotIndex}`];
     const rawData    = window.PrismRegistry[affixModalState.activeCategory];
     const affixList  = flattenPrismData(rawData || []);
+
+    // Collect affixes already used in other slots on this gear piece
+    const usedAffixes = new Set();
+    const picks = AppState.affixSelections[slotId] || {};
+    for (let i = 1; i <= 4; i++) {
+        if (i !== slotIndex && picks[`slot${i}`]) {
+            usedAffixes.add(picks[`slot${i}`]);
+        }
+    }
 
     const clearBtn = document.createElement("button");
     clearBtn.className   = "modal-affix-btn";
@@ -983,6 +994,7 @@ function renderAffixModalList() {
     container.appendChild(clearBtn);
 
     affixList.forEach(affix => {
+        if (usedAffixes.has(affix)) return;  // skip duplicates
         const btn = document.createElement("button");
         btn.className   = "modal-affix-btn" + (affix === currentVal ? " selected" : "");
         btn.textContent = affix;
