@@ -934,16 +934,17 @@ body {
     display: flex;
     flex-direction: column;
     height: calc(100vh - 101px);
+    overflow: hidden;
 }
 
 .db-content {
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
     padding: 24px 28px;
     display: flex;
     flex-direction: column;
     gap: 16px;
-    /* Explicit height = total - toolbar (49px) */
-    height: calc(100vh - 101px - 49px);
 }
 
 .db-toolbar {
@@ -1027,6 +1028,8 @@ body {
     display: none;
     padding: 16px 20px;
     border-top: 1px solid var(--border-dim);
+    max-height: 560px;
+    overflow-y: auto;
 }
 
 .db-section.open .db-section-body { display: block; }
