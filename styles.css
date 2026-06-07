@@ -146,7 +146,7 @@ body {
 #tab-database.active {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 101px);
+    height: calc(100vh - 49px);
     overflow: hidden;
 }
 

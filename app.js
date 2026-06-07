@@ -753,7 +753,16 @@ function updateCraftPanel() {
 
 // ── PRISM LOOKUP ──────────────────────────────────────────────
 function flattenPrismData(data) {
-    if (Array.isArray(data)) return data;
+    if (Array.isArray(data)) {
+        // Filter out core stats that don't belong to the active class
+        const cls = AppState.activeClass;
+        if (cls) {
+            const classStat = CLASS_PRIMARY_STAT[cls];
+            const allStats  = new Set(Object.values(CLASS_PRIMARY_STAT));
+            return data.filter(a => !allStats.has(a) || a === classStat);
+        }
+        return data;
+    }
     if (typeof data === "object") {
         const cls         = AppState.activeClass;
         const primaryStat = data.stats?.[cls] || null;
@@ -1290,6 +1299,10 @@ function switchTab(tabName) {
     const page = document.getElementById(`tab-${tabName}`);
     if (page) page.classList.add("active");
 
+    // Hide gear planner header on database tab
+    const appHeader = document.querySelector(".app-header");
+    if (appHeader) appHeader.style.display = tabName === "database" ? "none" : "";
+
     if (tabName === "database") {
         const sel = document.getElementById("db-class-select");
         renderDatabase(sel ? sel.value : "all");
@@ -1439,7 +1452,14 @@ function buildPrismsSection(filterClass) {
 
     // Helper: extract affix list from a prism registry entry, respecting class filter
     function getAffixList(data, cls) {
-        if (Array.isArray(data)) return data;
+        if (Array.isArray(data)) {
+            if (cls) {
+                const classStat = CLASS_PRIMARY_STAT[cls];
+                const allStats  = new Set(Object.values(CLASS_PRIMARY_STAT));
+                return data.filter(a => !allStats.has(a) || a === classStat);
+            }
+            return data;
+        }
         if (typeof data === "object") {
             if (cls) {
                 const primaryStat = data.stats?.[cls] || null;
