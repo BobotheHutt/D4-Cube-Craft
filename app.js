@@ -1512,14 +1512,36 @@ function buildTempersSection(filterClass) {
                     empty.textContent = "None available.";
                     block.appendChild(empty);
                 } else {
+                    // When a single category is shown, derive valid slot list from entries
+                    if (activeCat) {
+                        const slotSet = new Set();
+                        filtered.forEach(t => {
+                            if (typeof t === "object" && t.slots?.length) {
+                                t.slots.forEach(s => slotSet.add(
+                                    s.startsWith("weapon") ? "Weapons" :
+                                    s.charAt(0).toUpperCase() + s.slice(1)
+                                ));
+                            }
+                        });
+                        // entries with slots:[] roll on all slots eligible for this category
+                        const hasUniversal = filtered.some(t => typeof t === "object" && (!t.slots || t.slots.length === 0));
+                        
+                        if (slotSet.size > 0 || hasUniversal) {
+                            const slotHeader = document.createElement("div");
+                            slotHeader.className = "db-entry-slot";
+                            slotHeader.style.cssText = "display:block;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border-dim);font-size:11px;";
+                            const universal = hasUniversal ? "All eligible slots" : "";
+                            const specific  = slotSet.size > 0 ? [...slotSet].sort().join(", ") : "";
+                            slotHeader.textContent = "Valid slots: " + [universal, specific].filter(Boolean).join(" + ");
+                            block.appendChild(slotHeader);
+                        }
+                    }
+
                     filtered.forEach(t => {
                         const name  = typeof t === "string" ? t : t.name;
-                        const slots = typeof t === "object" && t.slots?.length
-                            ? t.slots.map(s => s.replace("weapon-", "Weapon ")).join(", ")
-                            : "";
                         const entry = document.createElement("div");
-                        entry.className = "db-entry";
-                        entry.innerHTML = name + (slots ? `<span class="db-entry-slot">${slots}</span>` : "");
+                        entry.className   = "db-entry";
+                        entry.textContent = name;
                         block.appendChild(entry);
                     });
                 }
@@ -1539,15 +1561,26 @@ function buildUniquesSection(filterClass) {
         ? `${filterClass.charAt(0).toUpperCase() + filterClass.slice(1)} only`
         : "All Classes";
 
-    return buildSection("Unique Items", meta, null, () => {
-        const wrap = document.createElement("div");
-        const classes = isFiltered ? [filterClass] : Object.keys(window.UniqueRegistry);
+    // Build class toggles from registered unique classes
+    const classToggleKeys = Object.keys(window.UniqueRegistry || {});
+    const classToggles = classToggleKeys.map(cls => ({
+        label: cls.charAt(0).toUpperCase() + cls.slice(1),
+        key:   cls
+    }));
 
-        classes.forEach(cls => {
+    return buildSection("Unique Items", meta, classToggles, (activeCat) => {
+        const wrap = document.createElement("div");
+        // activeCat here is a class key (e.g. "barbarian") or null for all
+        const classesToShow = activeCat
+            ? [activeCat]
+            : (isFiltered ? [filterClass] : classToggleKeys);
+
+        classesToShow.forEach(cls => {
             const items = window.UniqueRegistry[cls] || [];
             if (items.length === 0) return;
 
-            if (!isFiltered) {
+            // Show class label when showing multiple classes
+            if (!activeCat && !isFiltered) {
                 const classLabel = document.createElement("div");
                 classLabel.style.cssText = "font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-hint);padding:10px 0 6px;border-bottom:1px solid var(--border-dim);margin-bottom:10px;";
                 classLabel.textContent = cls;
