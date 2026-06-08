@@ -37,7 +37,6 @@
 
 /* ── SETTINGS GEAR ──────────────────────────────── */
 .settings-gear {
-    margin-left: auto;
     background: none;
     border: none;
     color: var(--text-hint);
@@ -53,7 +52,7 @@
 .auth-container {
     display: flex;
     align-items: center;
-    margin-left: 4px;
+    margin-left: auto;
 }
 .auth-btn {
     display: flex;
