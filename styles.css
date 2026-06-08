@@ -1672,7 +1672,7 @@ body {
 
     /* ── Planner layout → single column, gear only ── */
     .planner-layout {
-        display: flex;
+        display: flex !important;
         flex-direction: column;
         height: calc(100vh - 101px);
         overflow-y: auto;
@@ -1680,27 +1680,30 @@ body {
     }
     .gear-panel-wrap {
         border-right: none;
-        width: 100%;
+        width: 100% !important;
         overflow: visible;
+        min-width: 0 !important;
     }
     .gear-panel-inner {
-        grid-template-columns: 1fr;
+        display: flex !important;
+        flex-direction: column;
         padding: 12px;
         gap: 10px;
         overflow: visible;
     }
     .gear-col {
-        grid-row: auto;
-        display: flex;
+        grid-row: auto !important;
+        display: flex !important;
         flex-direction: column;
         gap: 10px;
     }
     .gear-col-cards { gap: 10px; padding-bottom: 10px; }
-    .gear-card { min-width: 0; }
+    .gear-col-weapons { margin-top: 0; }
+    .gear-card { min-width: 0; width: 100%; }
 
     /* ── Craft panel → overlay on mobile ──────────── */
     .craft-panel {
-        display: none;
+        display: none !important;
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
         z-index: 500;
@@ -1709,10 +1712,10 @@ body {
         min-height: unset;
     }
     .craft-panel.mobile-open {
-        display: flex;
+        display: flex !important;
     }
     .craft-panel-close {
-        display: block;
+        display: block !important;
         position: absolute;
         top: 12px; right: 14px;
         background: none;
@@ -1727,7 +1730,7 @@ body {
 
     /* ── FAB button ─────────────────────────────────── */
     .craft-fab {
-        display: flex;
+        display: flex !important;
         align-items: center;
         gap: 6px;
         position: fixed;
