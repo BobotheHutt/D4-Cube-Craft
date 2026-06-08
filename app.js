@@ -550,6 +550,7 @@ function renderAffixRows(slotId) {
             const temperVal = AppState.temperSelections?.[slotId] || null;
             lockedLabel.textContent = temperVal || "No temper set";
             if (!temperVal) lockedLabel.classList.add("empty");
+            else lockedLabel.classList.add("has-temper");
         } else {
             if (currentVal) {
                 lockedLabel.textContent = currentVal;

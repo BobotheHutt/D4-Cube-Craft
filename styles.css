@@ -1623,7 +1623,7 @@ body {
     color: var(--accent-dim);
     font-style: italic;
 }
-.affix-row.temper-slot .affix-locked-label:not(.empty) {
+.affix-row.temper-slot .affix-locked-label.has-temper {
     color: var(--accent2);
     font-style: normal;
 }
