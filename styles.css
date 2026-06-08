@@ -1630,6 +1630,10 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--border-bright); }
+    /* ── Craft panel close button (hidden on desktop) ── */
+.craft-panel-close { display: none; }
+.craft-fab { display: none; }
+
 /* ══════════════════════════════════════════════════════════════
    MOBILE / RESPONSIVE
    ══════════════════════════════════════════════════════════════ */
@@ -1667,23 +1671,24 @@ body {
     }
     .class-selector-wrap { gap: 6px; }
 
-    /* ── Planner layout → stacked ──────────────────── */
+    /* ── Planner layout → single column, gear only ── */
     .planner-layout {
-        grid-template-columns: 1fr;
-        height: auto;
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 101px);
         overflow-y: auto;
         overflow-x: hidden;
-        max-height: calc(100vh - 101px);
     }
     .gear-panel-wrap {
         border-right: none;
-        border-bottom: 2px solid var(--border-mid);
         width: 100%;
+        overflow: visible;
     }
     .gear-panel-inner {
         grid-template-columns: 1fr;
         padding: 12px;
         gap: 10px;
+        overflow: visible;
     }
     .gear-col {
         grid-row: auto;
@@ -1692,13 +1697,58 @@ body {
         gap: 10px;
     }
     .gear-col-cards { gap: 10px; padding-bottom: 10px; }
-
-    /* ── Gear cards ─────────────────────────────────── */
     .gear-card { min-width: 0; }
 
-    /* ── Craft panel ───────────────────────────────── */
-    .craft-panel { min-height: 300px; }
+    /* ── Craft panel → overlay on mobile ──────────── */
+    .craft-panel {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        z-index: 500;
+        background: var(--bg-panel);
+        flex-direction: column;
+        min-height: unset;
+    }
+    .craft-panel.mobile-open {
+        display: flex;
+    }
+    .craft-panel-close {
+        display: block;
+        position: absolute;
+        top: 12px; right: 14px;
+        background: none;
+        border: none;
+        color: var(--text-hint);
+        font-size: 20px;
+        cursor: pointer;
+        z-index: 10;
+    }
+    .craft-panel-close:hover { color: var(--text-primary); }
     .craft-panel-header { padding: 12px 14px; }
+
+    /* ── FAB button ─────────────────────────────────── */
+    .craft-fab {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 400;
+        background: var(--accent);
+        color: #000;
+        border: none;
+        border-radius: 28px;
+        padding: 12px 20px;
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+    .craft-fab:active { transform: scale(0.95); }
 
     /* ── Modals → near full-screen ─────────────────── */
     .modal-box {
@@ -1804,4 +1854,5 @@ body {
         max-height: 100vh;
         border-radius: 0;
     }
+    .craft-fab { bottom: 14px; right: 14px; padding: 10px 16px; font-size: 12px; }
 }

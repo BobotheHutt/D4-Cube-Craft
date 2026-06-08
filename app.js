@@ -1352,6 +1352,17 @@ function _positionTooltip(e) {
 }
 
 // ══════════════════════════════════════════════════════════════
+//  MOBILE CRAFT PANEL TOGGLE
+// ══════════════════════════════════════════════════════════════
+function toggleCraftPanel() {
+    const panel = document.getElementById("craft-panel");
+    const fab = document.getElementById("craft-fab");
+    if (!panel) return;
+    const isOpen = panel.classList.toggle("mobile-open");
+    if (fab) fab.style.display = isOpen ? "none" : "";
+}
+
+// ══════════════════════════════════════════════════════════════
 //  TAB SWITCHING
 // ══════════════════════════════════════════════════════════════
 function switchTab(tabName) {

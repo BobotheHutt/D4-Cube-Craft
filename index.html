@@ -194,9 +194,10 @@
             </div>
 
             <!-- ── CRAFT PANEL ──────────────────────────────── -->
-            <div class="craft-panel">
+            <div class="craft-panel" id="craft-panel">
                 <div class="craft-panel-header">
                     <h2>Tuning Prism Planner</h2>
+                    <button class="craft-panel-close" onclick="toggleCraftPanel()">✕</button>
                     <div class="craft-active-slot" id="craft-slot-label">No slot selected</div>
                 </div>
                 <div class="craft-results-area" id="craft-results">
@@ -205,6 +206,12 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Mobile FAB to open craft panel -->
+            <button class="craft-fab" id="craft-fab" onclick="toggleCraftPanel()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                <span>Prisms</span>
+            </button>
 
         </div>
     </div>
