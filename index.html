@@ -25,9 +25,13 @@
                 <span>Sign In</span>
             </button>
             <div id="auth-user-info" class="auth-user-info" style="display:none;">
-                <img id="auth-avatar" class="auth-avatar" src="" alt="">
-                <span id="auth-name" class="auth-name"></span>
-                <button class="auth-signout" onclick="signOutUser()" title="Sign out">✕</button>
+                <div class="auth-profile" onclick="toggleAuthMenu(event)">
+                    <img id="auth-avatar" class="auth-avatar" src="" alt="">
+                    <span id="auth-name" class="auth-name"></span>
+                </div>
+                <div id="auth-menu" class="auth-menu">
+                    <button class="auth-menu-btn" onclick="signOutUser()">Sign Out</button>
+                </div>
             </div>
         </div>
         <button class="settings-gear" onclick="toggleSettings()" title="Settings">

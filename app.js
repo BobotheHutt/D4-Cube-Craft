@@ -107,7 +107,7 @@ function getSlotConfig(slotId) { return SLOT_CONFIG[slotId] || SLOT_CONFIG["weap
 // ── CLASS WEAPON CONFIGS ──────────────────────────────────────
 const CLASS_WEAPONS = {
     spiritborn:  { leftSlots: [{ label: "Weapon",   sub: "Polearm or One-Handed"     }], rightSlots: [{ label: "Offhand",   sub: "Shield (optional)"      }] },
-    barbarian:   { leftSlots: [{ label: "Weapon 1", sub: "One-Handed Slashing"       }, { label: "Weapon 2", sub: "One-Handed Slashing" }], rightSlots: [{ label: "Weapon 3", sub: "One-Handed Bludgeoning" }, { label: "Weapon 4", sub: "Two-Handed" }] },
+    barbarian:   { leftSlots: [{ label: "Weapon", sub: "Two-Handed Bludgeoning" }, { label: "Weapon", sub: "One-Handed" }], rightSlots: [{ label: "Weapon", sub: "Two-Handed Slashing" }, { label: "Weapon", sub: "One-Handed" }] },
     druid:       { leftSlots: [{ label: "Weapon",   sub: "Staff or One-Handed"       }], rightSlots: [{ label: "Offhand",   sub: "Totem"                  }] },
     necromancer: { leftSlots: [{ label: "Weapon",   sub: "One-Handed or Two-Handed"  }], rightSlots: [{ label: "Offhand",   sub: "Focus (if 1H)"           }] },
     rogue:       { leftSlots: [{ label: "Weapon 1", sub: "One-Handed"                }], rightSlots: [{ label: "Weapon 2", sub: "One-Handed or Bow"        }] },
@@ -1447,7 +1447,21 @@ function signInWithGoogle() {
 function signOutUser() {
     if (!_firebaseAuth) return;
     _firebaseAuth.signOut();
+    const menu = document.getElementById("auth-menu");
+    if (menu) menu.classList.remove("open");
 }
+
+function toggleAuthMenu(e) {
+    e.stopPropagation();
+    const menu = document.getElementById("auth-menu");
+    if (menu) menu.classList.toggle("open");
+}
+
+// Close auth menu when clicking outside
+document.addEventListener("click", () => {
+    const menu = document.getElementById("auth-menu");
+    if (menu) menu.classList.remove("open");
+});
 
 // ── Cloud Sync ───────────────────────────────────────────────
 function getUserDocRef() {
