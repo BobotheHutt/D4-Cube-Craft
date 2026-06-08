@@ -1623,6 +1623,10 @@ body {
     color: var(--accent-dim);
     font-style: italic;
 }
+.affix-row.temper-slot .affix-locked-label:not(.empty) {
+    color: var(--accent2);
+    font-style: normal;
+}
 
 /* Tighter card padding in locked mode */
 .gear-locked .item-card       { padding: 8px 12px; }
