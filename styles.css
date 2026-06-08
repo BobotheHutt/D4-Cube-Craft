@@ -35,6 +35,8 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+html { height: 100%; }
+
 /* ── SETTINGS GEAR ──────────────────────────────── */
 .settings-gear {
     background: none;
@@ -257,7 +259,7 @@ body {
     font-family: 'Rajdhani', sans-serif;
     font-size: 14px;
     line-height: 1.5;
-    height: 100vh;
+    height: 100%;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -1694,7 +1696,7 @@ body {
    ══════════════════════════════════════════════════════════════ */
 
 @media (min-width: 769px) {
-    body { zoom: 1.2; }
+    html { zoom: 1.2; }
 
     /* ── Tab bar ────────────────────────────────────── */
     .tab-bar { padding: 0 24px; gap: 4px; }
