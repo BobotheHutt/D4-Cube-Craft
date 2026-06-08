@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════════════════════════
 registerUniques("sorcerer", [
     // ── WEAPONS ─────────────────────────────────────────
+    { name: "Thundergod's Blessing", slot: "weapon", power: "Lightning damage against Close enemies has a 25% chance to grant Resolve and deal x [250 - 300%] increased damage." },
     { name: "Drognan's Anguish", slot: "weapon", power: "Casting Pyromancy Skills Burns you for 5% of your Maximum Life over 10 seconds. You inflict [200 - 250%] increased Burning damage based on how much of your Life is Burning." },
     { name: "Fang of the Vipermagi", slot: "weapon", power: "Inferno constricts the area 2 more times and deals x [20 - 25%] increased damage." },
     { name: "Flamescar", slot: "weapon", power: "Incinerate gains one final charge, irradiating the area around you and increasing damage dealt by x [200-300%] but costing an additional 50 Mana per second." },
@@ -11,7 +12,6 @@ registerUniques("sorcerer", [
     { name: "Staff of Lam Esen", slot: "weapon", power: "Charged Bolts deal [55 - 80]%[x] increased damage, last 300% longer and seek enemies." },
     { name: "Strike of Stormhorn", slot: "weapon", power: "Ball Lightning deals x [40 - 60%] increased damage and explodes for 40% of its total damage when dissipating." },
     { name: "The Oculus", slot: "weapon", power: "Each enemy hit by Teleport increases the damage by [10.0 - 15.0]%[x] and reduces the Cooldown by 0.50 of the next Cast. Becoming Injured will Teleport you to a random location." },
-    { name: "Thundergod's Blessing", slot: "weapon", power: "Lightning damage against Close enemies has a 25% chance to grant Resolve and deal x [250 - 300%] increased damage." },
     { name: "Vision of the Firestorm", slot: "weapon", power: "Firewall has x [80 - 100%] increased damage and it's size is overcapped by 100%." },
     { name: "Vox Omnium", slot: "weapon", power: "Casting a Core Skill triggers a random equipped Basic Skill at a random enemy which deals x [300 - 360%] increased damage." },
     // ── HELM ────────────────────────────────────────────

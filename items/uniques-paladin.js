@@ -11,7 +11,6 @@ registerUniques("paladin", [
     { name: "Sunbrand", slot: "weapon", power: "Heaven’s Fury gains 3 additional rays and deals [70- 90]%[x] increased damage" },
     { name: "Sundered Night", slot: "weapon", power: "Casting an Aura Skill triggers a Consecration beneath you. You gain [80 - 100]% Aura Potency while standing in Consecration" },
     { name: "Supplication", slot: "weapon", power: "Brandish unleashes in all directions, dealing [60 - 80]%[x] increased damage." },
-    { name: "Thousand-Eye Reaver", slot: "weapon", power: "Moving grants Ferocity, and Maximum Ferocity is increased by [2-4]. Ferocity also increases Movement Speed by [6-8]%[+] per stack." },
     // ── SHIELDS ─────────────────────────────────────────
     { name: "Bastion of Sir Matthias", slot: "offhand", power: "Blocking has a 15% chance to retaliate with a Shield Bash. Your Shield Bash damage is increased by [80 – 100]%[x]." },
     { name: "Cathedral’s Song", slot: "offhand", power: "Lucky Hit: Casting Disciple Skills have up to a [8 – 10]% chance to call down Spear of the Heavens on a random enemy. Your Spear of the Heavens damage is increased by [80 – 100]%[x]" },

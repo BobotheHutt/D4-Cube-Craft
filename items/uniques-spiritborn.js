@@ -4,11 +4,11 @@
 // ══════════════════════════════════════════════════════════════
 registerUniques("spiritborn", [
     // ── WEAPONS ─────────────────────────────────────────
+    { name: "Thundergod's Blessing", slot: "weapon", power: "Lightning damage against Close enemies has a 25% chance to grant Resolve and deal x [250 - 300%] increased damage." },
     { name: "Echo of Kwatli", slot: "weapon", power: "You deal x [53 - 67%] increased damage to Vulnerable enemies. After making an enemy Vulnerable, your next direct damage dealt to them: Heals you for 5% of your Maximum Life Generates 10 Vigor Removes the Vulnerable Effect" },
     { name: "Rod of Kepeleke", slot: "weapon", power: "Your Core Skills are now additionally Basic Skills and are free to cast. When cast at Maximum Vigor, your Core Skills consume all Vigor to return to full damage, cast at their largest Size, and become guaranteed Critical Strikes, with [0.33 - 0.38]%[x] or 0.90% increased Critical Strike Damage for each point of Vigor spent this way." },
     { name: "Sepazontec", slot: "weapon", power: "Your Basic Skills deal [40 - 60]% or 144% increased damage and always use their 3rd attack. Every 3rd cast of a Basic Skill strikes three times." },
     { name: "The Sunstained War-Crozie", slot: "weapon", power: "Your Focus Skills benefit from all their Upgrades, and they increase the damage of your Potency Skills by [20 - 25]% for 8 seconds, up to [100-125]% [x]." },
-    { name: "Thundergod's Blessing", slot: "weapon", power: "Lightning damage against Close enemies has a 25% chance to grant Resolve and deal x [250 - 300%] increased damage." },
     { name: "Widow's Web", slot: "weapon", power: "Your Critical Strikes cause your Poisoning on an enemy to burst, dealing [167 - 200%] of the total Poisoning instantly to them and 10% of the burst to surrounding enemies before removing the Poisoning effect from the primary target." },
     { name: "Wūshe Nak Pa", slot: "weapon", power: "Casting an Ultimate Skill grants or amplifies its matching Primary Spirit Hall Bonus with [250 - 300]%[+] potency for 15 seconds. Your Ultimate Skills each gain an additional Skill Type: The Seeker is a Focus Skill. The Hunter is a Mobility Skill. The Devourer is a Potency Skill. The Protector is a Defensive Skill." },
     // ── HELM ────────────────────────────────────────────

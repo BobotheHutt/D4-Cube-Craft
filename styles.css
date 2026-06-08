@@ -1662,6 +1662,8 @@ body {
     color: var(--text-hint);
 }
 .db-table-header span:nth-child(3) { display: none; }
+.db-table-header-uniques span:nth-child(3),
+.db-table-header-uniques span:nth-child(4) { display: none; }
 
 .db-table-row {
     display: grid;
@@ -1705,6 +1707,17 @@ body {
 .db-table-row.slim,
 .db-table-row.db-table-row--no-cat {
     grid-template-columns: 1fr;
+}
+
+/* Unique items table - 4 columns on desktop */
+.db-table-header-uniques,
+.db-table-row-uniques {
+    grid-template-columns: 1fr 80px;
+}
+.db-row-boss {
+    display: none;
+    font-size: 11px;
+    color: var(--text-secondary);
 }
 
 .db-table-header.slim,
@@ -1891,6 +1904,15 @@ body {
     .db-table-header.db-table-header--no-cat {
         grid-template-columns: 280px 1fr;
     }
+
+    /* Unique items table - 4 columns */
+    .db-table-header-uniques,
+    .db-table-row-uniques {
+        grid-template-columns: 200px 90px 90px 1fr;
+    }
+    .db-row-boss { display: block; }
+    .db-table-header-uniques span:nth-child(3),
+    .db-table-header-uniques span:nth-child(4) { display: inline; }
 
     /* ── Settings panel ────────────────────────────── */
     .settings-panel {

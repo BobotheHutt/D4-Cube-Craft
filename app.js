@@ -2199,12 +2199,12 @@ function renderUniqueItems(wrap, activeCat, isFiltered, filterClass, classToggle
         }
 
         const grid = document.createElement("div");
-        grid.className = "db-table";
+        grid.className = "db-table db-table-uniques";
         grid.style.marginBottom = "16px";
 
         const hdr = document.createElement("div");
-        hdr.className = "db-table-header";
-        hdr.innerHTML = "<span>Item</span><span>Slot</span><span>Unique Power</span>";
+        hdr.className = "db-table-header db-table-header-uniques";
+        hdr.innerHTML = "<span>Item</span><span>Slot</span><span>Boss Drop</span><span>Unique Power</span>";
         grid.appendChild(hdr);
 
         items.sort((a, b) => a.name.localeCompare(b.name)).forEach(item => {
@@ -2217,10 +2217,11 @@ function renderUniqueItems(wrap, activeCat, isFiltered, filterClass, classToggle
                 ).filter((v, i, a) => a.indexOf(v) === i).join(", ");
 
             const row = document.createElement("div");
-            row.className = "db-table-row";
+            row.className = "db-table-row db-table-row-uniques";
             row.innerHTML = `
                 <div class="db-row-name is-unique">${item.name}</div>
                 <div class="db-row-tag">${slotLabel}</div>
+                <div class="db-row-boss">${item.boss || "—"}</div>
                 <div class="db-row-desc">${item.power || "—"}</div>
             `;
             grid.appendChild(row);
