@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════════════════════════
 registerUniques("druid", [
     // ── WEAPONS ─────────────────────────────────────────
+    { name: "Thundergod's Blessing", slot: "weapon", power: "Lightning damage against Close enemies has a 25% chance to grant Resolve and deal x [250 - 300%] increased damage." },
     { name: "Fleshrender", slot: "weapon", power: "When Tornadoes expire, they instead seek back toward you. Returning Tornadoes deal [40 - 50]%x bonus damage to enemies hit." },
     { name: "Greatstaff of the Crone", slot: "weapon", power: "Claw gains all Variants and gains x [30 - 40%] bonus damage." },
     { name: "Purified Lightbringer", slot: "weapon", power: "Pulverize pulls Distant enemies towards you. In addition, Pulverize deals [100 - 125%] bonus damage. This damage bonus is increased by [200 - 250%] if the target was pulled towards you, is Unstoppable or a Boss." },
