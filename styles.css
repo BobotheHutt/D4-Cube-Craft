@@ -49,6 +49,64 @@
 }
 .settings-gear:hover { color: var(--text-primary); }
 
+/* ── AUTH / SIGN-IN ─────────────────────────────── */
+.auth-container {
+    display: flex;
+    align-items: center;
+    margin-left: 4px;
+}
+.auth-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: 1px solid var(--border-dim);
+    border-radius: 4px;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.auth-btn:hover {
+    border-color: var(--text-secondary);
+    color: var(--text-primary);
+}
+.auth-user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.auth-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--border-dim);
+}
+.auth-name {
+    font-size: 11px;
+    color: var(--text-secondary);
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.auth-signout {
+    background: none;
+    border: none;
+    color: var(--text-hint);
+    font-size: 14px;
+    cursor: pointer;
+    padding: 2px 4px;
+}
+.auth-signout:hover { color: var(--text-primary); }
+.auth-sync-indicator {
+    font-size: 10px;
+    color: var(--accent2);
+    margin-left: 4px;
+}
+
 /* ── SETTINGS PANEL ─────────────────────────────── */
 .settings-overlay {
     display: none;

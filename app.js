@@ -205,6 +205,7 @@ function saveStorage() {
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(Storage));
     } catch (e) {}
+    saveToCloud();
 }
 
 // In-memory storage state
@@ -1326,6 +1327,118 @@ function switchTab(tabName) {
 }
 
 // ══════════════════════════════════════════════════════════════
+//  FIREBASE — Auth & Cloud Sync
+// ══════════════════════════════════════════════════════════════
+const firebaseConfig = {
+    apiKey: "AIzaSyCebAAjiUj4BYFWrl8E4_yfsQHhxqFPcr0",
+    authDomain: "d4crafts-8827f.firebaseapp.com",
+    projectId: "d4crafts-8827f",
+    storageBucket: "d4crafts-8827f.firebasestorage.app",
+    messagingSenderId: "861316906382",
+    appId: "1:861316906382:web:ce89ceaa2e32a47941b8df"
+};
+
+let _firebaseApp = null;
+let _firebaseAuth = null;
+let _firestore = null;
+let _currentUser = null;
+let _syncPending = false;
+
+function initFirebase() {
+    try {
+        _firebaseApp = firebase.initializeApp(firebaseConfig);
+        _firebaseAuth = firebase.auth();
+        _firestore = firebase.firestore();
+
+        _firebaseAuth.onAuthStateChanged(user => {
+            _currentUser = user;
+            updateAuthUI(user);
+            if (user) loadFromCloud();
+        });
+    } catch (e) {
+        console.warn("Firebase init failed:", e);
+    }
+}
+
+function updateAuthUI(user) {
+    const btn  = document.getElementById("auth-signin-btn");
+    const info = document.getElementById("auth-user-info");
+    if (!btn || !info) return;
+
+    if (user) {
+        btn.style.display  = "none";
+        info.style.display = "flex";
+        document.getElementById("auth-avatar").src = user.photoURL || "";
+        document.getElementById("auth-name").textContent = user.displayName || user.email || "User";
+    } else {
+        btn.style.display  = "flex";
+        info.style.display = "none";
+    }
+}
+
+function signInWithGoogle() {
+    if (!_firebaseAuth) return;
+    const provider = new firebase.auth.GoogleAuthProvider();
+    _firebaseAuth.signInWithPopup(provider).catch(err => {
+        console.error("Sign-in error:", err);
+    });
+}
+
+function signOutUser() {
+    if (!_firebaseAuth) return;
+    _firebaseAuth.signOut();
+}
+
+// ── Cloud Sync ───────────────────────────────────────────────
+function getUserDocRef() {
+    if (!_firestore || !_currentUser) return null;
+    return _firestore.collection("users").doc(_currentUser.uid);
+}
+
+function saveToCloud() {
+    const ref = getUserDocRef();
+    if (!ref) return;
+    if (_syncPending) return;
+    _syncPending = true;
+
+    // Debounce: wait 2 seconds after last save before syncing
+    setTimeout(() => {
+        _syncPending = false;
+        const data = {
+            characters: Storage.characters,
+            activeCharacterId: Storage.activeCharacterId,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        ref.set(data).catch(err => console.warn("Cloud save failed:", err));
+    }, 2000);
+}
+
+function loadFromCloud() {
+    const ref = getUserDocRef();
+    if (!ref) return;
+
+    ref.get().then(doc => {
+        if (doc.exists) {
+            const cloud = doc.data();
+            if (cloud.characters?.length) {
+                // Merge: cloud wins for characters that exist in both,
+                // local-only characters are kept
+                const cloudIds = new Set(cloud.characters.map(c => c.id));
+                const localOnly = Storage.characters.filter(c => !cloudIds.has(c.id));
+                Storage.characters = [...cloud.characters, ...localOnly];
+                Storage.activeCharacterId = cloud.activeCharacterId || Storage.activeCharacterId;
+                saveStorage(); // Update local with merged data
+                loadCharacterIntoApp(getActiveCharacter());
+                renderCharacterSelector();
+            }
+        } else {
+            // No cloud data yet — push local up
+            saveToCloud();
+        }
+    }).catch(err => console.warn("Cloud load failed:", err));
+}
+
+// ══════════════════════════════════════════════════════════════
 //  SETTINGS & THEMES
 // ══════════════════════════════════════════════════════════════
 const THEMES = {
@@ -1437,6 +1550,7 @@ function initSettings() {
 //  BOOT
 // ══════════════════════════════════════════════════════════════
 document.addEventListener("DOMContentLoaded", () => {
+    initFirebase();
     initSettings();
     initStorage();
     renderCharacterSelector();
