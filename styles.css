@@ -660,6 +660,18 @@ body {
     opacity: 0.75;
 }
 
+.affix-row.temper-slot .affix-select.has-value {
+    color: var(--accent2);
+    border-color: var(--accent2);
+    border-style: solid;
+    opacity: 1;
+}
+
+.affix-row.temper-slot .affix-select.has-value + .affix-num,
+.affix-row.temper-slot:has(.has-value) .affix-num {
+    color: var(--accent2);
+}
+
 /* ── CRAFT PANEL RESULTS ──────────────────────────── */
 .craft-empty {
     color: var(--text-hint);
