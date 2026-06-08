@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════
-//  app.js  —  Core logic for the Horadric Prism Planner
+//  app.js  —  Core logic for the Horadric Cube Planner
 //  Depends on: aggressive.js, protector.js, pragmatic.js,
 //              resourceful.js, adept.js, chromatic.js,
 //              mobility.js, mythics.js, aspects-*.js, tempers-*.js
