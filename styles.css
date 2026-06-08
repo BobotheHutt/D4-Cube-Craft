@@ -1727,6 +1727,7 @@ body {
         border-right: 2px solid var(--border-mid);
         overflow: hidden;
         width: fit-content;
+        min-height: 0;
     }
     .gear-panel-inner {
         display: grid;
@@ -1735,6 +1736,7 @@ body {
         gap: 0 16px;
         padding: 16px 20px;
         overflow-y: auto;
+        min-height: 0;
     }
     .gear-col {
         display: grid;
