@@ -64,10 +64,11 @@
     color: var(--text-secondary);
     font-size: 11px;
     font-weight: 500;
-    padding: 5px 12px;
+    padding: 5px 8px;
     cursor: pointer;
     transition: all 0.15s;
 }
+.auth-btn span { display: none; }
 .auth-btn:hover {
     border-color: var(--text-secondary);
     color: var(--text-primary);
@@ -84,6 +85,7 @@
     border: 1px solid var(--border-dim);
 }
 .auth-name {
+    display: none;
     font-size: 11px;
     color: var(--text-secondary);
     max-width: 100px;
@@ -257,7 +259,6 @@ body {
     line-height: 1.5;
     height: 100vh;
     overflow: hidden;
-    zoom: 1.2;
 }
 
 /* ── TABS ─────────────────────────────────────────── */
@@ -266,18 +267,18 @@ body {
     border-bottom: 1px solid var(--border-dim);
     display: flex;
     align-items: stretch;
-    padding: 0 24px;
-    gap: 4px;
+    padding: 0 12px;
+    gap: 2px;
 }
 
 .tab-brand {
     font-family: 'Cinzel', serif;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 700;
     color: var(--accent);
-    letter-spacing: 2px;
-    padding: 14px 24px 14px 0;
-    margin-right: 16px;
+    letter-spacing: 1px;
+    padding: 10px 12px 10px 0;
+    margin-right: 8px;
     border-right: 1px solid var(--border-dim);
     white-space: nowrap;
     display: flex;
@@ -286,9 +287,7 @@ body {
 }
 
 .tab-brand::before {
-    content: '⬡';
-    font-size: 16px;
-    color: var(--accent-dim);
+    display: none;
 }
 
 .tab-btn {
@@ -297,11 +296,11 @@ body {
     border-bottom: 2px solid transparent;
     color: var(--text-secondary);
     font-family: 'Rajdhani', sans-serif;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    padding: 14px 18px 12px;
+    padding: 10px 10px 8px;
     cursor: pointer;
     transition: color 0.15s, border-color 0.15s;
 }
@@ -317,8 +316,9 @@ body {
 .app-header {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 12px;
     background: var(--bg-deep);
     border-bottom: 1px solid var(--border-dim);
 }
@@ -370,51 +370,49 @@ body {
     overflow: hidden;
 }
 
-/* ── MAIN 3-PANEL LAYOUT ──────────────────────────── */
+/* ── MAIN PLANNER LAYOUT ─────────────────────────── */
 .planner-layout {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 0;
+    display: flex;
+    flex-direction: column;
     height: calc(100vh - 101px);
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* ── UNIFIED GEAR PANEL ───────────────────────────── */
-/* Both armor columns live inside one scrollable panel */
 .gear-panel-wrap {
     display: flex;
     flex-direction: column;
     background: var(--bg-deep);
-    border-right: 2px solid var(--border-mid);
-    overflow: hidden;
-    width: fit-content;
+    overflow: visible;
+    width: auto;
     min-width: 0;
 }
 
 .gear-panel-inner {
     flex: 1;
     overflow-y: auto;
-    padding: 16px 20px;
-    display: grid;
-    grid-template-columns: 320px 320px;
-    grid-template-rows: 1fr auto;
-    gap: 0 16px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-/* Subgrid: both cols share the parent row tracks so weapons snap to same row */
 .gear-col {
-    display: grid;
-    grid-row: 1 / -1;
-    grid-template-rows: subgrid;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .gear-col-cards {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding-bottom: 20px;
+    gap: 10px;
+    padding-bottom: 10px;
     align-self: start;
 }
+
+.gear-card { min-width: 0; width: 100%; }
 
 /* Weapon zone pinned to the second shared row track in both columns */
 .gear-col-weapons {
@@ -438,10 +436,16 @@ body {
 
 /* ── CRAFT PANEL ──────────────────────────────────── */
 .craft-panel {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 500;
     background: var(--bg-panel);
     overflow-y: auto;
-    display: flex;
     flex-direction: column;
+}
+.craft-panel.mobile-open {
+    display: flex;
 }
 
 .craft-panel-header {
@@ -692,39 +696,44 @@ body {
     background: var(--bg-panel);
     border: 1px solid var(--border-mid);
     border-radius: 8px;
-    width: 520px;
-    height: 560px;
-    max-height: 80vh;
+    width: 95vw;
+    height: 85vh;
+    max-height: 85vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
 
-.modal-body { display: flex; overflow: hidden; flex: 1; }
+.modal-body { display: flex; flex-direction: column; overflow: hidden; flex: 1; }
 
 .modal-categories {
-    width: 160px;
+    width: 100%;
     flex-shrink: 0;
-    border-right: 1px solid var(--border-dim);
-    padding: 10px 0;
-    overflow-y: auto;
+    border-bottom: 1px solid var(--border-dim);
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 6px 8px;
+    gap: 4px;
+    max-height: 44px;
 }
 
 .modal-cat-btn {
     display: block;
-    width: 100%;
     background: none;
     border: none;
-    border-left: 3px solid transparent;
+    border-bottom: 2px solid transparent;
     color: var(--text-secondary);
     font-family: 'Rajdhani', sans-serif;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
     text-align: left;
-    padding: 10px 16px;
+    padding: 6px 12px;
     cursor: pointer;
+    white-space: nowrap;
     transition: all 0.12s;
 }
 
@@ -732,7 +741,7 @@ body {
 
 .modal-cat-btn.active {
     color: var(--accent);
-    border-left-color: var(--accent);
+    border-bottom-color: var(--accent);
     background: var(--bg-card);
 }
 
@@ -1558,7 +1567,7 @@ body {
 
 .db-table-header {
     display: grid;
-    grid-template-columns: 220px 120px 1fr;
+    grid-template-columns: 1fr 90px;
     gap: 0 16px;
     padding: 6px 12px;
     background: var(--bg-deep);
@@ -1575,10 +1584,11 @@ body {
     text-transform: uppercase;
     color: var(--text-hint);
 }
+.db-table-header span:nth-child(3) { display: none; }
 
 .db-table-row {
     display: grid;
-    grid-template-columns: 220px 120px 1fr;
+    grid-template-columns: 1fr 90px;
     gap: 0 16px;
     padding: 9px 12px;
     border-bottom: 1px solid var(--border-dim);
@@ -1608,6 +1618,7 @@ body {
 }
 
 .db-row-desc {
+    display: none;
     font-size: 12px;
     color: var(--text-primary);
     line-height: 1.6;
@@ -1616,12 +1627,12 @@ body {
 /* Simpler table for prisms/tempers - no desc column */
 .db-table-row.slim,
 .db-table-row.db-table-row--no-cat {
-    grid-template-columns: 280px 1fr;
+    grid-template-columns: 1fr;
 }
 
 .db-table-header.slim,
 .db-table-header.db-table-header--no-cat {
-    grid-template-columns: 280px 1fr;
+    grid-template-columns: 1fr;
 }
 
 /* ── SCROLLBAR ────────────────────────────────────── */
@@ -1630,231 +1641,184 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--border-bright); }
     /* ── Craft panel close button (hidden on desktop) ── */
-.craft-panel-close { display: none; }
-.craft-fab { display: none; }
+.craft-panel-close {
+    display: block;
+    position: absolute;
+    top: 12px; right: 14px;
+    background: none;
+    border: none;
+    color: var(--text-hint);
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 10;
+}
+.craft-panel-close:hover { color: var(--text-primary); }
+.craft-fab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 400;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 28px;
+    padding: 12px 20px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+.craft-fab:active { transform: scale(0.95); }
 
 /* ══════════════════════════════════════════════════════════════
-   MOBILE / RESPONSIVE
+   DESKTOP ENHANCEMENTS (min-width: 769px)
+   Base styles above are mobile. Everything here layers on desktop.
    ══════════════════════════════════════════════════════════════ */
 
-@media (max-width: 768px) {
-    body { zoom: 1; }
+@media (min-width: 769px) {
+    body { zoom: 1.2; }
 
     /* ── Tab bar ────────────────────────────────────── */
-    .tab-bar { padding: 0 12px; gap: 2px; }
+    .tab-bar { padding: 0 24px; gap: 4px; }
     .tab-brand {
-        font-size: 11px;
-        padding: 10px 12px 10px 0;
-        margin-right: 8px;
-        letter-spacing: 1px;
+        font-size: 13px;
+        letter-spacing: 2px;
+        padding: 14px 24px 14px 0;
+        margin-right: 16px;
     }
-    .tab-brand::before { display: none; }
+    .tab-brand::before {
+        display: inline;
+        content: '⬡';
+        font-size: 16px;
+        color: var(--accent-dim);
+    }
     .tab-btn {
-        font-size: 11px;
-        padding: 10px 10px 8px;
-        letter-spacing: 1px;
+        font-size: 13px;
+        letter-spacing: 1.5px;
+        padding: 14px 18px 12px;
     }
-    .settings-gear { padding: 6px; }
-    .settings-gear svg { width: 16px; height: 16px; }
 
     /* ── Auth ───────────────────────────────────────── */
-    .auth-btn span { display: none; }
-    .auth-btn { padding: 5px 8px; }
-    .auth-name { display: none; }
+    .auth-btn { padding: 5px 12px; }
+    .auth-btn span { display: inline; }
+    .auth-name { display: inline; }
 
     /* ── App header ─────────────────────────────────── */
     .app-header {
-        flex-wrap: wrap;
-        padding: 8px 12px;
-        gap: 6px;
+        flex-wrap: nowrap;
+        gap: 8px;
+        padding: 12px 24px;
     }
-    .class-selector-wrap { gap: 6px; }
 
-    /* ── Planner layout → single column, gear only ── */
+    /* ── Planner layout → 2-column grid ────────────── */
     .planner-layout {
-        display: flex;
-        flex-direction: column;
-        grid-template-columns: none;
+        display: grid;
+        grid-template-columns: auto 1fr;
         height: calc(100vh - 101px);
-        overflow-y: auto;
-        overflow-x: hidden;
+        overflow: hidden;
     }
     .gear-panel-wrap {
-        border-right: none;
-        width: auto;
-        min-width: 0;
-        overflow: visible;
+        border-right: 2px solid var(--border-mid);
+        overflow: hidden;
+        width: fit-content;
     }
     .gear-panel-inner {
-        display: flex;
-        flex-direction: column;
-        grid-template-columns: none;
-        grid-template-rows: none;
-        padding: 12px;
-        gap: 10px;
-        overflow: visible;
+        display: grid;
+        grid-template-columns: 320px 320px;
+        grid-template-rows: 1fr auto;
+        gap: 0 16px;
+        padding: 16px 20px;
+        overflow-y: auto;
     }
     .gear-col {
-        display: flex;
-        flex-direction: column;
-        grid-row: auto;
-        grid-template-rows: none;
-        gap: 10px;
+        display: grid;
+        grid-row: 1 / -1;
+        grid-template-rows: subgrid;
     }
-    .gear-col-cards { gap: 10px; padding-bottom: 10px; }
-    .gear-col-weapons { margin-top: 0; }
-    .gear-card { min-width: 0; width: 100%; }
+    .gear-col-cards {
+        gap: 12px;
+        padding-bottom: 20px;
+    }
+    .gear-card { width: auto; }
 
-    /* ── Craft panel → overlay on mobile ──────────── */
+    /* ── Craft panel → inline, not overlay ──────────── */
     .craft-panel {
-        display: none;
-        position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        z-index: 500;
-        background: var(--bg-panel);
-        flex-direction: column;
-        min-height: unset;
-    }
-    .craft-panel.mobile-open {
         display: flex;
+        position: static;
+        z-index: auto;
     }
-    .craft-panel-close {
-        display: block;
-        position: absolute;
-        top: 12px; right: 14px;
-        background: none;
-        border: none;
-        color: var(--text-hint);
-        font-size: 20px;
-        cursor: pointer;
-        z-index: 10;
-    }
-    .craft-panel-close:hover { color: var(--text-primary); }
-    .craft-panel-header { padding: 12px 14px; }
+    .craft-panel-close { display: none; }
+    .craft-fab { display: none; }
+    .craft-panel-header { padding: 16px 20px; }
 
-    /* ── FAB button ─────────────────────────────────── */
-    .craft-fab {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 400;
-        background: var(--accent);
-        color: #000;
-        border: none;
-        border-radius: 28px;
-        padding: 12px 20px;
-        font-family: 'Rajdhani', sans-serif;
-        font-size: 13px;
-        font-weight: 700;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        cursor: pointer;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-    }
-    .craft-fab:active { transform: scale(0.95); }
-
-    /* ── Modals → near full-screen ─────────────────── */
+    /* ── Modals → fixed width ──────────────────────── */
     .modal-box {
-        width: 95vw;
-        height: 85vh;
-        max-height: 85vh;
+        width: 520px;
+        height: 560px;
+        max-height: 80vh;
     }
-    .modal-body {
-        flex-direction: column;
-    }
+    .modal-body { flex-direction: row; }
     .modal-categories {
-        width: 100%;
-        flex-shrink: 0;
-        border-right: none;
-        border-bottom: 1px solid var(--border-dim);
-        display: flex;
-        flex-direction: row;
-        overflow-x: auto;
-        overflow-y: hidden;
-        padding: 6px 8px;
-        gap: 4px;
-        max-height: 44px;
+        width: 160px;
+        max-height: none;
+        flex-direction: column;
+        border-bottom: none;
+        border-right: 1px solid var(--border-dim);
+        overflow-x: visible;
+        overflow-y: auto;
+        padding: 10px 0;
+        gap: 0;
     }
     .modal-cat-btn {
-        white-space: nowrap;
-        border-left: none;
-        border-bottom: 2px solid transparent;
-        padding: 6px 12px;
-        font-size: 11px;
+        width: 100%;
+        border-bottom: none;
+        border-left: 3px solid transparent;
+        padding: 10px 16px;
+        font-size: 12px;
+        white-space: normal;
     }
     .modal-cat-btn.active {
-        border-left-color: transparent;
-        border-bottom-color: var(--accent);
+        border-bottom-color: transparent;
+        border-left-color: var(--accent);
     }
-    .modal-affix-list { padding: 8px; }
-    .modal-affix-btn { padding: 10px 12px; font-size: 13px; }
 
-    /* ── Item modal ─────────────────────────────────── */
-    .item-modal-box {
-        width: 95vw;
-        height: 85vh;
-        max-height: 85vh;
-    }
-    .item-modal-cats {
-        display: flex;
-        flex-direction: row;
-        overflow-x: auto;
-        border-right: none;
-        border-bottom: 1px solid var(--border-dim);
-        width: 100%;
-        padding: 6px 8px;
-        gap: 4px;
-    }
-    .item-modal-list { padding: 8px; }
-
-    /* ── Database ───────────────────────────────────── */
-    .db-toolbar {
-        flex-wrap: wrap;
-        padding: 10px 12px;
-        gap: 8px;
-    }
-    .db-content { padding: 12px; }
-
+    /* ── Database tables → 3-column ────────────────── */
     .db-table-header,
     .db-table-row {
-        grid-template-columns: 1fr 90px;
+        grid-template-columns: 220px 120px 1fr;
     }
-    .db-row-desc { display: none; }
-    .db-table-header span:nth-child(3) { display: none; }
+    .db-table-header span:nth-child(3) { display: inline; }
+    .db-row-desc { display: block; }
 
+    .db-table-row.slim,
+    .db-table-row.db-table-row--no-cat {
+        grid-template-columns: 280px 1fr;
+    }
     .db-table-header.slim,
-    .db-table-row.slim {
-        grid-template-columns: 1fr;
+    .db-table-header.db-table-header--no-cat {
+        grid-template-columns: 280px 1fr;
     }
 
-    /* ── DB section toggles ────────────────────────── */
-    .db-cat-toggles { gap: 4px; }
-    .db-cat-toggle { font-size: 10px; padding: 4px 8px; }
-    .db-slot-toggle { font-size: 10px; padding: 3px 8px; }
-
-    /* ── Settings panel → full width ───────────────── */
+    /* ── Settings panel ────────────────────────────── */
     .settings-panel {
-        width: 100vw;
-        max-width: 100vw;
+        width: 320px;
+        max-width: 320px;
     }
-
-    /* ── Tooltips → adjusted for mobile ──────────────── */
-    #item-tooltip { max-width: 80vw; }
-
-    /* ── Confirm modal ─────────────────────────────── */
-    .confirm-modal-box { width: 90vw; }
 }
 
-/* ── Extra small (phones < 400px) ─────────────────── */
+/* ── Extra small phones (<400px) ──────────────────── */
 @media (max-width: 400px) {
     .tab-brand { display: none; }
     .app-header { padding: 6px 8px; }
     .gear-panel-inner { padding: 8px; }
     .db-content { padding: 8px; }
-    .modal-box, .item-modal-box {
+    .modal-box {
         width: 100vw;
         height: 100vh;
         max-height: 100vh;
