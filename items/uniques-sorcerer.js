@@ -1,35 +1,43 @@
 // ══════════════════════════════════════════════════════════════
 //  uniques-sorcerer.js  —  Sorcerer Unique Items
-//  Source: game8.co Season 11 data
-//  NOTE: General/shared uniques belong in a separate file.
+//  Source: D4_Uniques.xlsx (user-verified)
 // ══════════════════════════════════════════════════════════════
 registerUniques("sorcerer", [
-    // ── WEAPONS ──────────────────────────────────────────────
-    { name: "Flamescar", slot: "weapon", power: "While Channeling Incinerate, you periodically shoot embers that are attracted to enemies, each dealing Fire damage." },
-    { name: "Okun's Catalyst", slot: "weapon", power: "Ball Lightning orbits you, creating a static field that damages all enemies within, and granting Unhindered while the field is active." },
-    { name: "Orisvane", slot: "weapon", power: "For each Defensive Skill not on your Action Bar, you deal increased damage and gain its associated Enchantment effect." },
-    { name: "Staff of Endless Rage", slot: "weapon", power: "Every 3rd cast of Fireball launches 2 additional projectiles and deals increased damage." },
-    { name: "Staff of Lam Esen", slot: "weapon", power: "Your casts of Charged Bolts have a chance to be attracted to enemies and last 300% longer." },
-    { name: "Strike of Stormhorn", slot: "weapon", power: "Ball Lightning splashes on contact for increased damage and Stuns enemies at maximum range. Super Ball Lightnings are larger, deal more damage, and have increased Stun duration." },
-    { name: "The Oculus", slot: "weapon", power: "Gain the effect of the Teleport Enchantment for free. When you Evade using Teleport Enchantment, you are taken to a random location." },
-    { name: "Vox Omnium", slot: "weapon", power: "Casting a Core Skill additionally fires 2 instances of Fire Bolt, Frost Bolt, or Spark, matching the elements of your last 2 non-Core Skill casts. These projectiles deal increased damage." },
-
-    // ── ARMOR ────────────────────────────────────────────────
-    { name: "Axial Conduit", slot: "pants", power: "Chain Lightning alternates between orbiting you and seeking up to 3 enemies. When it returns, it drains Mana. After draining enough total Mana, the bolt explodes for Lightning Damage. Chain Lightning expires if you don't have enough Mana." },
-    { name: "Esu's Heirloom", slot: "boots", power: "Your Critical Strike Chance is increased by a percentage of your Movement Speed bonus." },
-    { name: "Flameweaver", slot: "gloves", power: "Casting Fire Bolt through your Firewall causes it to split into 3 bolts, each dealing increased damage." },
-    { name: "Gloves of the Illuminator", slot: "gloves", power: "Fireball now bounces as it travels, exploding each time it hits the ground, but its explosion deals reduced normal damage." },
-    { name: "Hail of Verglas", slot: "helm", power: "Ice Shards now spreads out with 2 additional shards. You deal increased damage for each time Ice Shards damages an enemy, stacking up to a cap." },
-    { name: "Iceheart Brais", slot: "pants", power: "Enemies that die while Frozen have a chance to unleash a Frost Nova." },
-    { name: "Raiment of the Infinite", slot: "chest", power: "After using Teleport, Close enemies are Pulled to you and Stunned, but Teleport's Cooldown is increased by 20%." },
-    { name: "Sidhe Bindings", slot: "gloves", power: "Casting Familiar now summons all three elemental variants at once. Familiar's duration is increased and its Cooldown is reduced, but its maximum Charges are reduced by 1." },
-    { name: "Starfall Coronet", slot: "helm", power: "Meteor's Mana cost is replaced with a Cooldown and 3 total Charges. Casting Meteor drops 3 additional Meteors around the target." },
-
-    // ── JEWELRY ──────────────────────────────────────────────
-    { name: "Blue Rose", slots: ["ring-left", "ring-right"], power: "Lucky Hit: Up to a 30% chance to form an exploding Ice Spike dealing Cold Damage. Triple this chance if the enemy is Frozen." },
-    { name: "Esadora's Overflowing Cameo", slot: "amulet", power: "Upon collecting Crackling Energy, there's a chance to release a lightning nova dealing Lightning Damage, increased for every 100 Intelligence you have." },
-    { name: "Fractured Winterglass", slot: "amulet", power: "Casting Frozen Orb has a chance to spawn a random Conjuration when it explodes. Lucky Hit: Your Conjurations have a chance to launch a Frozen Orb at Nearby enemies." },
-    { name: "Galvanic Azurite", slots: ["ring-left", "ring-right"], power: "Lightning damage leaves enemies magnetized, causing them to emit Crackling Energy and increasing all Lightning damage they take from you. Magnetized enemies that hit each other with Crackling Energy pull each other together." },
-    { name: "Ophidian Iris", slot: "amulet", power: "Hydra is now a Core Skill and always summons a 3-headed Hydra whose attacks explode on impact. For each head above 3 it would have had, the Hydra grows larger and deals increased damage." },
-    { name: "Tal Rasha's Iridescent Loop", slots: ["ring-left", "ring-right"], power: "Casting a Pyromancy, Shock, or Frost Skill increases your damage for 5 seconds, stacking once per element. Casting again refreshes all bonuses if the previous skill was a different Element." },
+    // ── WEAPONS ─────────────────────────────────────────
+    { name: "Drognan's Anguish", slot: "weapon", power: "Casting Pyromancy Skills Burns you for 5% of your Maximum Life over 10 seconds. You inflict [200 - 250%] increased Burning damage based on how much of your Life is Burning." },
+    { name: "Fang of the Vipermagi", slot: "weapon", power: "Inferno constricts the area 2 more times and deals x [20 - 25%] increased damage." },
+    { name: "Flamescar", slot: "weapon", power: "Incinerate gains one final charge, irradiating the area around you and increasing damage dealt by x [200-300%] but costing an additional 50 Mana per second." },
+    { name: "Staff of Endless Rage", slot: "weapon", power: "Fireball deals [40 - 60]% increased damage and every 3rd Cast launches 2 additional projectiles." },
+    { name: "Staff of Lam Esen", slot: "weapon", power: "Charged Bolts deal [55 - 80]%[x] increased damage, last 300% longer and seek enemies." },
+    { name: "Strike of Stormhorn", slot: "weapon", power: "Ball Lightning deals x [40 - 60%] increased damage and explodes for 40% of its total damage when dissipating." },
+    { name: "The Oculus", slot: "weapon", power: "Each enemy hit by Teleport increases the damage by [10.0 - 15.0]%[x] and reduces the Cooldown by 0.50 of the next Cast. Becoming Injured will Teleport you to a random location." },
+    { name: "Thundergod's Blessing", slot: "weapon", power: "Lightning damage against Close enemies has a 25% chance to grant Resolve and deal x [250 - 300%] increased damage." },
+    { name: "Vision of the Firestorm", slot: "weapon", power: "Firewall has x [80 - 100%] increased damage and it's size is overcapped by 100%." },
+    { name: "Vox Omnium", slot: "weapon", power: "Casting a Core Skill triggers a random equipped Basic Skill at a random enemy which deals x [300 - 360%] increased damage." },
+    // ── HELM ────────────────────────────────────────────
+    { name: "Hail of Verglas", slot: "helm", power: "Gain Ice Shard's Piercing Cold upgrade. Ice Shards deal x [30-50%] bonus damage." },
+    { name: "Starfall Coronet", slot: "helm", power: "Meteor's Casts consume Overpower when possible, dropping an additional Meteor for every 2 Overpower consumed. Meteor deals x [50-70%] increased damage." },
+    // ── CHEST ───────────────────────────────────────────
+    { name: "Emberfury", slot: "chest", power: "Overpower increases your Pyromancy Skill damage by [20 - 25%] and size, Mana cost and Cooldowns by 0%." },
+    { name: "Gift of Frost", slot: "chest", power: "Ice Armor gains the Permafrost Variant for free and [20 - 25%] increased potency." },
+    { name: "Raiment of the Infinite", slot: "chest", power: "Teleport pulls Close enemies to you and you gain [40 - 50] Damage Reduction for 8 seconds." },
+    // ── GLOVES ──────────────────────────────────────────
+    { name: "Flameweaver", slot: "gloves", power: "Casting Fire Bolt through your Firewall causes it to split into 3 bolts, each dealing [80-100]%[x] increased damage." },
+    { name: "Gloves of the Illuminator", slot: "gloves", power: "Fireball now bounces as it travels, exploding each time it hits the ground, but its explosion deals [70 - 100]% less damage." },
+    { name: "Levin Grasp", slot: "gloves", power: "Spark shocks enemies 1-9 additional times and deals [20 - 30%] increased damage." },
+    { name: "Sidhe Bindings", slot: "gloves", power: "Gain Familiar's Enchantment and Familiar's Potency is increased by x [60-80%]" },
+    // ── PANTS ───────────────────────────────────────────
+    { name: "Axial Conduit", slot: "pants", power: "Casting Chain Lightning has a 50% chance to activate [2-5] additional times." },
+    { name: "Iceheart Brais", slot: "pants", power: "Your Conjurations periodically unleash Frost Nova. Enemies affected by Frost Nova x [20-30%] increased damage from you." },
+    // ── BOOTS ───────────────────────────────────────────
+    { name: "Esu's Heirloom", slot: "boots", power: "Your Critical Strike Chance is increased by [20 - 40]% of your Movement Speed bonus." },
+    // ── AMULET ──────────────────────────────────────────
+    { name: "Esadora's Overflowing Cameo", slot: "amulet", power: "Crackling Energy's discharge rate is increased by your Attack Speed, its damage is increased by x [100-121%] and each hit has a 25% chance to reduce a random Cooldown by 1 second." },
+    { name: "Fractured Winterglass", slot: "amulet", power: "Casting a Core Skill has a 25% chance to summon a Conjuration of the same element. Each active Conjuration grants: x [3-6%] increased damage; 1 Mana per second; + 5% Movement Speed; +3% Damage Reduction" },
+    { name: "Ophidian Iris", slot: "amulet", power: "Hydra is now a Core Skill with increased Mana cost and its attacks now explode dealing x [100 - 125%] increased damage." },
+    // ── RINGS ───────────────────────────────────────────
+    { name: "Blue Rose", slots: ["ring-left", "ring-right"], power: "Skill that form Ice Spikes deal x [40-60%] increased damage. Lucky Hit: Up to a 15% chance to a form an exploding Ice Spike, dealing 255 cold damage." },
+    { name: "Galvanic Azurite", slots: ["ring-left", "ring-right"], power: "Cast Shock Skill damage leaves enemies Magnetized for 4 seconds, causing them to emit Crackling Energy and receive x [40-60%] increased Shock damage from you. Crackling Energy's damage Pulls Magnetized enemies together." },
+    { name: "Molten Band", slots: ["ring-left", "ring-right"], power: "Your Pyromancy Critical Strike Damage is increased by x [60 - 80%] against Healthy enemies and your Pyromancy Critical Strike Chance is increased by x [40 - 60%] against Injured enemies. Killing an enemy with a Critical Strike grants both bonuses against all enemies as well as +50% Attack Speed for 4 seconds." },
+    { name: "Tal Rasha's Iridescent Loop", slots: ["ring-left", "ring-right"], power: "Casting a Pyromancy, Shock, or Frost Skill increases your damage by [10.0 - 20.0]%[x] for 8 seconds, stacking once per Element. Casting again refreshes all bonuses if the previous skill was a different Element." },
 ]);
