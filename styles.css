@@ -409,12 +409,14 @@ body {
     padding: 12px;
     display: grid;
     grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr auto;
     gap: 10px;
 }
 
 .gear-col {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-row: 1 / -1;
+    grid-template-rows: subgrid;
     gap: 10px;
 }
 
@@ -917,9 +919,9 @@ body {
 }
 
 .item-modal-btn {
-    display: grid;
-    grid-template-columns: 180px 1fr;
-    gap: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
     align-items: start;
     width: 100%;
     background: none;
@@ -1803,6 +1805,13 @@ body {
     .modal-cat-btn.active {
         border-bottom-color: transparent;
         border-left-color: var(--accent);
+    }
+
+    /* ── Item modal → side-by-side name + desc ────── */
+    .item-modal-btn {
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        gap: 12px;
     }
 
     /* ── Database tables → 3-column ────────────────── */
