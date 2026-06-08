@@ -1268,31 +1268,77 @@ function selectItem(itemObj) {
 
 let _tooltipTimer = null;
 const TOOLTIP_DELAY = 1000;
+const LONGPRESS_DELAY = 500;
+let _touchTooltipTimer = null;
+
+function _showTooltip(name, type, power, tier, x, y) {
+    const tip = document.getElementById("item-tooltip");
+    if (!tip) return;
+    tip.className = "";
+    if (tier) tip.classList.add("rarity-" + tier);
+    document.getElementById("tooltip-name").textContent = name;
+    document.getElementById("tooltip-type").textContent = type;
+    const powerEl = document.getElementById("tooltip-power");
+    powerEl.textContent   = power || "";
+    powerEl.style.display = power ? "block" : "none";
+
+    // Position
+    const pad = 14;
+    tip.style.left = "0"; tip.style.top = "0";
+    tip.classList.add("visible");
+    const tw = tip.offsetWidth || 280, th = tip.offsetHeight || 100;
+    let px = x + pad, py = y + pad;
+    if (px + tw > window.innerWidth)  px = x - tw - pad;
+    if (py + th > window.innerHeight) py = y - th - pad;
+    if (px < 4) px = 4;
+    if (py < 4) py = 4;
+    tip.style.left = `${px}px`;
+    tip.style.top  = `${py}px`;
+}
+
+function _hideTooltip() {
+    clearTimeout(_tooltipTimer);
+    clearTimeout(_touchTooltipTimer);
+    const tip = document.getElementById("item-tooltip");
+    if (tip) tip.classList.remove("visible");
+}
 
 function attachTooltip(el, name, type, power, tier) {
+    // Desktop: hover with delay
     el.addEventListener("mouseenter", (e) => {
         clearTimeout(_tooltipTimer);
         _tooltipTimer = setTimeout(() => {
-            const tip = document.getElementById("item-tooltip");
-            if (!tip) return;
-            tip.className = "";  // clear previous rarity class
-            if (tier) tip.classList.add("rarity-" + tier);
-            document.getElementById("tooltip-name").textContent  = name;
-            document.getElementById("tooltip-type").textContent  = type;
-            const powerEl = document.getElementById("tooltip-power");
-            powerEl.textContent    = power || "";
-            powerEl.style.display  = power ? "block" : "none";
-            _positionTooltip(e);
-            tip.classList.add("visible");
+            _showTooltip(name, type, power, tier, e.clientX, e.clientY);
         }, TOOLTIP_DELAY);
     });
-    el.addEventListener("mousemove", _positionTooltip);
-    el.addEventListener("mouseleave", () => {
-        clearTimeout(_tooltipTimer);
+    el.addEventListener("mousemove", (e) => {
         const tip = document.getElementById("item-tooltip");
-        if (tip) tip.classList.remove("visible");
+        if (!tip || !tip.classList.contains("visible")) return;
+        _positionTooltip(e);
     });
+    el.addEventListener("mouseleave", _hideTooltip);
+
+    // Mobile: long-press
+    el.addEventListener("touchstart", (e) => {
+        clearTimeout(_touchTooltipTimer);
+        const touch = e.touches[0];
+        const tx = touch.clientX, ty = touch.clientY;
+        _touchTooltipTimer = setTimeout(() => {
+            e.preventDefault();
+            _showTooltip(name, type, power, tier, tx, ty);
+        }, LONGPRESS_DELAY);
+    }, { passive: false });
+    el.addEventListener("touchmove", () => clearTimeout(_touchTooltipTimer));
+    el.addEventListener("touchend", () => clearTimeout(_touchTooltipTimer));
 }
+
+// Tap anywhere else to dismiss tooltip on mobile
+document.addEventListener("touchstart", (e) => {
+    const tip = document.getElementById("item-tooltip");
+    if (tip && tip.classList.contains("visible") && !tip.contains(e.target)) {
+        _hideTooltip();
+    }
+});
 
 function _positionTooltip(e) {
     const tip = document.getElementById("item-tooltip");
