@@ -1319,16 +1319,19 @@ function attachTooltip(el, name, type, power, tier) {
     el.addEventListener("mouseleave", _hideTooltip);
 
     // Mobile: long-press
+    let _touchMoved = false;
     el.addEventListener("touchstart", (e) => {
+        _touchMoved = false;
         clearTimeout(_touchTooltipTimer);
         const touch = e.touches[0];
         const tx = touch.clientX, ty = touch.clientY;
         _touchTooltipTimer = setTimeout(() => {
-            e.preventDefault();
-            _showTooltip(name, type, power, tier, tx, ty);
+            if (!_touchMoved) {
+                _showTooltip(name, type, power, tier, tx, ty);
+            }
         }, LONGPRESS_DELAY);
-    }, { passive: false });
-    el.addEventListener("touchmove", () => clearTimeout(_touchTooltipTimer));
+    });
+    el.addEventListener("touchmove", () => { _touchMoved = true; clearTimeout(_touchTooltipTimer); });
     el.addEventListener("touchend", () => clearTimeout(_touchTooltipTimer));
 }
 
