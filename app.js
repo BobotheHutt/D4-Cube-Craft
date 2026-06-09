@@ -2092,7 +2092,9 @@ function buildTempersSection(filterClass) {
                         }
                         const oldTable = wrap.querySelector(".db-table");
                         if (oldTable) wrap.removeChild(oldTable);
-                        wrap.appendChild(buildTemperTable(null, filterClass));
+                        const newTable = buildTemperTable(null, filterClass);
+                        wrap.appendChild(newTable);
+                        makeSortable(newTable);
                     };
 
                     slotRow.appendChild(btn);
@@ -2101,7 +2103,9 @@ function buildTempersSection(filterClass) {
                 wrap.appendChild(slotRow);
             }
 
-            wrap.appendChild(buildTemperTable(activeCat, filterClass));
+            const temperTable = buildTemperTable(activeCat, filterClass);
+            wrap.appendChild(temperTable);
+            makeSortable(temperTable);
             return wrap;
         }
     );
@@ -2220,6 +2224,7 @@ function buildUniquesSection(filterClass) {
         function rebuildUniquesList() {
             wrap.querySelectorAll(".db-table, .db-unique-class-label").forEach(el => el.remove());
             renderUniqueItems(wrap, isFiltered, filterClass, classToggleKeys);
+            wrap.querySelectorAll('.db-table').forEach(makeSortable);
         }
 
         slotDefs.forEach(({ id, label }) => {
