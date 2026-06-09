@@ -2107,15 +2107,9 @@ function buildUniquesSection(filterClass) {
         ? `${filterClass.charAt(0).toUpperCase() + filterClass.slice(1)} only`
         : "All Classes";
 
-    // Build class toggles from registered unique classes
-    const classToggleKeys = Object.keys(window.UniqueRegistry || {});
-    const classToggles = classToggleKeys.map(cls => ({
-        label: cls === "general" ? "General" : cls.charAt(0).toUpperCase() + cls.slice(1),
-        key:   cls
-    }));
-
-    return buildSection("Unique Items", meta, classToggles, (activeCat) => {
+    return buildSection("Unique Items", meta, null, () => {
         const wrap = document.createElement("div");
+        const classToggleKeys = Object.keys(window.UniqueRegistry || {});
 
         // ── Slot filter toggles ──
         const slotDefs = [
@@ -2140,7 +2134,7 @@ function buildUniquesSection(filterClass) {
 
         function rebuildUniquesList() {
             wrap.querySelectorAll(".db-table, .db-unique-class-label").forEach(el => el.remove());
-            renderUniqueItems(wrap, activeCat, isFiltered, filterClass, classToggleKeys);
+            renderUniqueItems(wrap, isFiltered, filterClass, classToggleKeys);
         }
 
         slotDefs.forEach(({ id, label }) => {
@@ -2163,8 +2157,7 @@ function buildUniquesSection(filterClass) {
 
         wrap.appendChild(slotRow);
 
-        // ── Item tables ──
-        renderUniqueItems(wrap, activeCat, isFiltered, filterClass, classToggleKeys);
+        renderUniqueItems(wrap, isFiltered, filterClass, classToggleKeys);
         return wrap;
     });
 }
@@ -2179,10 +2172,8 @@ function itemMatchesSlotFilter(item, slotId) {
     });
 }
 
-function renderUniqueItems(wrap, activeCat, isFiltered, filterClass, classToggleKeys) {
-    const classesToShow = activeCat
-        ? [activeCat]
-        : (isFiltered ? [filterClass] : classToggleKeys);
+function renderUniqueItems(wrap, isFiltered, filterClass, classToggleKeys) {
+    const classesToShow = isFiltered ? [filterClass] : classToggleKeys;
 
     classesToShow.forEach(cls => {
         let items = window.UniqueRegistry[cls] || [];
@@ -2190,7 +2181,7 @@ function renderUniqueItems(wrap, activeCat, isFiltered, filterClass, classToggle
         if (items.length === 0) return;
 
         // Show class label when showing multiple classes
-        if (!activeCat && !isFiltered) {
+        if (!isFiltered) {
             const classLabel = document.createElement("div");
             classLabel.className = "db-unique-class-label";
             classLabel.style.cssText = "font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-hint);padding:10px 0 6px;border-bottom:1px solid var(--border-dim);margin-bottom:10px;";
@@ -2204,7 +2195,7 @@ function renderUniqueItems(wrap, activeCat, isFiltered, filterClass, classToggle
 
         const hdr = document.createElement("div");
         hdr.className = "db-table-header db-table-header-uniques";
-        hdr.innerHTML = "<span>Item</span><span>Slot</span><span>Boss Drop</span><span>Unique Power</span>";
+        hdr.innerHTML = "<span>Item</span><span>Slot</span><span>Unique Power</span><span>Boss Drop</span>";
         grid.appendChild(hdr);
 
         items.sort((a, b) => a.name.localeCompare(b.name)).forEach(item => {
@@ -2221,8 +2212,8 @@ function renderUniqueItems(wrap, activeCat, isFiltered, filterClass, classToggle
             row.innerHTML = `
                 <div class="db-row-name is-unique">${item.name}</div>
                 <div class="db-row-tag">${slotLabel}</div>
-                <div class="db-row-boss">${item.boss || "—"}</div>
                 <div class="db-row-desc">${item.power || "—"}</div>
+                <div class="db-row-boss">${item.boss || "Any"}</div>
             `;
             grid.appendChild(row);
         });
