@@ -1385,6 +1385,25 @@ function _positionTooltip(e) {
 }
 
 // ══════════════════════════════════════════════════════════════
+//  DATABASE SEARCH
+// ══════════════════════════════════════════════════════════════
+function onDatabaseSearch(term) {
+    term = term.toLowerCase().trim();
+    const content = document.getElementById("db-content");
+    if (!content) return;
+
+    const rows = content.querySelectorAll('.db-table-row, .db-table-row-uniques');
+    rows.forEach(row => {
+        if (!term) {
+            row.style.display = '';
+            return;
+        }
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(term) ? '' : 'none';
+    });
+}
+
+// ══════════════════════════════════════════════════════════════
 //  SORTABLE DATABASE COLUMNS
 // ══════════════════════════════════════════════════════════════
 function makeSortable(table) {
@@ -1392,14 +1411,12 @@ function makeSortable(table) {
     if (!header) return;
     const spans = [...header.querySelectorAll('span')];
     spans.forEach((span, colIndex) => {
-        if (span.offsetParent === null) return; // skip hidden columns
         span.style.cursor = 'pointer';
         span.style.userSelect = 'none';
         span.addEventListener('click', () => {
             const rows = [...table.querySelectorAll('.db-table-row, .db-table-row-uniques')];
             if (rows.length === 0) return;
             const asc = span.dataset.sort !== 'asc';
-            // Clear all sort indicators
             spans.forEach(s => {
                 s.dataset.sort = '';
                 s.textContent = s.textContent.replace(/ [▲▼]$/, '');
@@ -1711,6 +1728,10 @@ const PRISM_SECTION_COLOR = {
 function renderDatabase(filterClass) {
     const container = document.getElementById("db-content");
     if (!container) return;
+
+    // Clear search
+    const searchInput = document.getElementById("db-search-input");
+    if (searchInput) searchInput.value = "";
 
     // Remember which sections are open before rebuilding
     const openSections = new Set();

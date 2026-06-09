@@ -228,6 +228,7 @@
             <div class="db-toolbar">
                 <span class="db-toolbar-title">Reference Database</span>
                 <div class="db-toolbar-right">
+                    <input type="text" id="db-search-input" class="db-search-input" placeholder="Search..." oninput="onDatabaseSearch(this.value)">
                     <label for="db-class-select" class="db-label">Filter by Class:</label>
                     <select id="db-class-select" class="class-select" onchange="renderDatabase(this.value)">
                         <option value="all">All Classes</option>
