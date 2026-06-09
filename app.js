@@ -1392,6 +1392,7 @@ function onDatabaseSearch(term) {
     const content = document.getElementById("db-content");
     if (!content) return;
 
+    // Filter rows
     const rows = content.querySelectorAll('.db-table-row, .db-table-row-uniques');
     rows.forEach(row => {
         if (!term) {
@@ -1400,6 +1401,26 @@ function onDatabaseSearch(term) {
         }
         const text = row.textContent.toLowerCase();
         row.style.display = text.includes(term) ? '' : 'none';
+    });
+
+    // Update section header counts
+    content.querySelectorAll('.db-section').forEach(section => {
+        const titleEl = section.querySelector('.db-section-title');
+        if (!titleEl) return;
+        // Remove old count badge
+        const oldBadge = titleEl.querySelector('.section-search-count');
+        if (oldBadge) oldBadge.remove();
+
+        if (term && section.classList.contains('open')) {
+            const allRows = section.querySelectorAll('.db-table-row, .db-table-row-uniques');
+            const visible = [...allRows].filter(r => r.style.display !== 'none').length;
+            if (visible > 0) {
+                const badge = document.createElement('span');
+                badge.className = 'section-search-count';
+                badge.textContent = visible;
+                titleEl.appendChild(badge);
+            }
+        }
     });
 }
 
@@ -2092,9 +2113,7 @@ function buildTempersSection(filterClass) {
                         }
                         const oldTable = wrap.querySelector(".db-table");
                         if (oldTable) wrap.removeChild(oldTable);
-                        const newTable = buildTemperTable(null, filterClass);
-                        wrap.appendChild(newTable);
-                        makeSortable(newTable);
+                        wrap.appendChild(buildTemperTable(null, filterClass));
                     };
 
                     slotRow.appendChild(btn);
@@ -2103,9 +2122,7 @@ function buildTempersSection(filterClass) {
                 wrap.appendChild(slotRow);
             }
 
-            const temperTable = buildTemperTable(activeCat, filterClass);
-            wrap.appendChild(temperTable);
-            makeSortable(temperTable);
+            wrap.appendChild(buildTemperTable(activeCat, filterClass));
             return wrap;
         }
     );
@@ -2183,6 +2200,7 @@ function buildTemperTable(activeCat, filterClass) {
         });
     }
 
+    makeSortable(table);
     return table;
 }
 
@@ -2224,7 +2242,6 @@ function buildUniquesSection(filterClass) {
         function rebuildUniquesList() {
             wrap.querySelectorAll(".db-table, .db-unique-class-label").forEach(el => el.remove());
             renderUniqueItems(wrap, isFiltered, filterClass, classToggleKeys);
-            wrap.querySelectorAll('.db-table').forEach(makeSortable);
         }
 
         slotDefs.forEach(({ id, label }) => {
@@ -2307,6 +2324,7 @@ function renderUniqueItems(wrap, isFiltered, filterClass, classToggleKeys) {
             `;
             grid.appendChild(row);
         });
+        makeSortable(grid);
         wrap.appendChild(grid);
     });
 }
