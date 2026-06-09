@@ -818,6 +818,47 @@ body {
     background: var(--bg-card);
 }
 
+.modal-search-bar {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-dim);
+    flex-shrink: 0;
+}
+.modal-search-bar input {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--border-dim);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    padding: 6px 10px;
+    outline: none;
+}
+.modal-search-bar input:focus {
+    border-color: var(--accent2);
+}
+.modal-search-bar input::placeholder {
+    color: var(--text-hint);
+}
+.cat-search-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 9px;
+    background: var(--accent2);
+    color: #000;
+    margin-left: 6px;
+    padding: 0 5px;
+}
+.modal-affix-btn.search-highlight {
+    background: var(--bg-card-hover);
+    border-left: 2px solid var(--accent2);
+}
+
 .modal-affixes {
     flex: 1;
     overflow-y: auto;
@@ -1908,7 +1949,7 @@ body {
     /* Unique items table - 4 columns */
     .db-table-header-uniques,
     .db-table-row-uniques {
-        grid-template-columns: 200px 90px 90px 1fr;
+        grid-template-columns: 200px 90px 1fr 90px;
     }
     .db-row-boss { display: block; }
     .db-table-header-uniques span:nth-child(3),

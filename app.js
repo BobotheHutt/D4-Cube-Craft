@@ -938,16 +938,20 @@ function selectTemper(value) {
 let affixModalState = {
     slotId:         null,
     slotIndex:      null,
-    activeCategory: null
+    activeCategory: null,
+    searchTerm:     ""
 };
 
 function openAffixModal(slotId, slotIndex) {
     affixModalState.slotId    = slotId;
     affixModalState.slotIndex = slotIndex;
+    affixModalState.searchTerm = "";
     if (!affixModalState.activeCategory) {
         affixModalState.activeCategory = AFFIX_CATEGORY_MAP[0].key;
     }
     document.getElementById("affix-modal-title").textContent = `Affix Slot ${slotIndex} — ${getSlotLabel(slotId)}`;
+    const searchInput = document.getElementById("affix-search-input");
+    if (searchInput) searchInput.value = "";
     renderAffixModalCategories();
     renderAffixModalList();
     document.getElementById("affix-modal").classList.add("open");
@@ -956,13 +960,36 @@ function openAffixModal(slotId, slotIndex) {
 function closeAffixModal() { document.getElementById("affix-modal").classList.remove("open"); }
 function handleModalOverlayClick(e) { if (e.target.id === "affix-modal") closeAffixModal(); }
 
+function onAffixSearch(term) {
+    affixModalState.searchTerm = term.toLowerCase().trim();
+    renderAffixModalCategories();
+    renderAffixModalList();
+}
+
 function renderAffixModalCategories() {
     const container = document.getElementById("modal-category-list");
     container.innerHTML = "";
+    const term = affixModalState.searchTerm || "";
+
     AFFIX_CATEGORY_MAP.forEach(({ label, key }) => {
         const btn = document.createElement("button");
         btn.className   = "modal-cat-btn" + (key === affixModalState.activeCategory ? " active" : "");
+
         btn.textContent = label;
+
+        // Show match count when searching
+        if (term) {
+            const rawData   = window.PrismRegistry[key];
+            const affixList = flattenPrismData(rawData || []);
+            const count     = affixList.filter(a => a.toLowerCase().includes(term)).length;
+            if (count > 0) {
+                const badge = document.createElement("span");
+                badge.className = "cat-search-count";
+                badge.textContent = count;
+                btn.appendChild(badge);
+            }
+        }
+
         btn.onclick = () => {
             affixModalState.activeCategory = key;
             renderAffixModalCategories();
@@ -999,8 +1026,10 @@ function renderAffixModalList() {
 
     affixList.forEach(affix => {
         if (usedAffixes.has(affix)) return;  // skip duplicates
+        const term = affixModalState.searchTerm || "";
+        const isMatch = term && affix.toLowerCase().includes(term);
         const btn = document.createElement("button");
-        btn.className   = "modal-affix-btn" + (affix === currentVal ? " selected" : "");
+        btn.className   = "modal-affix-btn" + (affix === currentVal ? " selected" : "") + (isMatch ? " search-highlight" : "");
         btn.textContent = affix;
         btn.onclick     = () => selectAffix(affix);
         container.appendChild(btn);
@@ -1356,6 +1385,39 @@ function _positionTooltip(e) {
 }
 
 // ══════════════════════════════════════════════════════════════
+//  SORTABLE DATABASE COLUMNS
+// ══════════════════════════════════════════════════════════════
+function makeSortable(table) {
+    const header = table.querySelector('.db-table-header, .db-table-header-uniques');
+    if (!header) return;
+    const spans = [...header.querySelectorAll('span')];
+    spans.forEach((span, colIndex) => {
+        if (span.offsetParent === null) return; // skip hidden columns
+        span.style.cursor = 'pointer';
+        span.style.userSelect = 'none';
+        span.addEventListener('click', () => {
+            const rows = [...table.querySelectorAll('.db-table-row, .db-table-row-uniques')];
+            if (rows.length === 0) return;
+            const asc = span.dataset.sort !== 'asc';
+            // Clear all sort indicators
+            spans.forEach(s => {
+                s.dataset.sort = '';
+                s.textContent = s.textContent.replace(/ [▲▼]$/, '');
+            });
+            span.dataset.sort = asc ? 'asc' : 'desc';
+            span.textContent += asc ? ' ▲' : ' ▼';
+
+            rows.sort((a, b) => {
+                const aText = (a.children[colIndex]?.textContent || '').trim();
+                const bText = (b.children[colIndex]?.textContent || '').trim();
+                return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+            });
+            rows.forEach(r => table.appendChild(r));
+        });
+    });
+}
+
+// ══════════════════════════════════════════════════════════════
 //  MOBILE CRAFT PANEL TOGGLE
 // ══════════════════════════════════════════════════════════════
 function toggleCraftPanel() {
@@ -1706,6 +1768,8 @@ function buildSection(title, metaText, toggleDefs, buildBodyFn) {
     function rebuildBody(activeCat) {
         body.innerHTML = "";
         body.appendChild(buildBodyFn(activeCat));
+        // Make all tables in this section sortable
+        body.querySelectorAll('.db-table, .db-table-uniques').forEach(makeSortable);
     }
 
     header.onclick = () => {

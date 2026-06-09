@@ -271,6 +271,9 @@
                 <h3 id="affix-modal-title">Select Affix</h3>
                 <button class="modal-close" onclick="closeAffixModal()">✕</button>
             </div>
+            <div class="modal-search-bar">
+                <input type="text" id="affix-search-input" placeholder="Search affixes..." oninput="onAffixSearch(this.value)">
+            </div>
             <div class="modal-body">
                 <div class="modal-categories" id="modal-category-list"></div>
                 <div class="modal-affixes" id="modal-affix-list"></div>
