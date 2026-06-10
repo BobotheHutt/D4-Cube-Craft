@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════════════════════════
 registerUniques("warlock", [
     // ── WEAPONS ─────────────────────────────────────────
+    { name: "Thousand-Eye Reaver", slot: "weapon", power: "Moving grants Ferocity, and Maximum Ferocity is increased by [2-4]. Ferocity also increases Movement Speed by [6-8]% per stack." },
     { name: "Ae'grom Schism", slot: "weapon", power: "Ae'grom and its summons deal x[30 - 50%] increased damage. You additionally summon Ae'grom's other half and gain a second Charge of Command Ae'grom." },
     { name: "Anathema of the Primes", slot: "weapon", power: "Hitting enemies with a Core Skill increases the damage they take from you by x[15 - 20%] per Skill, up to x[15 - 20%]. Archfiend Demonform Skill Variants are Core Skills and cost Wrath." },
     { name: "Dirge of Odium", slot: "weapon", power: "Your Basic Skills deal x [0.4 - 0.5%] increased damage per Wrath you have but you lose 10% Wrath per second. Every 50 Wrath gained beyond your Maximum generates 1 Dominance." },
