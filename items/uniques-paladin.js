@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════════════════════════
 registerUniques("paladin", [
     // ── WEAPONS ─────────────────────────────────────────
+    { name: "Thousand-Eye Reaver", slot: "weapon", power: "Moving grants Ferocity, and Maximum Ferocity is increased by [2-4]. Ferocity also increases Movement Speed by [6-8]% per stack." },
     { name: "Griswold's Opus", slot: "weapon", power: "Dealing direct damage grants [0.8 - 1.0]%[x] increased Critical Strike Damage for each enemy hit within 10 seconds, up to [40 - 50]%[x]. At Maximum you gain: Lucky Hit: Critical Strikes have up to a 50% chance to deal double damage, Heal for [130 - 150] Life, and refresh the duration of the bonus." },
     { name: "Herald's Morningstar", slot: "weapon", power: "Blessed Hammer deals [80 - 100]%[x] increased damage. Lucky Hit: Up to a 20% chance to spawn a base Blessed Hammer on the target hit" },
     { name: "Light's Rebuke", slot: "weapon", power: "Enemies impaled by the first strike of Divine Lance take [110 - 150]% increased damage from Divine Lance's subsequent hits" },

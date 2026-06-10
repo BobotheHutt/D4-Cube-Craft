@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════════════════════════
 registerUniques("druid", [
     // ── WEAPONS ─────────────────────────────────────────
+    { name: "Thousand-Eye Reaver", slot: "weapon", power: "Moving grants Ferocity, and Maximum Ferocity is increased by [2-4]. Ferocity also increases Movement Speed by [6-8]% per stack." },
     { name: "Thundergod's Blessing", slot: "weapon", power: "Lightning damage against Close enemies has a 25% chance to grant Resolve and deal x [250 - 300%] increased damage." },
     { name: "Fleshrender", slot: "weapon", power: "When Tornadoes expire, they instead seek back toward you. Returning Tornadoes deal [40 - 50]%x bonus damage to enemies hit." },
     { name: "Greatstaff of the Crone", slot: "weapon", power: "Claw gains all Variants and gains x [30 - 40%] bonus damage." },

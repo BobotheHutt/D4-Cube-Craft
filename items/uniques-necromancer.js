@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════════════════════════
 registerUniques("necromancer", [
     // ── WEAPONS ─────────────────────────────────────────
+    { name: "Thousand-Eye Reaver", slot: "weapon", power: "Moving grants Ferocity, and Maximum Ferocity is increased by [2-4]. Ferocity also increases Movement Speed by [6-8]% per stack." },
     { name: "Black River", slot: "weapon", power: "Corpse Explosion consumes up to 4 additional Corpses around the initial Corpse, gaining [120 - 160]%[x] or 192%[x] damage and [42.0 - 50.0]% or 60.0% Size per additional Corpse consumed." },
     { name: "Blood Wake", slot: "weapon", power: "Blood Mist casts Corpse Explosion on surrounding Corpses. When Blood Mist detonates a Corpse, its Cooldown is reduced by 1 second and you gain +[50 - 60%] increased Movement Speed for 3 seconds." },
     { name: "Bloodless Scream", slot: "weapon", power: "Your Darkness Skills Chill enemies for up to 100% and deal [100 - 125]%[x] increased damage to Frozen enemies and bosses. Every 800 times you damage enemies with Darkness Skills, all Nearby enemies are Feared for 0.25 seconds before Freezing for 3 more seconds." },
