@@ -6,10 +6,8 @@
 registerUniques("general", [
     // ── WEAPONS ──────────────────────────────────────────────
     { name: "Azurewrath", slot: "weapon", boss: "Any", power: "After Freeze expires, enemies explode for [100 - 120%] of the damage you dealt to them while Frozen. " },
-    { name: "Rustbitten Dirk", slot: "weapon", boss: "Any", power: "Deal [90-120]% increased damage to isolated enemies." },
     { name: "Shard of Verathiel", slot: "weapon", boss: "Any", power: "Basic Skills deal [70 - 100]%[x] increased damage but additionally cost 25 Primary Resource." },
     { name: "The Butcher's Cleaver", slot: "weapon", boss: "Any", power: "Your attacks Critically Strike Injured Enemies. Killing Elites Fears and Slows nearby enemies by [85 - 95]% for 2 seconds" },
-    { name: "Thousand-Eye Reaver", slot: "weapon", boss: "Any", power: "Moving grants Ferocity, and Maximum Ferocity is increased by [2-4]. Ferocity also increases Movement Speed by [6-8]% per stack." },
     
     // ── HELM ─────────────────────────────────────────────────
     { name: "Crown of Lucion", slot: "helm", boss: "Any", power: "Each time you use a Skill with a Resource Cost, gain [10 - 15]% or 18%[x] increased damage and Resource Cost is increased by 30%[+] for 4 seconds, stacking up to 5 times." },
