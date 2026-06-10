@@ -4,6 +4,7 @@
 // ══════════════════════════════════════════════════════════════
 registerUniques("barbarian", [
     // ── WEAPONS ──────────────────────────────────────────────
+    { name: "Thousand-Eye Reaver", slot: "weapon", power: "Moving grants Ferocity, and Maximum Ferocity is increased by [2-4]. Ferocity also increases Movement Speed by [6-8]% per stack." },
     { name: "Ancients' Oath", slot: "weapon", power: "Steel Grasp launches 2 additional chains. Enemies hit by Steel Grasp are Slowed by [55 - 65%] for 3 seconds." },
     { name: "Fields of Crimson", slot: "weapon", power: "Rupture creates a blood pool that inflicts Bleeding damage over 6 seconds. Enemies standing in the pool take [10 - 20%] increased Bleeding damage." },
     { name: "Hellhammer", slot: "weapon", power: "Upheaval ignites the ground, Burning enemies for Fire damage over 4 seconds. Damage is increased for every 100 Strength you have." },
