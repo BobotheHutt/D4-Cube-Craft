@@ -141,24 +141,33 @@ function isAffixMismatch(affixValue, className) {
     // Check if it's a class-specific skill rank that doesn't match
     const adeptData = window.PrismRegistry["adeptPrism"];
     if (adeptData?.classskills) {
-        for (const [cls, skills] of Object.entries(adeptData.classskills)) {
-            if (cls !== className && skills.includes(affixValue)) return true;
+        const mySkills = adeptData.classskills[className] || [];
+        if (!mySkills.includes(affixValue)) {
+            for (const [cls, skills] of Object.entries(adeptData.classskills)) {
+                if (cls !== className && skills.includes(affixValue)) return true;
+            }
         }
     }
 
     // Check class-specific resource entries
     const resourceData = window.PrismRegistry["resourcefulPrism"];
     if (resourceData?.classresource) {
-        for (const [cls, resources] of Object.entries(resourceData.classresource)) {
-            if (cls !== className && resources.includes(affixValue)) return true;
+        const myResources = resourceData.classresource[className] || [];
+        if (!myResources.includes(affixValue)) {
+            for (const [cls, resources] of Object.entries(resourceData.classresource)) {
+                if (cls !== className && resources.includes(affixValue)) return true;
+            }
         }
     }
 
     // Check utility class skills
     const pragmaticData = window.PrismRegistry["pragmaticPrism"];
     if (pragmaticData?.classskills) {
-        for (const [cls, skills] of Object.entries(pragmaticData.classskills)) {
-            if (cls !== className && skills.includes(affixValue)) return true;
+        const myPragmatic = pragmaticData.classskills[className] || [];
+        if (!myPragmatic.includes(affixValue)) {
+            for (const [cls, skills] of Object.entries(pragmaticData.classskills)) {
+                if (cls !== className && skills.includes(affixValue)) return true;
+            }
         }
     }
 
