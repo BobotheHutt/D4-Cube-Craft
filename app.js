@@ -989,8 +989,19 @@ function renderAffixModalCategories() {
         // Show match count when searching
         if (term) {
             const rawData   = window.PrismRegistry[key];
-            const affixList = flattenPrismData(rawData || []);
-            const count     = affixList.filter(a => a.toLowerCase().includes(term)).length;
+            let   affixList = flattenPrismData(rawData || []);
+            // Apply slot filtering for Adept
+            if (key === "adeptPrism" && window.ADEPT_SLOT_SKILLS) {
+                const cls = AppState.activeClass;
+                const slotKey = affixModalState.slotId?.startsWith("ring-") ? "ring" : affixModalState.slotId;
+                const allowed = window.ADEPT_SLOT_SKILLS[cls]?.[slotKey] || [];
+                affixList = affixList.filter(a => {
+                    if (!a.startsWith("Ranks to ")) return true;
+                    if (allowed.length === 0) return false;
+                    return allowed.some(cat => a.includes(cat + " Skills"));
+                });
+            }
+            const count = affixList.filter(a => a.toLowerCase().includes(term)).length;
             if (count > 0) {
                 const badge = document.createElement("span");
                 badge.className = "cat-search-count";
@@ -1015,7 +1026,19 @@ function renderAffixModalList() {
     const slotIndex  = affixModalState.slotIndex;
     const currentVal = AppState.affixSelections[slotId]?.[`slot${slotIndex}`];
     const rawData    = window.PrismRegistry[affixModalState.activeCategory];
-    const affixList  = flattenPrismData(rawData || []);
+    let   affixList  = flattenPrismData(rawData || []);
+
+    // Filter Adept skill ranks by slot availability
+    if (affixModalState.activeCategory === "adeptPrism" && window.ADEPT_SLOT_SKILLS) {
+        const cls = AppState.activeClass;
+        const slotKey = slotId.startsWith("ring-") ? "ring" : slotId;
+        const allowed = window.ADEPT_SLOT_SKILLS[cls]?.[slotKey] || [];
+        affixList = affixList.filter(a => {
+            if (!a.startsWith("Ranks to ")) return true; // keep stats/universal
+            if (allowed.length === 0) return false;       // no ranks for this slot
+            return allowed.some(cat => a.includes(cat + " Skills"));
+        });
+    }
 
     // Collect affixes already used in other slots on this gear piece
     const usedAffixes = new Set();
