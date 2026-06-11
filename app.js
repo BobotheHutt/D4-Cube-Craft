@@ -2302,92 +2302,66 @@ function itemMatchesSlotFilter(item, slotId) {
 }
 
 function renderUniqueItems(wrap, isFiltered, filterClass, classToggleKeys) {
+    let allItems = [];
+
     if (isFiltered) {
-        // Single class selected — merge general items into one table
+        // Single class — merge general into one table
         let items = [...(window.UniqueRegistry[filterClass] || [])];
         if (classToggleKeys.includes("general")) {
             items = items.concat(window.UniqueRegistry["general"] || []);
         }
         if (uniqueSlotFilter) items = items.filter(i => itemMatchesSlotFilter(i, uniqueSlotFilter));
-        if (items.length === 0) return;
-
-        const grid = document.createElement("div");
-        grid.className = "db-table db-table-uniques";
-        grid.style.marginBottom = "16px";
-
-        const hdr = document.createElement("div");
-        hdr.className = "db-table-header db-table-header-uniques";
-        hdr.innerHTML = "<span>Item</span><span>Slot</span><span>Unique Power</span><span>Boss Drop</span>";
-        grid.appendChild(hdr);
-
-        items.sort((a, b) => a.name.localeCompare(b.name)).forEach(item => {
-            const slotLabel = item.slot
-                ? item.slot.charAt(0).toUpperCase() + item.slot.slice(1)
-                : (item.slots || []).map(s =>
-                    s.startsWith("weapon") ? "Weapons" :
-                    s.startsWith("ring")   ? "Rings"   :
-                    s.charAt(0).toUpperCase() + s.slice(1)
-                ).filter((v, i, a) => a.indexOf(v) === i).join(", ");
-
-            const row = document.createElement("div");
-            row.className = "db-table-row db-table-row-uniques";
-            row.innerHTML = `
-                <div class="db-row-name is-unique">${item.name}</div>
-                <div class="db-row-tag">${slotLabel}</div>
-                <div class="db-row-desc">${item.power || "—"}</div>
-                <div class="db-row-boss">${item.boss || "Any"}</div>
-            `;
-            grid.appendChild(row);
-        });
-        makeSortable(grid);
-        wrap.appendChild(grid);
+        allItems = items.map(i => ({ ...i, _cls: null }));
     } else {
-        // All classes — each class gets its own section
-        const classesToShow = classToggleKeys;
-
-        classesToShow.forEach(cls => {
+        // All classes — combine everything into one list with class tags
+        classToggleKeys.forEach(cls => {
             let items = window.UniqueRegistry[cls] || [];
             if (uniqueSlotFilter) items = items.filter(i => itemMatchesSlotFilter(i, uniqueSlotFilter));
-            if (items.length === 0) return;
-
-            const classLabel = document.createElement("div");
-            classLabel.className = "db-unique-class-label";
-            classLabel.style.cssText = "font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-hint);padding:10px 0 6px;border-bottom:1px solid var(--border-dim);margin-bottom:10px;";
-            classLabel.textContent = cls === "general" ? "General" : cls;
-            wrap.appendChild(classLabel);
-
-            const grid = document.createElement("div");
-            grid.className = "db-table db-table-uniques";
-            grid.style.marginBottom = "16px";
-
-            const hdr = document.createElement("div");
-            hdr.className = "db-table-header db-table-header-uniques";
-            hdr.innerHTML = "<span>Item</span><span>Slot</span><span>Unique Power</span><span>Boss Drop</span>";
-            grid.appendChild(hdr);
-
-            items.sort((a, b) => a.name.localeCompare(b.name)).forEach(item => {
-                const slotLabel = item.slot
-                    ? item.slot.charAt(0).toUpperCase() + item.slot.slice(1)
-                    : (item.slots || []).map(s =>
-                        s.startsWith("weapon") ? "Weapons" :
-                        s.startsWith("ring")   ? "Rings"   :
-                        s.charAt(0).toUpperCase() + s.slice(1)
-                    ).filter((v, i, a) => a.indexOf(v) === i).join(", ");
-
-                const row = document.createElement("div");
-                row.className = "db-table-row db-table-row-uniques";
-                row.innerHTML = `
-                    <div class="db-row-name is-unique">${item.name}</div>
-                    <div class="db-row-tag">${slotLabel}</div>
-                    <div class="db-row-desc">${item.power || "—"}</div>
-                    <div class="db-row-boss">${item.boss || "Any"}</div>
-                `;
-                grid.appendChild(row);
-            });
-            makeSortable(grid);
-            wrap.appendChild(grid);
+            const label = cls === "general" ? "General" : cls.charAt(0).toUpperCase() + cls.slice(1);
+            items.forEach(i => allItems.push({ ...i, _cls: label }));
         });
     }
+
+    if (allItems.length === 0) return;
+    allItems.sort((a, b) => a.name.localeCompare(b.name));
+
+    const showClassCol = !isFiltered;
+    const grid = document.createElement("div");
+    grid.className = "db-table db-table-uniques" + (showClassCol ? " db-table-uniques-all" : "");
+    grid.style.marginBottom = "16px";
+
+    const hdr = document.createElement("div");
+    hdr.className = "db-table-header db-table-header-uniques" + (showClassCol ? " db-table-header-uniques-all" : "");
+    hdr.innerHTML = showClassCol
+        ? "<span>Item</span><span>Class</span><span>Slot</span><span>Unique Power</span><span>Boss Drop</span>"
+        : "<span>Item</span><span>Slot</span><span>Unique Power</span><span>Boss Drop</span>";
+    grid.appendChild(hdr);
+
+    allItems.forEach(item => {
+        const slotLabel = item.slot
+            ? item.slot.charAt(0).toUpperCase() + item.slot.slice(1)
+            : (item.slots || []).map(s =>
+                s.startsWith("weapon") ? "Weapons" :
+                s.startsWith("ring")   ? "Rings"   :
+                s.charAt(0).toUpperCase() + s.slice(1)
+            ).filter((v, i, a) => a.indexOf(v) === i).join(", ");
+
+        const row = document.createElement("div");
+        row.className = "db-table-row db-table-row-uniques" + (showClassCol ? " db-table-row-uniques-all" : "");
+        row.innerHTML = showClassCol
+            ? `<div class="db-row-name is-unique">${item.name}</div>
+               <div class="db-row-tag">${item._cls}</div>
+               <div class="db-row-tag">${slotLabel}</div>
+               <div class="db-row-desc">${item.power || "—"}</div>
+               <div class="db-row-boss">${item.boss || "Any"}</div>`
+            : `<div class="db-row-name is-unique">${item.name}</div>
+               <div class="db-row-tag">${slotLabel}</div>
+               <div class="db-row-desc">${item.power || "—"}</div>
+               <div class="db-row-boss">${item.boss || "Any"}</div>`;
+        grid.appendChild(row);
+    });
+    makeSortable(grid);
+    wrap.appendChild(grid);
 }
 
 // ── MYTHICS ───────────────────────────────────────────────────
