@@ -1431,19 +1431,24 @@ function makeSortable(table) {
     const header = table.querySelector('.db-table-header, .db-table-header-uniques');
     if (!header) return;
     const spans = [...header.querySelectorAll('span')];
+    // Store original text on first setup
+    spans.forEach(span => {
+        if (!span.dataset.origText) span.dataset.origText = span.textContent;
+    });
     spans.forEach((span, colIndex) => {
         span.style.cursor = 'pointer';
         span.style.userSelect = 'none';
         span.addEventListener('click', () => {
             const rows = [...table.querySelectorAll('.db-table-row, .db-table-row-uniques')];
             if (rows.length === 0) return;
-            const asc = span.dataset.sort !== 'asc';
+            const wasAsc = span.dataset.sort === 'asc';
+            const asc = !wasAsc;
             spans.forEach(s => {
                 s.dataset.sort = '';
-                s.textContent = s.textContent.replace(/ [▲▼]$/, '');
+                s.textContent = s.dataset.origText || s.textContent;
             });
             span.dataset.sort = asc ? 'asc' : 'desc';
-            span.textContent += asc ? ' ▲' : ' ▼';
+            span.textContent = (span.dataset.origText || '') + (asc ? ' ▲' : ' ▼');
 
             rows.sort((a, b) => {
                 const aText = (a.children[colIndex]?.textContent || '').trim();
@@ -2239,9 +2244,15 @@ function buildUniquesSection(filterClass) {
         lbl.textContent = "Filter by slot:";
         slotRow.appendChild(lbl);
 
+        let includeGeneral = true;
+
+        function getActiveKeys() {
+            return includeGeneral ? classToggleKeys : classToggleKeys.filter(k => k !== "general");
+        }
+
         function rebuildUniquesList() {
             wrap.querySelectorAll(".db-table, .db-unique-class-label").forEach(el => el.remove());
-            renderUniqueItems(wrap, isFiltered, filterClass, classToggleKeys);
+            renderUniqueItems(wrap, isFiltered, filterClass, getActiveKeys());
         }
 
         slotDefs.forEach(({ id, label }) => {
@@ -2264,7 +2275,22 @@ function buildUniquesSection(filterClass) {
 
         wrap.appendChild(slotRow);
 
-        renderUniqueItems(wrap, isFiltered, filterClass, classToggleKeys);
+        // ── Include General toggle ──
+        const generalRow = document.createElement("div");
+        generalRow.style.cssText = "display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:0 12px;";
+
+        const generalToggle = document.createElement("button");
+        generalToggle.className = "db-slot-toggle active";
+        generalToggle.textContent = "Include General";
+        generalToggle.onclick = () => {
+            includeGeneral = !includeGeneral;
+            generalToggle.classList.toggle("active", includeGeneral);
+            rebuildUniquesList();
+        };
+        generalRow.appendChild(generalToggle);
+        wrap.appendChild(generalRow);
+
+        renderUniqueItems(wrap, isFiltered, filterClass, getActiveKeys());
         return wrap;
     });
 }
