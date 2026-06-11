@@ -2275,20 +2275,17 @@ function buildUniquesSection(filterClass) {
 
         wrap.appendChild(slotRow);
 
-        // ── Include General toggle ──
-        const generalRow = document.createElement("div");
-        generalRow.style.cssText = "display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:0 12px;";
-
+        // Include General toggle — same row as slot filters
         const generalToggle = document.createElement("button");
         generalToggle.className = "db-slot-toggle active";
+        generalToggle.style.marginLeft = "auto";
         generalToggle.textContent = "Include General";
         generalToggle.onclick = () => {
             includeGeneral = !includeGeneral;
             generalToggle.classList.toggle("active", includeGeneral);
             rebuildUniquesList();
         };
-        generalRow.appendChild(generalToggle);
-        wrap.appendChild(generalRow);
+        slotRow.appendChild(generalToggle);
 
         renderUniqueItems(wrap, isFiltered, filterClass, getActiveKeys());
         return wrap;
