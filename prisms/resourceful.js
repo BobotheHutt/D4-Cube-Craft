@@ -8,6 +8,7 @@ registerPrismBucket("resourcefulPrism", {
     universal: [
         "Maximum Resource",
         "Resource Cost Reduction",
+        "Resource Generation",
         "Lucky Hit: Up to 15% Chance to Restore Primary Resource"
     ],
 
