@@ -11,6 +11,7 @@ registerPrismBucket("protectorPrism", [
     "Dodge Chance",
     "Fire Resistance",
     "Life On Hit",
+    "Life On Kill",
     "Life Regeneration",
     "Lightning Resistance",
     "Maximum Life",
