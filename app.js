@@ -1428,10 +1428,12 @@ function onDatabaseSearch(term) {
 //  SORTABLE DATABASE COLUMNS
 // ══════════════════════════════════════════════════════════════
 function makeSortable(table) {
+    if (table.dataset.sortable) return; // prevent duplicate handlers
+    table.dataset.sortable = 'true';
+
     const header = table.querySelector('.db-table-header, .db-table-header-uniques');
     if (!header) return;
     const spans = [...header.querySelectorAll('span')];
-    // Store original text on first setup
     spans.forEach(span => {
         if (!span.dataset.origText) span.dataset.origText = span.textContent;
     });
@@ -1441,8 +1443,9 @@ function makeSortable(table) {
         span.addEventListener('click', () => {
             const rows = [...table.querySelectorAll('.db-table-row, .db-table-row-uniques')];
             if (rows.length === 0) return;
-            const wasAsc = span.dataset.sort === 'asc';
-            const asc = !wasAsc;
+            // First click = descending (Z→A) since data is pre-sorted A→Z
+            const wasDesc = span.dataset.sort === 'desc';
+            const asc = wasDesc;
             spans.forEach(s => {
                 s.dataset.sort = '';
                 s.textContent = s.dataset.origText || s.textContent;
