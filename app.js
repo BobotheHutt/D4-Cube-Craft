@@ -661,7 +661,7 @@ function updateItemNameDisplay(slotId) {
     // Attach hover tooltip if item has a power description
     const power = getItemPower(selection.name, selection.tier);
     if (power) {
-        const typeLabel = selection.tier === "mythic" ? "Mythic Unique"
+        const typeLabel = selection.tier === "mythic" ? "Iconic Mythic"
                         : selection.tier === "unique" ? "Unique"
                         : "Legendary Aspect";
         attachTooltip(freshNameEl, selection.name, typeLabel, power, selection.tier);
@@ -1147,7 +1147,7 @@ function showItemTierStep() {
 
     const mythBtn = document.createElement("button");
     mythBtn.className = "tier-btn mythic";
-    mythBtn.innerHTML = `Mythic <span class="tier-btn-sub">Slot-locked ultra-rare items</span>`;
+    mythBtn.innerHTML = `Iconic Mythic <span class="tier-btn-sub">Slot-locked ultra-rare items</span>`;
     mythBtn.onclick   = () => showItemBrowseStep("mythic");
     tierEl.appendChild(mythBtn);
 
@@ -2401,7 +2401,7 @@ function renderUniqueItems(wrap, isFiltered, filterClass, classToggleKeys) {
 
 // ── MYTHICS ───────────────────────────────────────────────────
 function buildMythicsSection() {
-    return buildSection("Mythic Uniques", "All classes — slot-locked", null, () => {
+    return buildSection("Iconic Mythics", "All classes — slot-locked", null, () => {
         const items = Object.values(window.MythicRegistry || {}).flat().filter(i => i?.name);
         items.sort((a, b) => a.name.localeCompare(b.name));
 

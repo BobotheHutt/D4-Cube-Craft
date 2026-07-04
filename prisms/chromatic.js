@@ -1,9 +1,8 @@
 // ══════════════════════════════════════════════════════════════
 //  chromatic.js  —  Chromatic Tuning Prism affix pool
 //  UI Label: "Elemental"
-//  Source: In-game prism reference screenshot
+//  Source: In-game (Season 14 updated)
 //  Note: Individual resistances also roll on Protector's prism
-//  All Elemental Resistance does NOT roll here — Protector's only
 // ══════════════════════════════════════════════════════════════
 registerPrismBucket("chromaticPrism", [
     "Fire Resistance",
@@ -11,5 +10,6 @@ registerPrismBucket("chromaticPrism", [
     "Lightning Resistance",
     "Poison Resistance",
     "Shadow Resistance",
-    "Physical Resistance"
+    "Physical Resistance",
+    "All Resistances"
 ]);
