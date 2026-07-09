@@ -88,8 +88,9 @@ registerAspectCategory("utility", [
     { name: "Steadfast Berserker's Aspect", classes: ["barbarian", "druid"], power: "Gain [4.0 - 6.0]% of your Maximum Life as Fortify whenever you deal direct damage while Berserking." },
     { name: "Sticker-thought Aspect", classes: ["barbarian", "druid", "necromancer", "paladin", "rogue", "sorcerer", "warlock"], power: "Gain [1,813 - 5,439] Thorns while Channeling and for 3 seconds afterwards." },
     { name: "Undying Aspect", classes: [], power: "Casting a Skill Heals you for [2.0 - 3.0]% of your Maximum Life. Double this bonus while Injured." },
-    { name: "Weapon Master's Aspect", classes: ["barbarian"], power: "Weapon Mastery Skills Stun enemies for [1.0 - 1.5] seconds. Enemies can be Stunned this way once every 5 seconds. Your Weapon Mastery Skills have an additional Charge and deal [10 - 15]%[x] increased damage." },
+    { name: "Weapon Master's Aspect", classes: ["barbarian"], power: "Weapon Mastery Skills Stun enemies for [1.0 - 1.5] seconds. Enemies can be Stunned this way once every 5 seconds. Your Weapon Mastery Skills have an additional Charge and deal [10 - 15]%[x] increased damage. Iron Maelstrom gains a charge when considered a Weapon Mastery skill." },
     { name: "Wildbolt Aspect", classes: [], power: "Every [3.5 - 1.5] seconds, Distant enemies are Pulled In to you and take 15%[x] increased damage from you for 3 seconds. This effect cannot occur while you are in Stealth." },
     { name: "Wyward's Aspect", classes: ["druid", "sorcerer", "spiritborn"], power: "Lucky Hit: Lightning Damage has up to a [25 - 35]% chance to Stun enemies for 1.5 seconds." },
-    { name: "of Siphoning Strikes Aspect", classes: ["rogue"], power: "Lucky Hit: Cutthroat Skills have up to a [45 - 65]% chance to Heal you for 3% of your Maximum Life." },
+    { name: "of Siphoning Strikes Aspect", classes: ["rogue"], power: "Lucky Hit: Cutthroat Skills have up to a [45 - 65]% chance to Heal you for 3% of your Maximum Life." },,
+    { name: "Tidal Aspect", classes: ["barbarian", "druid", "necromancer", "paladin", "rogue", "warlock"], power: "Your Maximum Overpower is increased by [2 - 4] while you are Fortified." },
 ]);

@@ -8,7 +8,7 @@ registerMythics({
         {
             name:  "Heir of Perdition",
             slot:  "helm",
-            power: "Succumb to hatred and earn Mother's Favor, increasing your damage dealt by 80%. Slaughter enemies to briefly steal Mother's Favor from surrounding allies."
+            power: "Succumb to hatred and earn Mother's Favor, increasing your damage dealt by 15%. Briefly steal 15% Critical Strike Chance from Nearby allies by slaughtering enemies. Always retains its damage bonus."
         },
         {
             name:  "Andariel's Visage",
@@ -18,19 +18,19 @@ registerMythics({
         {
             name:  "Harlequin Crest",
             slot:  "helm",
-            power: "Gain 20% Damage Reduction. In addition, gain +4 Ranks to all Skills."
+            power: "Gain +6 Ranks to all Skills."
         }
     ],
     chests: [
         {
             name:  "Tyrael's Might",
             slot:  "chest",
-            power: "While at full Life, your Skills unleash a divine barrage dealing damage."
+            power: "While at full Life, your Skills unleash a divine barrage dealing damage. Grants 20% Damage Reduction."
         },
         {
             name:  "Shroud of False Death",
             slot:  "chest",
-            power: "When you would be dealt fatal damage, instead you Heal to full Life, gain a Barrier for 100% of your Maximum Life for 3 seconds, and Knock Back Close enemies. This can only occur once every 300 seconds."
+            power: "When you would be dealt fatal damage, instead you Heal to full Life, gain a Barrier for 100% of your Maximum Life for 3 seconds, and Knock Back Close enemies. This power is disabled once used until you return to town."
         }
     ],
     amulets: [
@@ -56,7 +56,7 @@ registerMythics({
         {
             name:  "The Grandfather",
             slots: ["weapon-0","weapon-1","weapon-2","weapon-3"],
-            power: "Increases your Critical Strike Damage by 150%."
+            power: "Increases your Critical Strike Damage by 120%."
         },
         {
             name:  "Doombringer",

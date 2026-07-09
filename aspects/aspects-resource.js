@@ -9,7 +9,7 @@ registerAspectCategory("resource", [
     { name: "Aspect of Akarat's Blessing", classes: ["necromancer", "paladin", "spiritborn"], power: "Blocks have a [10 - 15]% chance to reduce all Cooldowns by 1 second." },
     { name: "Aspect of Alacrity", classes: [], power: "Your Defensive and Mobility Skills gain [50 - 75]% Cooldown Rate while moving." },
     { name: "Aspect of Apogeic Furor", classes: [], power: "Casting an Ultimate Skill reduces the Cooldowns of your other Skills by [6.5 - 10.0] seconds." },
-    { name: "Aspect of Authority", classes: ["warlock"], power: "Gain [5 - 15][+] Maximum Dominance." },
+    { name: "Aspect of Authority", classes: ["warlock"], power: "Gain [10 - 25][+] Maximum Dominance." },
     { name: "Aspect of Berserk Fury", classes: ["barbarian"], power: "You gain [7.0 - 11.0] Fury per second while Berserking." },
     { name: "Aspect of Contemplation", classes: ["paladin"], power: "Every time you consume Judgement, reduce one of your active Cooldowns by [0.10 - 0.20] seconds." },
     { name: "Aspect of Dedication", classes: ["paladin"], power: "Gain [5 - 25] Faith every 10 times you consume Judgement." },
