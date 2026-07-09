@@ -6,18 +6,18 @@ registerUniques("paladin", [
     // ── WEAPONS ─────────────────────────────────────────
     { name: "Griswold's Opus", slot: "weapon", boss: "Astaroth", power: "Dealing direct damage grants [0.8 - 1.0]%[x] increased Critical Strike Damage for each enemy hit within 10 seconds, up to [40 - 50]%[x]. At Maximum you gain: Lucky Hit: Critical Strikes have up to a 50% chance to deal double damage, Heal for [130 - 150] Life, and refresh the duration of the bonus." },
     { name: "Herald's Morningstar", slot: "weapon", boss: "Urivar", power: "Blessed Hammer deals [80 - 100]%[x] increased damage. Lucky Hit: Up to a 20% chance to spawn a base Blessed Hammer on the target hit" },
-    { name: "Light's Rebuke", slot: "weapon", boss: "Beast in the Ice", power: "Enemies impaled by the first strike of Divine Lance take [110 - 150]% increased damage from Divine Lance's subsequent hits" },
-    { name: "Red Sermon", slot: "weapon", boss: "Butcher", power: "Zeal deals [43- 53]%[x] increased damage and gains the Death or Glory Upgrade for free." },
-    { name: "Sunbrand", slot: "weapon", boss: "Grigoire", power: "Heaven’s Fury gains 3 additional rays and deals [70- 90]%[x] increased damage" },
+    { name: "Light's Rebuke", slot: "weapon", boss: "Beast in the Ice", power: "Blessed Hammer deals [150-200]%[x] increased damage to enemies it hits multiple times." },
+    { name: "Red Sermon", slot: "weapon", boss: "Butcher", power: "Consecration deals [100-120]%[x] increased damage and its radius is increased." },
+    { name: "Sunbrand", slot: "weapon", boss: "Grigoire", power: "Smite deals [85-105]%[x] increased damage and chains to additional enemies." },
     { name: "Sundered Night", slot: "weapon", boss: "Bartuc", power: "Casting an Aura Skill triggers a Consecration beneath you. You gain [80 - 100]% Aura Potency while standing in Consecration" },
-    { name: "Supplication", slot: "weapon", boss: "Duriel", power: "Brandish unleashes in all directions, dealing [60 - 80]%[x] increased damage." },
+    { name: "Supplication", slot: "weapon", boss: "Duriel", power: "Holy Bolt deals [120-160]%[x] increased damage and chains to additional enemies." },
     { name: "Thousand-Eye Reaver", slot: "weapon", boss: "Any", power: "Moving grants Ferocity, and Maximum Ferocity is increased by [2-4]. Ferocity also increases Movement Speed by [6-8]% per stack." },
     // ── OFFHAND ─────────────────────────────────────────
     { name: "Bastion of Sir Matthias", slot: "offhand", boss: "Grigoire", power: "Blocking has a 15% chance to retaliate with a Shield Bash. Your Shield Bash damage is increased by [80 – 100]%[x]." },
     { name: "Cathedral’s Song", slot: "offhand", boss: "Urivar", power: "Lucky Hit: Casting Disciple Skills have up to a [8 – 10]% chance to call down Spear of the Heavens on a random enemy. Your Spear of the Heavens damage is increased by [80 – 100]%[x]" },
     { name: "Gate of the Red Dawn", slot: "offhand", boss: "Harbinger", power: "Juggernaut Core Skills are empowered, dealing [100 – 120]%[x] increased damage to the first enemy hit and storing the damage dealt to that target, up to 10 times. Fortress unleashes this stored damage to all enemies within its area" },
     { name: "Herald of Zakarum", slot: "offhand", boss: "Astaroth", power: "Gain [40 - 50]%[x] increased Strength, Resistance, Armor, and Retribution Chance" },
-    { name: "Ward of the White Dove", slot: "offhand", boss: "Duriel", power: "Blessed Shield deals [55 - 77]%[x] increased damage. Casting another Skill makes your next 3 Blessed Shields deal double damage and cost 7 less Faith to cast." },
+    { name: "Ward of the White Dove", slot: "offhand", boss: "Duriel", power: "Blocking has a 15% chance to retaliate with a Shield Bash. Your Shield Bash damage is increased by [77-99]%[x]." },
     // ── HELM ────────────────────────────────────────────
     { name: "Judicant’s Glaivehelm", slot: "helm", boss: "Zir", power: "Lucky Hit: Judicator Skills have up to a [30 - 40]% chance to call down a Blessed Spear that carries a Judgement mark and deals Judgement’s damage on impact." },
     // ── CHEST ───────────────────────────────────────────
@@ -33,6 +33,6 @@ registerUniques("paladin", [
     { name: "Sanctis of Kethamar", slot: "amulet", boss: "Beast in the Ice", power: "Arbiter form increases Aura Potency by 30% and Wing Strike damage by [87 - 100]%[x]." },
     // ── RINGS ───────────────────────────────────────────
     { name: "Argent Veil", slots: ["ring-left", "ring-right"], boss: "Andariel", power: "Arbiter’s Evade triggers a random equipped Core Skill for every 2.0 meters traveled. Core Skills deal [5 - 15]%[x] increased damage during Arbiter’s Evade and for 4 seconds after." },
-    { name: "Seal of the Second Trumpet", slots: ["ring-left", "ring-right"], boss: "Varshan", power: "Judgement deals [80 - 100]%[x] increased damage and has a 33% chance to explode twice." },
+    { name: "Seal of the Second Trumpet", slots: ["ring-left", "ring-right"], boss: "Varshan", power: "Judgement deals [100-150]%[x] increased damage and its area is increased." },
     { name: "Wreath of Auric Laurel", slots: ["ring-left", "ring-right"], boss: "Varshan", power: "Lucky Hit: Holy Bolt has up to a 40% chance to trigger Purify, causing enemies to take [45 - 55]%[x] increased damage for 4 seconds." },
 ]);

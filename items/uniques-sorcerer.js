@@ -8,7 +8,7 @@ registerUniques("sorcerer", [
     { name: "Fang of the Vipermagi", slot: "weapon", boss: "Zir", power: "Inferno constricts the area 2 more times and deals x [20 - 25%] increased damage." },
     { name: "Flamescar", slot: "weapon", boss: "Urivar", power: "Incinerate gains one final charge, irradiating the area around you and increasing damage dealt by x [200-300%] but costing an additional 50 Mana per second." },
     { name: "Orsivane", slot: "weapon", boss: "Andariel", power: "For each Defensive Skill not on your Action Bar, you deal [15.0 - 25.0]%[x] increased damage and gain its associated Enchantment effect." },
-    { name: "Staff of Endless Rage", slot: "weapon", boss: "Duriel", power: "Fireball deals [40 - 60]% increased damage and every 3rd Cast launches 2 additional projectiles." },
+    { name: "Staff of Endless Rage", slot: "weapon", boss: "Duriel", power: "Every 3rd cast of Fireball launches 2 additional projectiles that deal [140-180]%[x] increased damage." },
     { name: "Staff of Lam Esen", slot: "weapon", boss: "Zir", power: "Charged Bolts deal [55 - 80]%[x] increased damage, last 300% longer and seek enemies." },
     { name: "Staff of Zarae", slot: "weapon", boss: "Butcher", power: "Unstable Currents increases your Armor and Resistances by 100%[+] and kills increase your damage by [4.0 - 5.0]%[x] for the duration." },
     { name: "Strike of Stormhorn", slot: "weapon", boss: "Grigoire", power: "Ball Lightning deals x [40 - 60%] increased damage and explodes for 40% of its total damage when dissipating." },
@@ -17,11 +17,11 @@ registerUniques("sorcerer", [
     { name: "Vision of the Firestorm", slot: "weapon", boss: "Grigoire", power: "Firewall has x [80 - 100%] increased damage and it's size is overcapped by 100%." },
     { name: "Vox Omnium", slot: "weapon", boss: "Beast in the Ice", power: "Casting a Core Skill triggers a random equipped Basic Skill at a random enemy which deals x [300 - 360%] increased damage." },
     // ── OFFHAND ─────────────────────────────────────────
-    { name: "Onyx Soul", slot: "offhand", boss: "Varshan", power: "Frozen Orb now returns to you dealing [80 - 100]%[x] increased damage." },
+    { name: "Onyx Soul", slot: "offhand", boss: "Varshan", power: "When you use a Cooldown, you have a chance to spawn an Onyx Soul that deals [100-120]%[x] increased damage." },
     { name: "Shanar's Resonance", slot: "offhand", boss: "Butcher", power: "Deep Freeze's final blast deals [400 - 500]%[x] increased damage." },
     // ── HELM ────────────────────────────────────────────
     { name: "Hail of Verglas", slot: "helm", boss: "Astaroth", power: "Gain Ice Shard's Piercing Cold upgrade. Ice Shards deal x [30-50%] bonus damage." },
-    { name: "Starfall Coronet", slot: "helm", boss: "Beast in the Ice", power: "Meteor's Casts consume Overpower when possible, dropping an additional Meteor for every 2 Overpower consumed. Meteor deals x [50-70%] increased damage." },
+    { name: "Starfall Coronet", slot: "helm", boss: "Beast in the Ice", power: "Meteor now falls at your location. Meteor deals [80-100]%[x] increased damage." },
     // ── CHEST ───────────────────────────────────────────
     { name: "Emberfury", slot: "chest", boss: "Butcher", power: "Overpower increases your Pyromancy Skill damage by [20 - 25%] and size, Mana cost and Cooldowns by 0%." },
     { name: "Gift of Frost", slot: "chest", boss: "Beast in the Ice", power: "Ice Armor gains the Permafrost Variant for free and [20 - 25%] increased potency." },
@@ -40,8 +40,8 @@ registerUniques("sorcerer", [
     { name: "Esu's Heirloom", slot: "boots", boss: "Astaroth", power: "Your Critical Strike Chance is increased by [20 - 40]% of your Movement Speed bonus." },
     // ── AMULET ──────────────────────────────────────────
     { name: "Esadora's Overflowing Cameo", slot: "amulet", boss: "Andariel", power: "Crackling Energy's discharge rate is increased by your Attack Speed, its damage is increased by x [100-121%] and each hit has a 25% chance to reduce a random Cooldown by 1 second." },
-    { name: "Fractured Winterglass", slot: "amulet", boss: "Astaroth", power: "Casting a Core Skill has a 25% chance to summon a Conjuration of the same element. Each active Conjuration grants: x [3-6%] increased damage; 1 Mana per second; + 5% Movement Speed; +3% Damage Reduction" },
-    { name: "Ophidian Iris", slot: "amulet", boss: "Bartuc", power: "Hydra is now a Core Skill with increased Mana cost and its attacks now explode dealing x [100 - 125%] increased damage." },
+    { name: "Fractured Winterglass", slot: "amulet", boss: "Astaroth", power: "Your Conjuration Skills deal [2-3]%[x] increased damage per active Conjuration." },
+    { name: "Ophidian Iris", slot: "amulet", boss: "Bartuc", power: "Hydra deals [110-150]%[x] increased damage. While you have an active Hydra, you gain Damage Reduction." },
     // ── RINGS ───────────────────────────────────────────
     { name: "Blue Rose", slots: ["ring-left", "ring-right"], boss: "Duriel", power: "Skill that form Ice Spikes deal x [40-60%] increased damage. Lucky Hit: Up to a 15% chance to a form an exploding Ice Spike, dealing 255 cold damage." },
     { name: "Galvanic Azurite", slots: ["ring-left", "ring-right"], boss: "Duriel", power: "Cast Shock Skill damage leaves enemies Magnetized for 4 seconds, causing them to emit Crackling Energy and receive x [40-60%] increased Shock damage from you. Crackling Energy's damage Pulls Magnetized enemies together." },

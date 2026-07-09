@@ -5,8 +5,8 @@
 registerUniques("spiritborn", [
     // ── WEAPONS ─────────────────────────────────────────
     { name: "Echo of Kwatli", slot: "weapon", boss: "Astaroth", power: "You deal x [53 - 67%] increased damage to Vulnerable enemies. After making an enemy Vulnerable, your next direct damage dealt to them: Heals you for 5% of your Maximum Life Generates 10 Vigor Removes the Vulnerable Effect" },
-    { name: "Rod of Kepeleke", slot: "weapon", boss: "Astaroth", power: "Your Core Skills are now additionally Basic Skills and are free to cast. When cast at Maximum Vigor, your Core Skills consume all Vigor to return to full damage, cast at their largest Size, and become guaranteed Critical Strikes, with [0.33 - 0.38]%[x] or 0.90% increased Critical Strike Damage for each point of Vigor spent this way." },
-    { name: "Sepazontec", slot: "weapon", boss: "Harbinger", power: "Your Basic Skills deal [40 - 60]% or 144% increased damage and always use their 3rd attack. Every 3rd cast of a Basic Skill strikes three times." },
+    { name: "Rod of Kepeleke", slot: "weapon", boss: "Astaroth", power: "Your Skills deal [0.85-1.05]%[x] increased damage per point of Vigor you have." },
+    { name: "Sepazontec", slot: "weapon", boss: "Harbinger", power: "Your Evade is replaced with a Lunge that deals damage. Lunge deals [140-180]%[x] increased damage to Injured enemies." },
     { name: "The Sunstained War-Crozie", slot: "weapon", boss: "Grigoire", power: "Your Focus Skills benefit from all their Upgrades, and they increase the damage of your Potency Skills by [20 - 25]% for 8 seconds, up to [100-125]% [x]." },
     { name: "Thundergod's Blessing", slot: "weapon", boss: "Any", power: "Lightning damage against Close enemies has a 25% chance to grant Resolve and deal x [250 - 300%] increased damage." },
     { name: "Widow's Web", slot: "weapon", boss: "Duriel", power: "Your Critical Strikes cause your Poisoning on an enemy to burst, dealing [167 - 200%] of the total Poisoning instantly to them and 10% of the burst to surrounding enemies before removing the Poisoning effect from the primary target." },

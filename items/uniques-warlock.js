@@ -4,7 +4,7 @@
 // ══════════════════════════════════════════════════════════════
 registerUniques("warlock", [
     // ── WEAPONS ─────────────────────────────────────────
-    { name: "Ae'grom Schism", slot: "weapon", boss: "Varshan", power: "Ae'grom and its summons deal x[30 - 50%] increased damage. You additionally summon Ae'grom's other half and gain a second Charge of Command Ae'grom." },
+    { name: "Ae'grom Schism", slot: "weapon", boss: "Varshan", power: "Your Hellfire Skills deal [120-150]%[x] increased damage. Casting a Hellfire Skill reduces the Cooldown of your other Hellfire Skills." },
     { name: "Anathema of the Primes", slot: "weapon", boss: "Andariel", power: "Hitting enemies with a Core Skill increases the damage they take from you by x[15 - 20%] per Skill, up to x[15 - 20%]. Archfiend Demonform Skill Variants are Core Skills and cost Wrath." },
     { name: "Dirge of Odium", slot: "weapon", boss: "Zir", power: "Your Basic Skills deal x [0.4 - 0.5%] increased damage per Wrath you have but you lose 10% Wrath per second. Every 50 Wrath gained beyond your Maximum generates 1 Dominance." },
     { name: "Elegy", slot: "weapon", boss: "Zir", power: "Blazing Scream gains the Skull Splitter Variant for free and deals x [20 - 30%] increased damage." },
@@ -20,9 +20,9 @@ registerUniques("warlock", [
     { name: "Spine of Tathamet", slot: "weapon", boss: "Harbinger", power: "Hell Fracture deals x [100 - 120%] increased damage and every 3rd cast creates a triple fracture." },
     { name: "The Blade of Sight Aflame", slot: "weapon", boss: "Urivar", power: "Hitting a Lesser Demon with Bombardment explodes it for 400% of a Bombardment impact if the Demon has less than 3 second duration left. Bombardment deals x [100 - 120%] increased damage." },
     { name: "The Eightfold Idol", slot: "weapon", boss: "Beast in the Ice", power: "Blazing Scream leaves Sigil of Subversion Shadow or Lava trails behind. Sigil of Subversion deals x [160 - 200%] increased damage." },
-    { name: "Thrice-Woven Nightmare", slot: "weapon", boss: "Varshan", power: "Terror Swarm gains the Devouring Swarm Variant for free and deals x [20 - 30%] increased damage." },
+    { name: "Thrice-Woven Nightmare", slot: "weapon", boss: "Varshan", power: "Each Fiend type you have summoned increases your damage by [40-60]%[x]." },
     // ── HELM ────────────────────────────────────────────
-    { name: "Bridle of Tor'Baalos", slot: "helm", boss: "Harbinger", power: "Your Brimstones deal x[120 - 160%] increased damage. Molten Bomb explodes all Brimstones instantly if there are at least 4 total but enemy proximity no longer detonates them." },
+    { name: "Bridle of Tor'Baalos", slot: "helm", boss: "Harbinger", power: "Fiend of Tor'Baalos deals [160-200]%[x] increased damage and its attacks Slow enemies." },
     { name: "Cowl of Malefic Torment", slot: "helm", boss: "Urivar", power: "Hex dooms enemies below a threshold of Life, maintaining the Hex and dealing a portion of Doom’s damage every second until they die. Doom deals increased damage." },
     { name: "Night Terror", slot: "helm", boss: "Andariel", power: "Your Abyss Skills deal x [4 - 6%] increased damage for each stack of Shadowform. This bonus is increased by 100% while you have Stealth." },
     // ── CHEST ───────────────────────────────────────────
@@ -31,7 +31,7 @@ registerUniques("warlock", [
     { name: "Morlu Fleshward", slot: "chest", boss: "Duriel", power: "You cannot recover above [65%] of your Maximum Life but your Defensive Skills deal x [300 - 400%] increased damage." },
     // ── GLOVES ──────────────────────────────────────────
     { name: "Bindings of Attrition", slot: "gloves", boss: "Astaroth", power: "Casting Dark Prison consumes 48% of your Maximum Life to reset its Cooldown. You gain [20 - 30%] Damage Reduction while Dark Prison is active." },
-    { name: "Gauntlets of Sheol", slot: "gloves", boss: "Duriel", power: "Summoning Fiend of Abaddon sacrifices all other Greater Demon Summons, dealing Fiend of Abaddon's damage around them and increasing his damage by x[23 - 33%] per demon killed." },
+    { name: "Gauntlets of Sheol", slot: "gloves", boss: "Duriel", power: "Fiend of Abaddon gains a melee attack. Fiend of Abaddon's damage is increased by 80%." },
     { name: "Hand of Apotheosis", slot: "gloves", boss: "Bartuc", power: "Metamorphosis gains all Side Upgrades for free and they are + [30 - 50%] more potent." },
     { name: "Hands of the Worldbreaker", slot: "gloves", boss: "Grigoire", power: "Apocalypse deals up to x [340 - 400%] increased damage when cast in Sigil of Chaos based on the number of kills the Sigil has stored. Apocalypse is now also a Sigil Skill." },
     { name: "Nails of the Gore-Crowned", slot: "gloves", boss: "Butcher", power: "Hellion Sting deals x [60 - 80%] increased damage and automatically strikes out at enemies when you attack in Demonform." },
@@ -43,7 +43,7 @@ registerUniques("warlock", [
     { name: "Hellhound's Sabatons", slot: "boots", boss: "Beast in the Ice", power: "Abodian deals x [80 - 100%] increased damage. After Command Abodian ends you are connected with a fire chain that deals Command Abodian's Drag damage periodically and grants you x 25% Movement Speed for 10 seconds." },
     // ── AMULET ──────────────────────────────────────────
     { name: "Lurid Pact", slot: "amulet", boss: "Butcher", power: "Rampage deals x [200 - 240%] increased damage. Each enemy or demon killed by Rampage increases the size of the brute and its smashes by 5%, up to 5%." },
-    { name: "Moloch's Beating Flame", slot: "amulet", boss: "Butcher", power: "Hellfire Skills deal x [5 - 7%] increased damage for every Skill you have Empowered by Volatility. Casting a Volatility Empowered Skill increases you Core Stats by + 5% for 10 seconds, up to + 50%." },
+    { name: "Moloch's Beating Flame", slot: "amulet", boss: "Butcher", power: "Your Burning damage is increased by [20-30]%[x]. When you Critically Strike a Burning enemy, the Burning spreads to surrounding enemies." },
     { name: "Seed of Horazon", slot: "amulet", boss: "Grigoire", power: "Your Demonology Skills deal x [0.40 - 0.50%] increased damage per Wrath you have and you take + [0.13 - 0.17%] reduced damage per Dominance you have." },
     { name: "The Hemat Stone", slot: "amulet", boss: "Bartuc", power: "Bonuses from Command Valloch and Ritualist Fragments have 100% increased Potency. Your Occult Skills deal x [20 - 30%] increased damage." },
     // ── RINGS ───────────────────────────────────────────

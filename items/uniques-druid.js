@@ -5,11 +5,11 @@
 registerUniques("druid", [
     // ── WEAPONS ─────────────────────────────────────────
     { name: "Fleshrender", slot: "weapon", boss: "Harbinger", power: "When Tornadoes expire, they instead seek back toward you. Returning Tornadoes deal [40 - 50]%x bonus damage to enemies hit." },
-    { name: "Greatstaff of the Crone", slot: "weapon", boss: "Varshan", power: "Claw gains all Variants and gains x [30 - 40%] bonus damage." },
+    { name: "Greatstaff of the Crone", slot: "weapon", boss: "Varshan", power: "Claw is now a Storm Skill. When Claw deals damage, it deals [60-80]%[x] increased damage as Lightning damage." },
     { name: "Purified Lightbringer", slot: "weapon", boss: "Butcher", power: "Pulverize pulls Distant enemies towards you. In addition, Pulverize deals [100 - 125%] bonus damage. This damage bonus is increased by [200 - 250%] if the target was pulled towards you, is Unstoppable or a Boss." },
     { name: "Stone of Vehemen", slot: "weapon", boss: "Varshan", power: "Gain x40% to All Resistance while channeling Stone Burst. Stone Burst's final explosion deals [250 - 300%] bonus damage split between all targets caught in the blast." },
-    { name: "The Basilisk", slot: "weapon", boss: "Grigoire", power: "Petrified enemies have a + [80 - 100%] increased chance to be Critically Struck. Additionally, Earth Skills Petrify Healthy enemies for 3 seconds." },
-    { name: "Waxing Gibbous", slot: "weapon", boss: "Zir", power: "Shred deals [20 - 25%] more damage, and Shred has a 25% chance to land an additional strike, up to 4 times." },
+    { name: "The Basilisk", slot: "weapon", boss: "Grigoire", power: "When you Petrify an enemy, there is a chance to spread Petrify to other Nearby enemies. Petrified enemies take an additional [60-90]%[x] damage from you." },
+    { name: "Waxing Gibbous", slot: "weapon", boss: "Zir", power: "Stealth grants Ambush which guarantees Critical Strikes for 4 seconds. Attacking with Ambush deals [45-60]%[x] increased damage and has a 33% chance for additional attacks." },
     { name: "Will of Stone", slot: "weapon", boss: "Grigoire", power: "Earth Spike is now launched as a projectile. Upon impact, the projectile deals [225 - 300] damage to the target and summons 2-4 additional Earth Spikes." },
     // ── HELM ────────────────────────────────────────────
     { name: "Autumnal Crown", slot: "helm", boss: "Varshan", power: "Wind Shear now deals x Poisoning damage over 4 seconds. Lucky Hit: Wind Shear has up to a 20% chance to restore 100 Spirit." },
@@ -34,7 +34,7 @@ registerUniques("druid", [
     // ── AMULET ──────────────────────────────────────────
     { name: "Accord of the Wilds", slot: "amulet", boss: "Beast in the Ice", power: "Your Companion Skills each gain 1 additional companion and deal [40 - 50%] bonus damage. Gain the Passive Effect of Ravens, Wolves, and Poison Creeper for free." },
     { name: "Dirge of Airidah", slot: "amulet", boss: "Astaroth", power: "Storm Skills that you Cast grant 1 Spirit and deal [25 - 35%] bonus damage. These bonuses are doubled when damaging a Vulnerable, Immobilized or Slowed enemy." },
-    { name: "Dolmen Stone", slot: "amulet", boss: "Urivar", power: "When Boulder would have normally expired, it instead explodes dealing an additional [450 - 600] damage to surrounding enemies." },
+    { name: "Dolmen Stone", slot: "amulet", boss: "Urivar", power: "Casting Boulder while Hurricane is active will cause your Boulders to orbit around you. Boulder explosion now deals [75-90]%[x] of Boulder's damage." },
     { name: "Greenwalker's Oath", slot: "amulet", boss: "Duriel", power: "Poison Creeper gains the Germinate Variant for free and deals [30 - 40%] bonus damage." },
     { name: "Malefic Crescent", slot: "amulet", boss: "Beast in the Ice", power: "Blood Howl is automatically cast when you Shapeshift into a Werewolf and every 4 seconds while in Werewolf form.  In addition, you gain [27 - 40]%[x] bonus damage for 4 seconds whenever Blood Howl is triggered." },
     { name: "Mark of the Old Wolf", slot: "amulet", boss: "Duriel", power: "Gain x [15 - 20%] bonus Poisoning damage. Direct damage from Werewolf Skills gain a bonus equal to x50% of your bonus Poisoning damage, up to x50%. Poison damage from Werewolf Skills gain a bonus equal to x100% of your bonus Attack Speed and Critical Strike Chance, up to x50%." },
@@ -44,6 +44,6 @@ registerUniques("druid", [
     { name: "Fractured Runestone", slots: ["ring-left", "ring-right"], boss: "Duriel", power: "Your Earth Skills deal [40 - 50%] bonus Critical Strike damage. This bonus is increased to [80 - 100%] with at least 4 stacks of Overpower. You passively gain 2 stacks of Overpower every 10 seconds." },
     { name: "Fury of the Wilds", slots: ["ring-left", "ring-right"], boss: "Butcher", power: "When you Shapeshift into either Werewolf or Werebear form, you gain Berserking for [6 - 8] seconds. Additionally, Berserking grants 1 stack of Ferocity every 1 second while active. Berserking's damage bonus is increased by x10%." },
     { name: "Greenwalker's Signet", slots: ["ring-left", "ring-right"], boss: "Andariel", power: "Casting or Channeling a Human Skill has a 15% chance to trigger an additional equipped non-Ultimate Human Skill. Human Skills deal [40 - 50%] bonus damage." },
-    { name: "Hunter's Zenith", slots: ["ring-left", "ring-right"], boss: "Grigoire", power: "When Hurricane ends or after it lasts 10 seconds, an explosion occurs dealing [40 - 60%] of the total damage by up to 40 hits of Hurricane." },
-    { name: "Mjolnic Ryng", slots: ["ring-left", "ring-right"], boss: "Bartuc", power: "While Cataclysm is active, you gain unlimited Spirit and deal [30 - 40]%[x] increased damage." },
+    { name: "Hunter's Zenith", slots: ["ring-left", "ring-right"], boss: "Grigoire", power: "Gain a bonus when you Shapeshift. Werewolf: Your Non-Ultimate Companion Skills deal [75-90]%[x] increased damage. Werebear: Gain Fortify." },
+    { name: "Mjolnic Ryng", slots: ["ring-left", "ring-right"], boss: "Bartuc", power: "Lightning Storm Critical Strikes spawn Crackling Energy and deal [45-60]%[x] increased damage." },
 ]);
