@@ -40,9 +40,8 @@ registerPrismBucket("resourcefulPrism", {
         ],
         paladin: [
             "Faith On Kill",
-            "Faith Regeneration",
-            "Wrath every 10 Kills",
-            "Wrath Regeneration"
+            "Faith Regeneration"
+            // Wrath entries removed — Wrath is the Warlock resource.
         ],
         warlock: [
             "Wrath On Kill",

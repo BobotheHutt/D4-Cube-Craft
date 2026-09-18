@@ -77,17 +77,26 @@ registerPrismBucket("adeptPrism", {
             "Ranks to Basic Skills",
             "Ranks to Core Skills",
             "Ranks to Defensive Skills",
-            "Ranks to Human Skills",
-            "Ranks to Shade Skills",
+            // PLACEHOLDER — unverified. "Human"/"Shade" were removed as they
+            // are not Paladin skill categories. These three are taken from
+            // ADEPT_SLOT_SKILLS (adept-slot-skills.js); confirm against the
+            // live skill tree.
+            "Ranks to Aura Skills",
+            "Ranks to Valor Skills",
+            "Ranks to Justice Skills",
         ],
         warlock: [
             "Ranks to Basic Skills",
             "Ranks to Core Skills",
             "Ranks to Defensive Skills",
-            "Ranks to Curse Skills",
-            "Ranks to Grenade Skills",
-            "Ranks to Imbuement Skills",
-            "Ranks to Subterfuge Skills",
+            // PLACEHOLDER — unverified. Curse/Grenade/Imbuement/Subterfuge were
+            // removed; they are Necromancer and Rogue categories copied in by
+            // mistake. These two are taken from ADEPT_SLOT_SKILLS
+            // (adept-slot-skills.js); confirm against the live skill tree.
+            // Aspect text also references Hellfire, Abyss, Occult and
+            // Demonology skills, which may be tags rather than categories.
+            "Ranks to Sigil Skills",
+            "Ranks to Archfiend Skills",
         ]
     }
 });
