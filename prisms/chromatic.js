@@ -11,5 +11,5 @@ registerPrismBucket("chromaticPrism", [
     "Poison Resistance",
     "Shadow Resistance",
     "Physical Resistance",
-    "All Resistances"
+    "Resistance to All Elements"
 ]);
