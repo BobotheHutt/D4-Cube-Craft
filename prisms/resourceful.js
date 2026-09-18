@@ -45,8 +45,8 @@ registerPrismBucket("resourcefulPrism", {
             "Wrath Regeneration"
         ],
         warlock: [
-            "Energy On Kill",
-            "Energy Regeneration"
+            "Wrath On Kill",
+            "Wrath Regeneration"
         ]
     }
 });

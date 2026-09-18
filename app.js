@@ -58,7 +58,7 @@ const CLASS_PRIMARY_STAT = {
     sorcerer:    "Intelligence",
     spiritborn:  "Dexterity",
     paladin:     "Strength",
-    warlock:     "Intelligence"
+    warlock:     "Willpower"
 };
 
 // ── AFFIX CATEGORY MAP ────────────────────────────────────────

@@ -16,7 +16,7 @@ registerPrismBucket("adeptPrism", {
         sorcerer:    "Intelligence",
         spiritborn:  "Dexterity",
         paladin:     "Strength",
-        warlock:     "Intelligence"
+        warlock:     "Willpower"
     },
 
     // Skill ranks mirror pragmatic but belong to Adept bucket
